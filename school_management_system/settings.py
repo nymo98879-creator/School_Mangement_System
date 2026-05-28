@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'classes',
     'courses',
     'examps',
+    'requestsystem',
     'students',
     'teachers',
-    
 ]
 
 MIDDLEWARE = [
@@ -57,12 +57,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'School_Management_System.urls'
+# ROOT_URLCONF = 'School_Management_System.urls'
+ROOT_URLCONF = 'school_management_system.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,7 +76,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'School_Management_System.wsgi.application'
+# WSGI_APPLICATION = 'School_Management_System.wsgi.application'
+WSGI_APPLICATION = 'school_management_system.wsgi.application'
+ASGI_APPLICATION = 'school_management_system.asgi.application'
 
 
 # Database
@@ -84,6 +88,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'USER': 'postgres',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -123,3 +131,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
+AUTH_USER_MODEL = 'accounts.User'
