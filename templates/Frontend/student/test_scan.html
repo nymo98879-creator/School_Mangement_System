@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test QR Scan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <h1>QR Code Scanner Test</h1>
+    <p>Use your phone camera to scan the QR code</p>
+
+    <div style="max-width: 400px; margin: 20px auto;">
+        <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code" style="width: 100%;">
+    </div>
+
+    <p>Or click the link: <a href="{{ registration_url }}">{{ registration_url }}</a></p>
+</body>
+
+</html>

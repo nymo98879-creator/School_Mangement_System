@@ -1,0 +1,24 @@
+{% if items.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if items.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ items.previous_page_number }}">Previous</a></li>
+        {% endif %}
+
+        {% for num in items.paginator.page_range %}
+        {% if items.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% elif num > items.number|add:'-3' and num < items.number|add:'3' %} <li class="page-item"><a class="page-link"
+                href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if items.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ items.next_page_number }}">Next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ items.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+            {% endif %}
+    </ul>
+</nav>
+{% endif %}

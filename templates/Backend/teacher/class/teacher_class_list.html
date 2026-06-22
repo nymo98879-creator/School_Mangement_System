@@ -1,0 +1,918 @@
+{% extends 'Backend/layouts/teacher_layout.html' %}
+{% load static %}
+
+{% block title %}My Classes{% endblock %}
+{% block page_title %}My Classes{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== MODERN STATS CARDS ===== */
+    .stats-card {
+        background: white;
+        border-radius: 16px;
+        padding: 22px 25px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        border: none;
+        border-bottom: 4px solid #27ae60;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-card .stats-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        color: white;
+        margin-bottom: 12px;
+    }
+
+    .stats-card .stats-icon.green {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+    }
+
+    .stats-card .stats-icon.blue {
+        background: linear-gradient(135deg, #3498db, #5dade2);
+    }
+
+    .stats-card .stats-icon.orange {
+        background: linear-gradient(135deg, #f39c12, #f7dc6f);
+    }
+
+    .stats-card .stats-icon.purple {
+        background: linear-gradient(135deg, #9b59b6, #af7ac5);
+    }
+
+    .stats-card .stats-number {
+        font-size: 32px;
+        font-weight: 800;
+        color: #2c3e50;
+        line-height: 1.2;
+    }
+
+    .stats-card .stats-label {
+        color: #95a5a6;
+        font-size: 13px;
+        font-weight: 500;
+        margin-top: 2px;
+    }
+
+    .stats-card .stats-trend {
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 6px;
+        display: inline-block;
+        padding: 3px 14px;
+        border-radius: 20px;
+        background: #ecf0f1;
+    }
+
+    .stats-card .stats-trend.up {
+        color: #27ae60;
+        background: #d5f5e3;
+    }
+
+    .stats-card .stats-trend.down {
+        color: #e74c3c;
+        background: #fadbd8;
+    }
+
+    .stats-card .stats-trend.neutral {
+        color: #f39c12;
+        background: #fdebd0;
+    }
+
+    /* ===== WELCOME BANNER ===== */
+    .welcome-banner {
+        background: linear-gradient(135deg, #1a472a 0%, #2d7d46 50%, #1a472a 100%);
+        border-radius: 16px;
+        padding: 30px 35px;
+        color: white;
+        margin-bottom: 25px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .welcome-banner::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: 20%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 50%;
+    }
+
+    .welcome-banner .welcome-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .welcome-banner h4 {
+        font-weight: 700;
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
+
+    .welcome-banner h4 i {
+        color: #f1c40f;
+        margin-right: 10px;
+    }
+
+    .welcome-banner p {
+        opacity: 0.8;
+        margin-bottom: 0;
+        font-size: 14px;
+    }
+
+    .welcome-banner .welcome-stats {
+        display: flex;
+        gap: 30px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
+
+    .welcome-banner .welcome-stats .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px 18px;
+        border-radius: 30px;
+        backdrop-filter: blur(10px);
+    }
+
+    .welcome-banner .welcome-stats .stat-item i {
+        font-size: 18px;
+        color: #f1c40f;
+    }
+
+    .welcome-banner .welcome-stats .stat-item span {
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    /* ===== CLASS CARD GRID ===== */
+    .class-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin-top: 20px;
+    }
+
+    .class-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-top: 4px solid #27ae60;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .class-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(39, 174, 96, 0.02) 0%, transparent 100%);
+        pointer-events: none;
+    }
+
+    .class-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+    }
+
+    .class-card .card-header {
+        padding: 18px 22px 12px;
+        border-bottom: 1px solid #f0f2f5;
+        background: #fafbfc;
+        position: relative;
+        z-index: 1;
+    }
+
+    .class-card .card-header .class-title {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 18px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .class-card .card-header .class-title i {
+        color: #27ae60;
+        font-size: 20px;
+    }
+
+    .class-card .card-header .class-title .class-code {
+        font-size: 11px;
+        color: #7f8c8d;
+        font-weight: 400;
+        background: #ecf0f1;
+        padding: 2px 10px;
+        border-radius: 10px;
+        margin-left: auto;
+    }
+
+    .class-card .card-body {
+        padding: 18px 22px;
+        flex: 1;
+        position: relative;
+        z-index: 1;
+    }
+
+    .class-card .card-body .class-info {
+        color: #7f8c8d;
+        font-size: 14px;
+        padding: 5px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px dashed #f0f2f5;
+    }
+
+    .class-card .card-body .class-info:last-child {
+        border-bottom: none;
+    }
+
+    .class-card .card-body .class-info i {
+        width: 20px;
+        color: #27ae60;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .class-card .card-body .class-info .badge-status {
+        padding: 3px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .class-card .card-body .class-info .badge-status.active {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .class-card .card-body .class-info .badge-status.completed {
+        background: #e8f0fe;
+        color: #3498db;
+    }
+
+    .class-card .card-body .class-info .badge-status.inactive {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    /* ===== STUDENT COUNT ===== */
+    .student-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .student-count.full {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    .student-count.near-full {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .student-count.available {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .student-count i {
+        font-size: 12px;
+    }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-wrapper {
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
+    .progress-custom {
+        height: 6px;
+        background: #ecf0f1;
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .progress-custom .progress-bar-custom {
+        height: 100%;
+        border-radius: 10px;
+        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .progress-custom .progress-bar-custom.green {
+        background: linear-gradient(90deg, #27ae60, #2ecc71);
+    }
+
+    .progress-custom .progress-bar-custom.orange {
+        background: linear-gradient(90deg, #f39c12, #f7dc6f);
+    }
+
+    .progress-custom .progress-bar-custom.red {
+        background: linear-gradient(90deg, #e74c3c, #ec7063);
+    }
+
+    .progress-custom .progress-bar-custom::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    /* ===== CARD FOOTER ===== */
+    .class-card .card-footer {
+        padding: 14px 22px;
+        border-top: 1px solid #f0f2f5;
+        background: #fafbfc;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+    }
+
+    .class-card .card-footer .btn-action {
+        padding: 8px 18px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex: 1;
+        min-width: 80px;
+        gap: 6px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .class-card .card-footer .btn-action::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .class-card .card-footer .btn-action:hover::after {
+        transform: translateX(0);
+    }
+
+    .class-card .card-footer .btn-action:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        color: white;
+    }
+
+    .class-card .card-footer .btn-action.btn-primary {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+    }
+
+    .class-card .card-footer .btn-action.btn-info {
+        background: linear-gradient(135deg, #3498db, #5dade2);
+    }
+
+    .class-card .card-footer .btn-action.btn-success {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+    }
+
+    .class-card .card-footer .btn-action.btn-warning {
+        background: linear-gradient(135deg, #f39c12, #f7dc6f);
+        color: #2c3e50;
+    }
+
+    .class-card .card-footer .btn-action.btn-danger {
+        background: linear-gradient(135deg, #e74c3c, #ec7063);
+    }
+
+    /* ===== SECTION HEADER ===== */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 5px;
+    }
+
+    .section-header h5 {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .section-header h5 i {
+        color: #27ae60;
+        margin-right: 10px;
+    }
+
+    .section-header .badge-count {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: white;
+        padding: 4px 18px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 2px 10px rgba(39, 174, 96, 0.3);
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        grid-column: 1 / -1;
+    }
+
+    .empty-state i {
+        font-size: 70px;
+        color: #27ae60;
+        opacity: 0.2;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h5 {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .empty-state p {
+        color: #7f8c8d;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 992px) {
+        .class-grid {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        .welcome-banner {
+            padding: 25px;
+        }
+
+        .welcome-banner h4 {
+            font-size: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .stats-card .stats-number {
+            font-size: 24px;
+        }
+
+        .class-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .welcome-banner .welcome-stats {
+            gap: 15px;
+        }
+
+        .welcome-banner .welcome-stats .stat-item {
+            padding: 6px 14px;
+            font-size: 12px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .stats-card .stats-number {
+            font-size: 20px;
+        }
+
+        .stats-card .stats-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+        }
+
+        .class-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .class-card .card-footer {
+            flex-direction: column;
+        }
+
+        .class-card .card-footer .btn-action {
+            flex: none;
+            width: 100%;
+        }
+
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .section-header h5 {
+            font-size: 17px;
+        }
+
+        .welcome-banner {
+            padding: 20px;
+        }
+
+        .welcome-banner h4 {
+            font-size: 18px;
+        }
+
+        .welcome-banner .welcome-stats {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .welcome-banner .welcome-stats .stat-item {
+            justify-content: center;
+        }
+    }
+
+    /* ===== STATUS INDICATOR PULSE ===== */
+    .status-pulse {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 6px;
+    }
+
+    .status-pulse.active {
+        background: #27ae60;
+        animation: pulse 2s infinite;
+    }
+
+    .status-pulse.inactive {
+        background: #e74c3c;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.4);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(39, 174, 96, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(39, 174, 96, 0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== WELCOME BANNER ===== -->
+<div class="welcome-banner">
+    <div class="welcome-content">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h4>
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    Welcome back, {{ teacher.get_full_name|default:teacher.user.username }}!
+                </h4>
+                <p>Here's an overview of your classes and today's attendance.</p>
+                <div class="welcome-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-calendar-day"></i>
+                        <span>{{ today|date:"l, F d, Y" }}</span>
+                    </div>
+                    <!-- FIX: Use date format only for date objects -->
+                    <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <span>{{ current_time|time:"h:i A"|default:"Current Time" }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-cubes"></i>
+                        <span>{{ classes|length }} Class{{ classes|length|pluralize }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-end d-none d-md-block">
+                <i class="fas fa-graduation-cap" style="font-size: 60px; opacity: 0.2; color: white;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== STATS CARDS ===== -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card">
+            <div class="stats-icon green">
+                <i class="fas fa-cubes"></i>
+            </div>
+            <div class="stats-number">{{ classes|length|default:0 }}</div>
+            <div class="stats-label">My Classes</div>
+            <span class="stats-trend up">
+                <i class="fas fa-arrow-up me-1"></i> Active
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-bottom-color: #3498db;">
+            <div class="stats-icon blue">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stats-number">{{ total_students|default:0 }}</div>
+            <div class="stats-label">Total Students</div>
+            <span class="stats-trend up">
+                <i class="fas fa-arrow-up me-1"></i> Enrolled
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-bottom-color: #f39c12;">
+            <div class="stats-icon orange">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stats-number">{{ today_attendance|default:0 }}</div>
+            <div class="stats-label">Today's Attendance</div>
+            <span class="stats-trend neutral">
+                <i class="fas fa-minus me-1"></i> Recorded
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-bottom-color: #9b59b6;">
+            <div class="stats-icon purple">
+                <i class="fas fa-percentage"></i>
+            </div>
+            <div class="stats-number">{{ attendance_rate|default:"0%" }}</div>
+            <div class="stats-label">Attendance Rate</div>
+            <span class="stats-trend up">
+                <i class="fas fa-arrow-up me-1"></i> {{ attendance_rate|default:"0%" }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SECTION HEADER ===== -->
+<div class="section-header">
+    <h5>
+        <i class="fas fa-calendar-check"></i>
+        My Classes
+    </h5>
+    <span class="badge-count">
+        {{ classes|length }} Class{{ classes|length|pluralize }}
+    </span>
+</div>
+<hr class="mt-2 mb-4">
+
+<!-- ===== CLASS CARDS GRID ===== -->
+<div class="class-grid">
+    {% if classes %}
+    {% for class in classes %}
+    {% with student_count=class.get_student_count capacity=class.capacity|default:30 %}
+    <div class="class-card" data-class-id="{{ class.id }}">
+        <!-- Card Header -->
+        <div class="card-header">
+            <div class="class-title">
+                <i class="fas fa-cube"></i>
+                {{ class.name }}
+                <span class="class-code">{{ class.code|default:"" }}</span>
+            </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body">
+            <div class="class-info">
+                <i class="fas fa-book"></i>
+                <span>{{ class.course.name|default:"No Course" }}</span>
+            </div>
+            <div class="class-info">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>
+                    {% if class.building %}
+                    {{ class.building.name }}
+                    {% if class.floor %} - Floor {{ class.floor.floor_number }}{% endif %}
+                    {% if class.room %} - Room {{ class.room.room_number }}{% endif %}
+                    {% else %}
+                    Not Assigned
+                    {% endif %}
+                </span>
+            </div>
+            <div class="class-info">
+                <i class="fas fa-clock"></i>
+                <span>
+                    {% if class.time_slots.all %}
+                    {% for slot in class.time_slots.all|slice:":2" %}
+                    {{ slot.get_days_display }} {{ slot.start_time|time:"h:i A" }}-{{ slot.end_time|time:"h:i A" }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                    {% if class.time_slots.all.count > 2 %}
+                    +{{ class.time_slots.all.count|add:"-2" }} more
+                    {% endif %}
+                    {% else %}
+                    Schedule TBD
+                    {% endif %}
+                </span>
+            </div>
+            <div class="class-info">
+                <i class="fas fa-users"></i>
+                <span class="student-count 
+                    {% if student_count >= capacity %}full
+                    {% elif student_count >= capacity|add:" -5" %}near-full {% else %}available{% endif %}">
+                    <i class="fas fa-user"></i>
+                    {{ student_count }}/{{ capacity }}
+                    {% if student_count >= capacity %}
+                    <i class="fas fa-exclamation-circle ms-1"></i>
+                    {% endif %}
+                </span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-wrapper">
+                <div class="d-flex justify-content-between">
+                    <span class="small text-muted">Capacity</span>
+                    <span class="small fw-bold">{{ student_count }}/{{ capacity }}</span>
+                </div>
+                <div class="progress-custom">
+                    <div class="progress-bar-custom 
+                        {% if student_count >= capacity %}red
+                        {% elif student_count >= capacity|add:" -5" %}orange {% else %}green{% endif %}"
+                        style="width: {% widthratio student_count capacity 100 %}%;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="class-info mt-2">
+                <span class="status-pulse {% if class.is_active %}active{% else %}inactive{% endif %}"></span>
+                <span class="badge-status {% if class.is_active %}active{% else %}inactive{% endif %}">
+                    {% if class.is_active %}Active{% else %}Inactive{% endif %}
+                </span>
+                {% if class.term %}
+                <span class="ms-3 text-muted small">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    {{ class.term.name }}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="card-footer">
+            {% if class.id %}
+            <a href="{% url 'attendance:teacher_take_attendance' class.id %}" class="btn-action btn-primary"
+                title="Take Attendance">
+                <i class="fas fa-calendar-check"></i> Take Attendance
+            </a>
+            <a href="{% url 'attendance:teacher_attendance_history' class.id %}" class="btn-action btn-info"
+                title="View History">
+                <i class="fas fa-history"></i> History
+            </a>
+            <a href="{% url 'classes:class_detail' class.id %}" class="btn-action btn-success" title="View Class">
+                <i class="fas fa-eye"></i> View
+            </a>
+            {% else %}
+            <span class="text-muted small">No actions available</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endwith %}
+    {% endfor %}
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-calendar-check"></i>
+        <h5>No Classes Available</h5>
+        <p>You don't have any classes to take attendance for.</p>
+        <p class="text-muted small">Contact the admin for class assignments.</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // ===== ANIMATE STATS CARDS =====
+        const cards = document.querySelectorAll('.stats-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 150);
+        });
+
+        // ===== ANIMATE CLASS CARDS =====
+        const classCards = document.querySelectorAll('.class-card');
+        classCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 300 + (index * 100));
+        });
+
+        // ===== ANIMATE PROGRESS BARS =====
+        const progressBars = document.querySelectorAll('.progress-bar-custom');
+        progressBars.forEach((bar, index) => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.transition = 'width 1s cubic-bezier(0.4, 0, 0.2, 1)';
+                bar.style.width = width;
+            }, 400 + (index * 150));
+        });
+
+        // ===== COUNT ANIMATION =====
+        function animateCount(element, target, duration = 1000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    start = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(start);
+            }, 16);
+        }
+
+        const numberElements = document.querySelectorAll('.stats-number');
+        numberElements.forEach(el => {
+            const target = parseInt(el.textContent.replace(/,/g, ''));
+            if (target > 0 && !isNaN(target)) {
+                animateCount(el, target);
+            }
+        });
+
+        // ===== CARD HOVER EFFECT =====
+        classCards.forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+        });
+    });
+</script>
+{% endblock %}

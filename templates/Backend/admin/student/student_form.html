@@ -1,0 +1,437 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-section .section-title {
+        font-weight: 600;
+        color: #2c3e50;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e8f0fe;
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+
+    .form-section .section-title i {
+        color: #3498db;
+        margin-right: 10px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 14px;
+    }
+
+    .form-label .required {
+        color: #e74c3c;
+        margin-left: 3px;
+    }
+
+    .form-control:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    .profile-picture-preview {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #e8f0fe;
+        margin-bottom: 10px;
+    }
+
+    .btn-submit {
+        padding: 12px 40px;
+        font-weight: 600;
+    }
+
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 5px 0 0;
+        color: #e74c3c;
+        font-size: 13px;
+    }
+
+    .errorlist li {
+        margin-bottom: 3px;
+    }
+
+    .form-text {
+        font-size: 12px;
+        color: #7f8c8d;
+    }
+
+    .auto-id-info {
+        background: #f0f7ff;
+        border: 1px dashed #3498db;
+        border-radius: 8px;
+        padding: 10px 15px;
+        color: #2c3e50;
+        font-size: 14px;
+    }
+
+    .auto-id-info i {
+        color: #3498db;
+        margin-right: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    <!-- Personal Information -->
+    <div class="form-section">
+        <h5 class="section-title">
+            <i class="fas fa-user-graduate"></i>Personal Information
+        </h5>
+
+        <!-- Auto-generated ID Info -->
+        <div class="auto-id-info mb-3">
+            <i class="fas fa-info-circle"></i>
+            <strong>Student ID:</strong> Will be automatically generated as
+            <strong>STU0001, STU0002, ...</strong> when you save.
+            {% if is_edit and student.student_id %}
+            <br><strong>Current ID:</strong> <span class="badge bg-primary">{{ student.student_id }}</span>
+            {% endif %}
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="{{ form.class_enrolled.id_for_label }}" class="form-label">
+                    Class <span class="required">*</span>
+                </label>
+                {{ form.class_enrolled }}
+                {% if form.class_enrolled.errors %}
+                <div class="errorlist">
+                    {% for error in form.class_enrolled.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-3">
+                <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                    First Name <span class="required">*</span>
+                </label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                <div class="errorlist">
+                    {% for error in form.first_name.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-3">
+                <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                    Last Name <span class="required">*</span>
+                </label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                <div class="errorlist">
+                    {% for error in form.last_name.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-4">
+                <label for="{{ form.gender.id_for_label }}" class="form-label">
+                    Gender <span class="required">*</span>
+                </label>
+                {{ form.gender }}
+                {% if form.gender.errors %}
+                <div class="errorlist">
+                    {% for error in form.gender.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-4">
+                <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">
+                    Date of Birth <span class="required">*</span>
+                </label>
+                {{ form.date_of_birth }}
+                {% if form.date_of_birth.errors %}
+                <div class="errorlist">
+                    {% for error in form.date_of_birth.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-4">
+                <label for="{{ form.phone.id_for_label }}" class="form-label">
+                    Phone Number <span class="required">*</span>
+                </label>
+                {{ form.phone }}
+                {% if form.phone.errors %}
+                <div class="errorlist">
+                    {% for error in form.phone.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.email.id_for_label }}" class="form-label">
+                    Email Address <span class="required">*</span>
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <div class="errorlist">
+                    {% for error in form.email.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.confirm_email.id_for_label }}" class="form-label">
+                    Confirm Email <span class="required">*</span>
+                </label>
+                {{ form.confirm_email }}
+                {% if form.confirm_email.errors %}
+                <div class="errorlist">
+                    {% for error in form.confirm_email.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Password fields (only for new students) -->
+            {% if not is_edit %}
+            <div class="col-md-6">
+                <label for="{{ form.password.id_for_label }}" class="form-label">
+                    Password <span class="required">*</span>
+                </label>
+                {{ form.password }}
+                <div class="form-text">{{ form.password.help_text }}</div>
+                {% if form.password.errors %}
+                <div class="errorlist">
+                    {% for error in form.password.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.confirm_password.id_for_label }}" class="form-label">
+                    Confirm Password <span class="required">*</span>
+                </label>
+                {{ form.confirm_password }}
+                {% if form.confirm_password.errors %}
+                <div class="errorlist">
+                    {% for error in form.confirm_password.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% else %}
+            <!-- For editing, show optional password fields -->
+            <div class="col-md-6">
+                <label for="{{ form.password.id_for_label }}" class="form-label">
+                    Password
+                </label>
+                {{ form.password }}
+                <div class="form-text">{{ form.password.help_text }}</div>
+                {% if form.password.errors %}
+                <div class="errorlist">
+                    {% for error in form.password.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.confirm_password.id_for_label }}" class="form-label">
+                    Confirm Password
+                </label>
+                {{ form.confirm_password }}
+                <div class="form-text">{{ form.confirm_password.help_text }}</div>
+                {% if form.confirm_password.errors %}
+                <div class="errorlist">
+                    {% for error in form.confirm_password.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="col-12">
+                <label for="{{ form.address.id_for_label }}" class="form-label">
+                    Address
+                </label>
+                {{ form.address }}
+                {% if form.address.errors %}
+                <div class="errorlist">
+                    {% for error in form.address.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Guardian Information -->
+    <div class="form-section">
+        <h5 class="section-title">
+            <i class="fas fa-user-tie"></i>Guardian Information
+        </h5>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="{{ form.guardian_name.id_for_label }}" class="form-label">
+                    Guardian Name <span class="required">*</span>
+                </label>
+                {{ form.guardian_name }}
+                {% if form.guardian_name.errors %}
+                <div class="errorlist">
+                    {% for error in form.guardian_name.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.guardian_phone.id_for_label }}" class="form-label">
+                    Guardian Phone <span class="required">*</span>
+                </label>
+                {{ form.guardian_phone }}
+                {% if form.guardian_phone.errors %}
+                <div class="errorlist">
+                    {% for error in form.guardian_phone.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.guardian_email.id_for_label }}" class="form-label">
+                    Guardian Email
+                </label>
+                {{ form.guardian_email }}
+                {% if form.guardian_email.errors %}
+                <div class="errorlist">
+                    {% for error in form.guardian_email.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Settings -->
+    <div class="form-section">
+        <h5 class="section-title">
+            <i class="fas fa-cog"></i>Additional Settings
+        </h5>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="{{ form.profile_picture.id_for_label }}" class="form-label">
+                    Profile Picture
+                </label>
+                {% if student and student.profile_picture %}
+                <div class="mb-2">
+                    <img src="{{ student.profile_picture.url }}" alt="Current Profile" class="profile-picture-preview">
+                    <br>
+                    <small class="text-muted">Current picture</small>
+                </div>
+                {% endif %}
+                {{ form.profile_picture }}
+                <div class="form-text">Upload a profile picture (JPG, PNG, max 2MB)</div>
+                {% if form.profile_picture.errors %}
+                <div class="errorlist">
+                    {% for error in form.profile_picture.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-check form-switch mt-4 pt-2">
+                    {{ form.is_active }}
+                    <label for="{{ form.is_active.id_for_label }}" class="form-check-label fw-bold">
+                        Active Status
+                    </label>
+                    <div class="form-text">Toggle to activate or deactivate this student</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="d-flex gap-3 justify-content-end">
+        <a href="{% url 'students:student_list' %}" class="btn btn-secondary btn-submit">
+            <i class="fas fa-times me-2"></i>Cancel
+        </a>
+        <button type="submit" class="btn btn-primary btn-submit">
+            <i class="fas fa-save me-2"></i>
+            {% if is_edit %}Update Student{% else %}Create Student{% endif %}
+        </button>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Preview profile picture before upload
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.querySelector('#{{ form.profile_picture.id_for_label }}');
+        if (fileInput) {
+            fileInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const preview = document.querySelector('.profile-picture-preview');
+                        if (preview) {
+                            preview.src = event.target.result;
+                        } else {
+                            const img = document.createElement('img');
+                            img.src = event.target.result;
+                            img.className = 'profile-picture-preview';
+                            img.alt = 'Preview';
+                            fileInput.parentNode.insertBefore(img, fileInput);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

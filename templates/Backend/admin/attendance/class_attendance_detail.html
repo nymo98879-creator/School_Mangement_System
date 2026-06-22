@@ -1,0 +1,364 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Class Attendance Details{% endblock %}
+{% block page_title %}Class Attendance Details - {{ class.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s;
+        border-left: 4px solid #3498db;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-card .number {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .stats-card .label {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .stats-card .icon {
+        font-size: 30px;
+        opacity: 0.3;
+    }
+
+    .stats-card.green {
+        border-left-color: #27ae60;
+    }
+
+    .stats-card.orange {
+        border-left-color: #f39c12;
+    }
+
+    .stats-card.purple {
+        border-left-color: #9b59b6;
+    }
+
+    .stats-card.red {
+        border-left-color: #e74c3c;
+    }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .status-badge.present {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .status-badge.absent {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    .status-badge.late {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .status-badge.excused {
+        background: #e8f0fe;
+        color: #3498db;
+    }
+
+    .student-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .student-avatar.blue {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+
+    .student-avatar.green {
+        background: linear-gradient(135deg, #27ae60, #1e8449);
+    }
+
+    .student-avatar.orange {
+        background: linear-gradient(135deg, #f39c12, #d68910);
+    }
+
+    .student-avatar.purple {
+        background: linear-gradient(135deg, #9b59b6, #7d3c98);
+    }
+
+    .student-avatar.red {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+
+    .progress {
+        height: 8px;
+        border-radius: 10px;
+    }
+
+    .progress-bar {
+        border-radius: 10px;
+    }
+
+    .class-info-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    .class-info-card .info-item {
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .class-info-card .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .class-info-card .info-label {
+        font-weight: 600;
+        color: #7f8c8d;
+        font-size: 13px;
+    }
+
+    .class-info-card .info-value {
+        font-weight: 500;
+        color: #2c3e50;
+        font-size: 15px;
+    }
+
+    .table th {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Class Info -->
+<div class="class-info-card">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="info-item">
+                <div class="info-label">Class Name</div>
+                <div class="info-value">{{ class.name }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="info-item">
+                <div class="info-label">Course</div>
+                <div class="info-value">{{ class.course.name|default:"N/A" }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="info-item">
+                <div class="info-label">Teacher</div>
+                <div class="info-value">{{ class.teacher.get_full_name|default:"N/A" }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="info-item">
+                <div class="info-label">Total Students</div>
+                <div class="info-value">{{ total_students }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="number">{{ student_data|length }}</div>
+                    <div class="label">Total Students</div>
+                </div>
+                <div class="icon"><i class="fas fa-users"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card green">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="number">
+                        {% with max_present=student_data|dictsortreversed:"present"|first %}
+                        {{ max_present.present|default:0 }}
+                        {% endwith %}
+                    </div>
+                    <div class="label">Most Present</div>
+                </div>
+                <div class="icon"><i class="fas fa-check-circle"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card orange">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="number">
+                        {% if student_data %}
+                        {% with total_rate=0 %}
+                        {% for data in student_data %}
+                        {% with total_rate=total_rate|add:data.rate %}
+                        {% endwith %}
+                        {% endfor %}
+                        {% endwith %}
+                        {{ total_rate|add:0 }}
+                        {% else %}
+                        0
+                        {% endif %}
+                    </div>
+                    <div class="label">Avg Attendance Rate</div>
+                </div>
+                <div class="icon"><i class="fas fa-percentage"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card purple">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="number">
+                        {% with max_rate=student_data|dictsortreversed:"rate"|first %}
+                        {{ max_rate.rate|default:0 }}%
+                        {% endwith %}
+                    </div>
+                    <div class="label">Highest Rate</div>
+                </div>
+                <div class="icon"><i class="fas fa-trophy"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Student Attendance Table -->
+<div class="card">
+    <div class="card-header">
+        <h5><i class="fas fa-user-graduate me-2"></i>Student Attendance Details</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Student</th>
+                        <th>Student ID</th>
+                        <th>Total Days</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Late</th>
+                        <th>Excused</th>
+                        <th>Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in student_data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="student-avatar {% cycle 'blue' 'green' 'orange' 'purple' 'red' %}">
+                                    {{ data.student.first_name|first|upper }}
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ data.student.get_full_name }}</div>
+                                    <small class="text-muted">{{ data.student.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ data.student.student_id }}</td>
+                        <td>{{ data.total|default:0 }}</td>
+                        <td>
+                            <span class="status-badge present">
+                                {{ data.present|default:0 }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge absent">
+                                {{ data.absent|default:0 }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge late">
+                                {{ data.late|default:0 }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge excused">
+                                {{ data.excused|default:0 }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1">
+                                    <div class="progress-bar {% if data.rate >= 75 %}bg-success{% elif data.rate >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                                        >
+                                    </div>
+                                </div>
+                                <span
+                                    class="fw-bold {% if data.rate >= 75 %}text-success{% elif data.rate >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                                    {{ data.rate|default:0 }}%
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center py-5">
+                            <i class="fas fa-users fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
+                            <h6 class="text-muted">No students found in this class</h6>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{% url 'attendance:admin_class_attendance' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Back to Class Attendance
+    </a>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize tooltips if any
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

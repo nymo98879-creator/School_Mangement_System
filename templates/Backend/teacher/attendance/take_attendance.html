@@ -1,0 +1,742 @@
+{% extends 'Backend/layouts/teacher_layout.html' %}
+{% load static %}
+
+{% block title %}Take Attendance{% endblock %}
+{% block page_title %}Take Attendance - {{ class.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .attendance-form {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .attendance-header {
+        background: linear-gradient(135deg, #1a472a 0%, #27ae60 100%);
+        color: white;
+        padding: 20px 25px;
+        border-radius: 12px 12px 0 0;
+        margin: -25px -25px 20px -25px;
+    }
+
+    .attendance-header h4 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .attendance-header small {
+        opacity: 0.8;
+    }
+
+    .student-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .student-avatar.blue {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+
+    .student-avatar.green {
+        background: linear-gradient(135deg, #27ae60, #1e8449);
+    }
+
+    .student-avatar.orange {
+        background: linear-gradient(135deg, #f39c12, #d68910);
+    }
+
+    .student-avatar.purple {
+        background: linear-gradient(135deg, #9b59b6, #7d3c98);
+    }
+
+    /* ===== ATTENDANCE BUTTON GROUP ===== */
+    .attendance-btn-group {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .attendance-btn {
+        padding: 6px 14px;
+        border-radius: 6px;
+        border: 2px solid #e1e5eb;
+        background: white;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 45px;
+        height: 36px;
+        color: #7f8c8d;
+    }
+
+    .attendance-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .attendance-btn:active {
+        transform: scale(0.95);
+    }
+
+    .attendance-btn i {
+        margin-right: 4px;
+        font-size: 12px;
+    }
+
+    /* Active states */
+    .attendance-btn.active-present {
+        background: #27ae60;
+        border-color: #27ae60;
+        color: white;
+        box-shadow: 0 3px 15px rgba(39, 174, 96, 0.3);
+    }
+
+    .attendance-btn.active-late {
+        background: #f39c12;
+        border-color: #f39c12;
+        color: white;
+        box-shadow: 0 3px 15px rgba(243, 156, 18, 0.3);
+    }
+
+    .attendance-btn.active-absent {
+        background: #e74c3c;
+        border-color: #e74c3c;
+        color: white;
+        box-shadow: 0 3px 15px rgba(231, 76, 60, 0.3);
+    }
+
+    .attendance-btn.active-excused {
+        background: #3498db;
+        border-color: #3498db;
+        color: white;
+        box-shadow: 0 3px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    /* Inactive state */
+    .attendance-btn.inactive {
+        opacity: 0.5;
+        border-color: #e1e5eb;
+        background: #f8f9fa;
+        color: #bdc3c7;
+    }
+
+    .attendance-btn.inactive:hover {
+        opacity: 0.8;
+        border-color: #bdc3c7;
+        transform: scale(1.05);
+    }
+
+    /* ===== REMARKS INPUT ===== */
+    .remarks-container {
+        display: none;
+        margin-top: 8px;
+        animation: slideDown 0.3s ease;
+    }
+
+    .remarks-container.show {
+        display: block;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .remarks-container .remarks-input {
+        width: 100%;
+        padding: 6px 12px;
+        border: 2px solid #3498db;
+        border-radius: 6px;
+        font-size: 13px;
+        background: #f0f7ff;
+        transition: all 0.3s;
+    }
+
+    .remarks-container .remarks-input:focus {
+        outline: none;
+        border-color: #2980b9;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        background: white;
+    }
+
+    .remarks-container .remarks-input::placeholder {
+        color: #95a5a6;
+        font-style: italic;
+    }
+
+    .remarks-container .remarks-label {
+        font-size: 11px;
+        color: #3498db;
+        font-weight: 600;
+        margin-bottom: 3px;
+        display: block;
+    }
+
+    .remarks-container .remarks-label i {
+        margin-right: 4px;
+    }
+
+    /* ===== LEGEND ===== */
+    .legend {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        padding: 10px 0;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: #2c3e50;
+    }
+
+    .legend-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        display: inline-block;
+    }
+
+    .legend-dot.present {
+        background: #27ae60;
+    }
+
+    .legend-dot.late {
+        background: #f39c12;
+    }
+
+    .legend-dot.absent {
+        background: #e74c3c;
+    }
+
+    .legend-dot.excused {
+        background: #3498db;
+    }
+
+    /* ===== SUMMARY STATS ===== */
+    .summary-stats {
+        background: #f8faf9;
+        border-radius: 8px;
+        padding: 15px 20px;
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .summary-stats .stat-item {
+        text-align: center;
+    }
+
+    .summary-stats .stat-item .stat-number {
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .summary-stats .stat-item .stat-label {
+        font-size: 12px;
+        color: #7f8c8d;
+    }
+
+    .summary-stats .stat-item.present .stat-number {
+        color: #27ae60;
+    }
+
+    .summary-stats .stat-item.absent .stat-number {
+        color: #e74c3c;
+    }
+
+    .summary-stats .stat-item.late .stat-number {
+        color: #f39c12;
+    }
+
+    .summary-stats .stat-item.excused .stat-number {
+        color: #3498db;
+    }
+
+    .btn-submit {
+        padding: 12px 40px;
+        font-weight: 600;
+        border-radius: 8px;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(39, 174, 96, 0.3);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-state i {
+        font-size: 60px;
+        color: #27ae60;
+        opacity: 0.3;
+        margin-bottom: 20px;
+    }
+
+    .student-row {
+        transition: all 0.3s;
+    }
+
+    .student-row:hover {
+        background: #f8fafb;
+    }
+
+    .student-row .status-label {
+        font-size: 13px;
+        font-weight: 600;
+        padding: 3px 12px;
+        border-radius: 12px;
+        display: inline-block;
+        min-width: 80px;
+        text-align: center;
+    }
+
+    .student-row .status-label.present {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .student-row .status-label.absent {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    .student-row .status-label.late {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .student-row .status-label.excused {
+        background: #e8f0fe;
+        color: #3498db;
+    }
+
+    .student-row .status-label.excused-with-remark {
+        background: #d6eaf8;
+        color: #1a5276;
+    }
+
+    .student-row .status-label.not-marked {
+        background: #f0f2f5;
+        color: #7f8c8d;
+    }
+
+    .has-remark {
+        border-left: 3px solid #3498db;
+    }
+
+    @media (max-width: 768px) {
+        .summary-stats {
+            gap: 15px;
+        }
+
+        .attendance-form {
+            padding: 20px;
+        }
+
+        .attendance-header {
+            margin: -20px -20px 15px -20px;
+            padding: 15px 20px;
+        }
+
+        .attendance-btn {
+            min-width: 35px;
+            height: 30px;
+            font-size: 12px;
+            padding: 4px 10px;
+        }
+
+        .legend {
+            gap: 12px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .attendance-btn {
+            min-width: 30px;
+            height: 26px;
+            font-size: 10px;
+            padding: 2px 6px;
+        }
+
+        .attendance-btn i {
+            display: none;
+        }
+
+        .student-row .status-label {
+            font-size: 11px;
+            min-width: 60px;
+            padding: 2px 8px;
+        }
+
+        .summary-stats .stat-item .stat-number {
+            font-size: 18px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="attendance-form">
+    <div class="attendance-header">
+        <h4><i class="fas fa-calendar-check me-2"></i>Take Attendance</h4>
+        <small>{{ class.name }} - {{ class.schedule }}</small>
+    </div>
+
+    <form method="POST" id="attendanceForm">
+        {% csrf_token %}
+        <input type="hidden" name="class_id" value="{{ class.id }}">
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label fw-bold">Date</label>
+                    <input type="date" name="date" class="form-control" value="{{ today|date:'Y-m-d' }}" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label fw-bold">Class</label>
+                    <input type="text" class="form-control" value="{{ class.name }}" disabled>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <span class="fw-bold me-2">Click to mark:</span>
+            <span class="legend-item">
+                <span class="legend-dot present"></span> P = Present
+            </span>
+            <span class="legend-item">
+                <span class="legend-dot late"></span> L = Late
+            </span>
+            <span class="legend-item">
+                <span class="legend-dot absent"></span> A = Absent
+            </span>
+            <span class="legend-item">
+                <span class="legend-dot excused"></span> E = Excused
+                <small class="text-muted">(Enter reason in remarks)</small>
+            </span>
+            <span class="text-muted ms-3 small">
+                <i class="fas fa-info-circle"></i> Click buttons to toggle
+            </span>
+        </div>
+
+        {% if students %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            Taking attendance for: <strong>{{ class.name }}</strong>
+            ({{ students|length }} students)
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Student</th>
+                        <th style="width: 110px;">Student ID</th>
+                        <th style="text-align: center; min-width: 280px;">Attendance</th>
+                        <th style="width: 110px;">Status</th>
+                        <th style="width: 200px;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr class="student-row" id="row-{{ student.id }}">
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="student-avatar {% cycle 'blue' 'green' 'orange' 'purple' %}">
+                                    {{ student.first_name|first|upper }}
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ student.get_full_name }}</div>
+                                    <small class="text-muted">{{ student.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ student.student_id }}</td>
+                        <td style="text-align: center;">
+                            <div class="attendance-btn-group">
+                                <!-- Present Button (P) -->
+                                <button type="button" class="attendance-btn inactive"
+                                    onclick="setAttendance({{ class.id }}, {{ student.id }}, 'present')"
+                                    id="btn-present-{{ student.id }}">
+                                    <i class="fas fa-check-circle"></i> P
+                                </button>
+                                <!-- Late Button (L) -->
+                                <button type="button" class="attendance-btn inactive"
+                                    onclick="setAttendance({{ class.id }}, {{ student.id }}, 'late')"
+                                    id="btn-late-{{ student.id }}">
+                                    <i class="fas fa-clock"></i> L
+                                </button>
+                                <!-- Absent Button (A) -->
+                                <button type="button" class="attendance-btn inactive"
+                                    onclick="setAttendance({{ class.id }}, {{ student.id }}, 'absent')"
+                                    id="btn-absent-{{ student.id }}">
+                                    <i class="fas fa-times-circle"></i> A
+                                </button>
+                                <!-- Excused Button (E) -->
+                                <button type="button" class="attendance-btn inactive"
+                                    onclick="setAttendance({{ class.id }}, {{ student.id }}, 'excused')"
+                                    id="btn-excused-{{ student.id }}">
+                                    <i class="fas fa-check-circle"></i> E
+                                </button>
+                            </div>
+                            <!-- Hidden input to store selected status -->
+                            <input type="hidden" name="student_{{ student.id }}" id="status-{{ student.id }}" value="">
+                        </td>
+                        <td>
+                            <span class="status-label not-marked" id="label-{{ student.id }}">
+                                ❓ Not Marked
+                            </span>
+                        </td>
+                        <td>
+                            <div class="remarks-container" id="remarks-container-{{ student.id }}">
+                                <label class="remarks-label">
+                                    <i class="fas fa-pen"></i> Reason for Excuse:
+                                </label>
+                                <input type="text" class="remarks-input" id="remarks-{{ student.id }}"
+                                    name="remarks_{{ student.id }}"
+                                    placeholder="e.g., Medical appointment, Family emergency..." maxlength="200">
+                            </div>
+                            <input type="hidden" name="has_remark_{{ student.id }}" id="has-remark-{{ student.id }}"
+                                value="0">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="summary-stats mt-3">
+            <div class="stat-item present">
+                <div class="stat-number" id="presentCount">0</div>
+                <div class="stat-label"> Present</div>
+            </div>
+            <div class="stat-item late">
+                <div class="stat-number" id="lateCount">0</div>
+                <div class="stat-label"> Late</div>
+            </div>
+            <div class="stat-item absent">
+                <div class="stat-number" id="absentCount">0</div>
+                <div class="stat-label"> Absent</div>
+            </div>
+            <div class="stat-item excused">
+                <div class="stat-number" id="excusedCount">0</div>
+                <div class="stat-label"> Excused</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalCount">{{ students|length }}</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-3 justify-content-end mt-4 pt-3 border-top">
+            <a href="{% url 'attendance:teacher_attendance' %}" class="btn btn-secondary btn-submit">
+                <i class="fas fa-times me-2"></i>Cancel
+            </a>
+            <button type="submit" class="btn btn-success btn-submit">
+                <i class="fas fa-save me-2"></i>Save Attendance
+            </button>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-user-graduate"></i>
+            <h5 class="text-muted">No Students Enrolled</h5>
+            <p class="text-muted">This class has no students enrolled yet.</p>
+        </div>
+        {% endif %}
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        updateSummary();
+    });
+
+    // ===== SET ATTENDANCE =====
+    function setAttendance(classId, studentId, status) {
+        // Clear all buttons for this student
+        const buttons = document.querySelectorAll(`#btn-present-${studentId}, #btn-late-${studentId}, #btn-absent-${studentId}, #btn-excused-${studentId}`);
+        buttons.forEach(btn => {
+            if (btn) btn.className = 'attendance-btn inactive';
+        });
+
+        // Get the hidden input
+        const hiddenInput = document.getElementById(`status-${studentId}`);
+        const statusLabel = document.getElementById(`label-${studentId}`);
+        const remarksContainer = document.getElementById(`remarks-container-${studentId}`);
+        const remarksInput = document.getElementById(`remarks-${studentId}`);
+        const hasRemark = document.getElementById(`has-remark-${studentId}`);
+
+        // If the same button is clicked again, deselect (reset to not marked)
+        if (hiddenInput && hiddenInput.value === status) {
+            hiddenInput.value = '';
+            if (statusLabel) {
+                statusLabel.className = 'status-label not-marked';
+                statusLabel.innerHTML = '❓ Not Marked';
+            }
+
+            // Hide remarks container if it was shown
+            if (status === 'excused' && remarksContainer) {
+                remarksContainer.classList.remove('show');
+                if (remarksInput) remarksInput.value = '';
+                if (hasRemark) hasRemark.value = '0';
+            }
+            updateSummary();
+            return;
+        }
+
+        // Set the selected status
+        if (hiddenInput) {
+            hiddenInput.value = status;
+        }
+
+        // Update the button
+        const activeBtn = document.getElementById(`btn-${status}-${studentId}`);
+        if (activeBtn) {
+            activeBtn.className = `attendance-btn active-${status}`;
+        }
+
+        // Update the status label
+        const statusMap = {
+            'present': { class: 'present', label: '✅ Present' },
+            'late': { class: 'late', label: '⏰ Late' },
+            'absent': { class: 'absent', label: '❌ Absent' },
+            'excused': { class: 'excused', label: '📝 Excused' }
+        };
+
+        const info = statusMap[status];
+        if (info && statusLabel) {
+            statusLabel.className = `status-label ${info.class}`;
+            statusLabel.innerHTML = info.label;
+        }
+
+        // ===== SHOW REMARKS FOR EXCUSED =====
+        if (status === 'excused') {
+            if (remarksContainer) {
+                remarksContainer.classList.add('show');
+                if (remarksInput) {
+                    remarksInput.focus();
+                }
+                if (hasRemark) hasRemark.value = '1';
+            }
+            if (statusLabel) {
+                statusLabel.className = 'status-label excused-with-remark';
+                statusLabel.innerHTML = '📝 Excused (with remark)';
+            }
+            // Add visual indicator to row
+            const row = document.getElementById(`row-${studentId}`);
+            if (row) row.classList.add('has-remark');
+        } else {
+            if (remarksContainer) {
+                remarksContainer.classList.remove('show');
+                if (remarksInput) remarksInput.value = '';
+                if (hasRemark) hasRemark.value = '0';
+            }
+            const row = document.getElementById(`row-${studentId}`);
+            if (row) row.classList.remove('has-remark');
+
+            // If status is not excused, update label accordingly
+            if (status !== 'excused' && info && statusLabel) {
+                statusLabel.className = `status-label ${info.class}`;
+                statusLabel.innerHTML = info.label;
+            }
+        }
+
+        updateSummary();
+    }
+
+    // ===== UPDATE SUMMARY STATS =====
+    function updateSummary() {
+        let present = 0, late = 0, absent = 0, excused = 0;
+
+        // Get all hidden inputs
+        const inputs = document.querySelectorAll('input[name^="student_"]');
+
+        inputs.forEach(input => {
+            const status = input.value;
+            if (status === 'present') present++;
+            else if (status === 'late') late++;
+            else if (status === 'absent') absent++;
+            else if (status === 'excused') excused++;
+        });
+
+        const presentEl = document.getElementById('presentCount');
+        const lateEl = document.getElementById('lateCount');
+        const absentEl = document.getElementById('absentCount');
+        const excusedEl = document.getElementById('excusedCount');
+
+        if (presentEl) presentEl.textContent = present;
+        if (lateEl) lateEl.textContent = late;
+        if (absentEl) absentEl.textContent = absent;
+        if (excusedEl) excusedEl.textContent = excused;
+    }
+
+    // ===== AUTO-SUBMIT ON DATE CHANGE =====
+    const dateInput = document.querySelector('input[name="date"]');
+    if (dateInput) {
+        dateInput.addEventListener('change', function () {
+            this.form.submit();
+        });
+    }
+
+    // ===== REMARK INPUT VALIDATION =====
+    document.querySelectorAll('.remarks-input').forEach(input => {
+        input.addEventListener('input', function () {
+            const studentId = this.id.split('-')[1];
+            const hasRemark = document.getElementById(`has-remark-${studentId}`);
+            const statusInput = document.getElementById(`status-${studentId}`);
+            const label = document.getElementById(`label-${studentId}`);
+            const row = document.getElementById(`row-${studentId}`);
+
+            if (this.value.trim() !== '' && statusInput && statusInput.value === 'excused') {
+                if (hasRemark) hasRemark.value = '1';
+                if (row) row.classList.add('has-remark');
+                if (label) {
+                    label.className = 'status-label excused-with-remark';
+                    label.innerHTML = '📝 Excused (with remark)';
+                }
+            } else if (this.value.trim() === '' && statusInput && statusInput.value === 'excused') {
+                if (hasRemark) hasRemark.value = '0';
+                if (row) row.classList.remove('has-remark');
+                if (label) {
+                    label.className = 'status-label excused';
+                    label.innerHTML = '📝 Excused';
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,14 @@
+from django.urls import path
+from . import views
+
+app_name = 'teachers'
+
+urlpatterns = [
+    path('', views.teacher_list, name='teacher_list'),
+    path('add/', views.teacher_add, name='teacher_add'),
+    path('<int:pk>/', views.teacher_detail, name='teacher_detail'),
+    path('<int:pk>/edit/', views.teacher_edit, name='teacher_edit'),
+    path('<int:pk>/delete/', views.teacher_delete, name='teacher_delete'),
+    path('<int:pk>/toggle-status/', views.teacher_toggle_status, name='teacher_toggle_status'),
+    path('export/csv/', views.teacher_export_csv, name='teacher_export_csv'),
+]

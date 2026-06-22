@@ -1,0 +1,371 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Add Student to Class{% endblock %}
+{% block page_title %}Add Student to {{ class.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .add-student-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .form-card .form-header {
+        border-bottom: 2px solid #f0f2f5;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+
+    .form-card .form-header h4 {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    .form-card .form-header h4 i {
+        color: #3498db;
+        margin-right: 10px;
+    }
+
+    .form-card .form-header p {
+        color: #7f8c8d;
+        margin: 5px 0 0;
+        font-size: 14px;
+    }
+
+    .student-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .student-list::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .student-list::-webkit-scrollbar-track {
+        background: #f0f2f5;
+        border-radius: 10px;
+    }
+
+    .student-list::-webkit-scrollbar-thumb {
+        background: #c5c7c9;
+        border-radius: 10px;
+    }
+
+    .student-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f2f5;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .student-item:hover {
+        background: #f8fafb;
+    }
+
+    .student-item:last-child {
+        border-bottom: none;
+    }
+
+    .student-item .student-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 16px;
+        flex-shrink: 0;
+        margin-right: 12px;
+    }
+
+    .student-item .student-avatar.blue {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+
+    .student-item .student-avatar.green {
+        background: linear-gradient(135deg, #27ae60, #1e8449);
+    }
+
+    .student-item .student-avatar.orange {
+        background: linear-gradient(135deg, #f39c12, #d68910);
+    }
+
+    .student-item .student-avatar.purple {
+        background: linear-gradient(135deg, #9b59b6, #7d3c98);
+    }
+
+    .student-item .student-avatar.red {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+
+    .student-item .student-info {
+        flex: 1;
+    }
+
+    .student-item .student-info .name {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 15px;
+    }
+
+    .student-item .student-info .details {
+        font-size: 13px;
+        color: #7f8c8d;
+    }
+
+    .student-item .student-info .details i {
+        margin-right: 3px;
+    }
+
+    .student-item .select-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid #e1e5eb;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: #7f8c8d;
+    }
+
+    .student-item .select-btn:hover {
+        border-color: #3498db;
+        color: #3498db;
+        transform: scale(1.1);
+    }
+
+    .student-item .select-btn.selected {
+        background: #3498db;
+        border-color: #3498db;
+        color: white;
+    }
+
+    .student-item .select-btn.selected i {
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .empty-state i {
+        font-size: 50px;
+        color: #3498db;
+        opacity: 0.3;
+        margin-bottom: 15px;
+    }
+
+    .empty-state h5 {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .empty-state p {
+        color: #7f8c8d;
+    }
+
+    .form-actions {
+        border-top: 2px solid #f0f2f5;
+        padding-top: 20px;
+        margin-top: 25px;
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+    }
+
+    .form-actions .btn {
+        padding: 10px 30px;
+        font-weight: 600;
+        border-radius: 8px;
+    }
+
+    .form-actions .btn-secondary {
+        background: #e1e5eb;
+        color: #2c3e50;
+        border: none;
+    }
+
+    .form-actions .btn-secondary:hover {
+        background: #d0d4d9;
+    }
+
+    .form-actions .btn-success {
+        background: linear-gradient(135deg, #27ae60, #1e8449);
+        color: white;
+        border: none;
+    }
+
+    .form-actions .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(39, 174, 96, 0.3);
+    }
+
+    .selected-count {
+        display: inline-block;
+        background: #e8f0fe;
+        color: #3498db;
+        padding: 2px 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .student-item.selected {
+        background: #f0faf5;
+        border-left: 3px solid #27ae60;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="add-student-container">
+    <div class="form-card">
+        <div class="form-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h4><i class="fas fa-user-plus"></i>Add Student to Class</h4>
+                    <p>Select students to add to <strong>{{ class.name }}</strong></p>
+                </div>
+                <div>
+                    <span class="selected-count" id="selectedCount">0 selected</span>
+                </div>
+            </div>
+        </div>
+
+        {% if available_students %}
+        <form method="POST" id="addStudentForm">
+            {% csrf_token %}
+
+            <div class="student-list">
+                {% for student in available_students %}
+                <div class="student-item" data-student-id="{{ student.id }}" onclick="toggleSelect(this)">
+                    <div class="student-avatar {% cycle 'blue' 'green' 'orange' 'purple' 'red' %}">
+                        {{ student.first_name|first|upper }}
+                    </div>
+                    <div class="student-info">
+                        <div class="name">{{ student.get_full_name }}</div>
+                        <div class="details">
+                            <i class="fas fa-id-card"></i> {{ student.student_id }} &nbsp;|&nbsp;
+                            <i class="fas fa-envelope"></i> {{ student.email }}
+                        </div>
+                    </div>
+                    <div class="select-btn">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'classes:class_detail' class.id %}" class="btn btn-secondary">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-success" id="submitBtn" disabled>
+                    <i class="fas fa-user-plus me-2"></i>Add Selected Students
+                </button>
+            </div>
+        </form>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-users"></i>
+            <h5>No Students Available</h5>
+            <p>All students are already enrolled in this class or no students exist.</p>
+            <a href="{% url 'students:student_add' %}" class="btn btn-primary mt-3">
+                <i class="fas fa-user-plus me-2"></i>Create New Student
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    let selectedStudents = [];
+    const maxStudents = {{ class.max_students }};
+
+    function toggleSelect(element) {
+        const studentId = element.dataset.studentId;
+        const btn = element.querySelector('.select-btn');
+        const index = selectedStudents.indexOf(studentId);
+
+        if (index > -1) {
+            // Remove from selection
+            selectedStudents.splice(index, 1);
+            btn.classList.remove('selected');
+            btn.innerHTML = '<i class="fas fa-plus"></i>';
+            element.classList.remove('selected');
+        } else {
+            // Check if max students reached
+            if (selectedStudents.length >= maxStudents) {
+                alert(`Maximum ${maxStudents} students allowed in this class.`);
+                return;
+            }
+            // Add to selection
+            selectedStudents.push(studentId);
+            btn.classList.add('selected');
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            element.classList.add('selected');
+        }
+
+        updateSubmitButton();
+    }
+
+    function updateSubmitButton() {
+        const submitBtn = document.getElementById('submitBtn');
+        const countDisplay = document.getElementById('selectedCount');
+        const count = selectedStudents.length;
+
+        if (count > 0) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<i class="fas fa-user-plus me-2"></i>Add ${count} Student${count > 1 ? 's' : ''}`;
+            countDisplay.textContent = `${count} selected`;
+            countDisplay.style.background = '#d5f5e3';
+            countDisplay.style.color = '#27ae60';
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-user-plus me-2"></i>Add Selected Students';
+            countDisplay.textContent = '0 selected';
+            countDisplay.style.background = '#e8f0fe';
+            countDisplay.style.color = '#3498db';
+        }
+    }
+
+    // Handle form submission
+    document.getElementById('addStudentForm').addEventListener('submit', function (e) {
+        // Remove existing hidden inputs
+        this.querySelectorAll('input[name="student_ids"]').forEach(el => el.remove());
+
+        // Add hidden inputs for each selected student
+        selectedStudents.forEach(id => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'student_ids';
+            input.value = id;
+            this.appendChild(input);
+        });
+
+        // If no students selected, prevent submission
+        if (selectedStudents.length === 0) {
+            e.preventDefault();
+            alert('Please select at least one student.');
+            return false;
+        }
+    });
+</script>
+{% endblock %}

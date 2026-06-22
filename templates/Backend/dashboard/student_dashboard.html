@@ -1,0 +1,391 @@
+{% extends 'Backend/layouts/student_layout.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard{% endblock %}
+{% block page_title %}Student Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s;
+        border-left: 4px solid #3498db;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-card .number {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .stats-card .label {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .stats-card .icon {
+        font-size: 30px;
+        opacity: 0.3;
+    }
+
+    .stats-card.green {
+        border-left-color: #27ae60;
+    }
+
+    .stats-card.orange {
+        border-left-color: #f39c12;
+    }
+
+    .stats-card.purple {
+        border-left-color: #9b59b6;
+    }
+
+    .welcome-banner {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        border-radius: 15px;
+        padding: 30px 35px;
+        color: white;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-banner::before {
+        content: '';
+        position: absolute;
+        right: -50px;
+        top: -50px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+    }
+
+    .welcome-banner::after {
+        content: '';
+        position: absolute;
+        right: 30px;
+        bottom: -70px;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .welcome-banner h3 {
+        font-weight: 700;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .welcome-banner h3 i {
+        color: #f1c40f;
+    }
+
+    .welcome-banner p {
+        opacity: 0.9;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        font-size: 15px;
+    }
+
+    .welcome-banner .welcome-icon {
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 80px;
+        opacity: 0.1;
+        z-index: 0;
+    }
+
+    .class-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s;
+        margin-bottom: 20px;
+        border-left: 4px solid #27ae60;
+    }
+
+    .class-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(39, 174, 96, 0.15);
+    }
+
+    .class-card .class-title {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 18px;
+    }
+
+    .class-card .class-info {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .class-card .class-info i {
+        width: 20px;
+        color: #27ae60;
+    }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .status-badge.active {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .status-badge.upcoming {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .status-badge.completed {
+        background: #e8f0fe;
+        color: #3498db;
+    }
+
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e8f0fe;
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 25px;
+        padding-left: 15px;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -30px;
+        top: 5px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #3498db;
+        border: 3px solid white;
+        box-shadow: 0 0 0 3px #3498db;
+    }
+
+    .timeline-item.timeline-success::before {
+        background: #27ae60;
+        box-shadow: 0 0 0 3px #27ae60;
+    }
+
+    .timeline-item.timeline-warning::before {
+        background: #f39c12;
+        box-shadow: 0 0 0 3px #f39c12;
+    }
+
+    .timeline-item.timeline-danger::before {
+        background: #e74c3c;
+        box-shadow: 0 0 0 3px #e74c3c;
+    }
+
+    .timeline-item .timeline-time {
+        font-size: 12px;
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+
+    .timeline-item .timeline-content {
+        font-size: 14px;
+        color: #2c3e50;
+        margin-top: 3px;
+    }
+
+    .timeline-item .timeline-content strong {
+        color: #2c3e50;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .empty-state i {
+        font-size: 50px;
+        color: #3498db;
+        opacity: 0.3;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Welcome Banner -->
+<div class="welcome-banner">
+    <div class="welcome-icon">
+        <i class="fas fa-user-graduate"></i>
+    </div>
+    <h3>
+        <i class="fas fa-hand-wave me-2"></i>
+        Welcome back, {{ user.get_full_name|default:user.username }}! 👋
+    </h3>
+    <p>
+        <i class="fas fa-calendar-alt me-2"></i>
+        Today is {{ current_date|date:"l, F d, Y" }}
+        {% if my_classes %}
+        <span class="ms-3" style="background: rgba(255,255,255,0.15); padding: 4px 15px; border-radius: 20px;">
+            <i class="fas fa-cubes me-1"></i>
+            {{ my_classes|length }} Class{{ my_classes|pluralize }}
+        </span>
+        {% endif %}
+    </p>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stats-card">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="number">{{ my_classes|length|default:0 }}</div>
+                    <div class="label">My Classes</div>
+                </div>
+                <div class="icon"><i class="fas fa-cubes"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stats-card green">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="number">{{ attendance_percentage|default:"0%" }}</div>
+                    <div class="label">Attendance Rate</div>
+                </div>
+                <div class="icon"><i class="fas fa-percentage"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stats-card orange">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="number">{{ total_attendances|default:0 }}</div>
+                    <div class="label">Total Attendances</div>
+                </div>
+                <div class="icon"><i class="fas fa-calendar-check"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- My Classes -->
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-cubes me-2" style="color: #3498db;"></i>My Classes</h5>
+            </div>
+            <div class="card-body">
+                {% if my_classes %}
+                <div class="row">
+                    {% for class in my_classes %}
+                    <div class="col-md-6">
+                        <div class="class-card">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="class-title">{{ class.name }}</h5>
+                                <span class="status-badge {{ class.status }}">
+                                    <i class="fas fa-circle me-1" style="font-size: 6px;"></i>
+                                    {{ class.get_status_display }}
+                                </span>
+                            </div>
+                            <div class="class-info mb-1">
+                                <i class="fas fa-book"></i>
+                                {{ class.course.name|default:"No Course" }}
+                            </div>
+                            <div class="class-info mb-1">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                                {{ class.teacher.get_full_name|default:"No Teacher" }}
+                            </div>
+                            <div class="class-info mb-1">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Room: {{ class.room }}
+                            </div>
+                            <div class="class-info mb-1">
+                                <i class="fas fa-clock"></i>
+                                {{ class.schedule }}
+                            </div>
+                            <div class="class-info">
+                                <i class="fas fa-calendar-alt"></i>
+                                {{ class.start_date|date:"M d" }} - {{ class.end_date|date:"M d, Y" }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-cubes"></i>
+                    <h6 class="text-muted">No Classes Enrolled</h6>
+                    <p class="text-muted small">You haven't been enrolled in any classes yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-bell me-2" style="color: #3498db;"></i>Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    {% if recent_activities %}
+                    {% for activity in recent_activities %}
+                    <div
+                        class="timeline-item {% if activity.type == 'attendance' %}timeline-success{% elif activity.type == 'warning' %}timeline-warning{% elif activity.type == 'danger' %}timeline-danger{% endif %}">
+                        <div class="timeline-time">
+                            <i class="far fa-clock me-1"></i>{{ activity.time|timesince }} ago
+                        </div>
+                        <div class="timeline-content">
+                            <strong>{{ activity.title }}</strong>
+                            <span class="text-muted">{{ activity.description }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-2x mb-2" style="opacity: 0.2; color: #3498db;"></i>
+                        <p class="text-muted small mb-0">No recent activities</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

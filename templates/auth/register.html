@@ -1,0 +1,471 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - School Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        .registration-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 550px;
+            width: 100%;
+            padding: 40px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .registration-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .registration-header .icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 35px;
+            color: white;
+        }
+
+        .registration-header h2 {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .registration-header p {
+            color: #888;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-group label .required {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+
+        .form-group .input-group {
+            position: relative;
+        }
+
+        .form-group .input-group-text {
+            background: #f8f9fa;
+            border-right: none;
+            color: #667eea;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .form-control {
+            border-left: none;
+            padding: 12px 15px;
+            border: 2px solid #e1e5eb;
+            border-radius: 0 10px 10px 0;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .form-control.is-valid {
+            border-color: #28a745;
+        }
+
+        .form-text {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0 0;
+            color: #dc3545;
+            font-size: 13px;
+        }
+
+        .errorlist li {
+            margin-bottom: 3px;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .password-strength {
+            height: 5px;
+            background: #e1e5eb;
+            border-radius: 5px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .password-strength .bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .password-strength .bar.weak {
+            width: 25%;
+            background: #dc3545;
+        }
+
+        .password-strength .bar.medium {
+            width: 50%;
+            background: #ffc107;
+        }
+
+        .password-strength .bar.strong {
+            width: 75%;
+            background: #28a745;
+        }
+
+        .password-strength .bar.very-strong {
+            width: 100%;
+            background: #20c997;
+        }
+
+        .role-select {
+            cursor: pointer;
+        }
+
+        .role-select option {
+            padding: 10px;
+        }
+
+        .alert {
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 576px) {
+            .registration-container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="registration-container">
+        <div class="registration-header">
+            <div class="icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h2>Create Account</h2>
+            <p>Join the School Management System</p>
+        </div>
+
+        <form method="POST" novalidate>
+            {% csrf_token %}
+
+            <!-- Username -->
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">
+                    <i class="fas fa-user me-2"></i>{{ form.username.label }} <span class="required">*</span>
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    {{ form.username }}
+                </div>
+                {% if form.username.errors %}
+                <div class="errorlist">
+                    {% for error in form.username.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- First Name -->
+            <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}">
+                    <i class="fas fa-user me-2"></i>{{ form.first_name.label }} <span class="required">*</span>
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    {{ form.first_name }}
+                </div>
+                {% if form.first_name.errors %}
+                <div class="errorlist">
+                    {% for error in form.first_name.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}">
+                    <i class="fas fa-user me-2"></i>{{ form.last_name.label }} <span class="required">*</span>
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    {{ form.last_name }}
+                </div>
+                {% if form.last_name.errors %}
+                <div class="errorlist">
+                    {% for error in form.last_name.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">
+                    <i class="fas fa-envelope me-2"></i>{{ form.email.label }} <span class="required">*</span>
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    {{ form.email }}
+                </div>
+                {% if form.email.errors %}
+                <div class="errorlist">
+                    {% for error in form.email.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Role -->
+            <div class="form-group">
+                <label for="{{ form.role.id_for_label }}">
+                    <i class="fas fa-users me-2"></i>{{ form.role.label }} <span class="required">*</span>
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                    {{ form.role }}
+                </div>
+                {% if form.role.errors %}
+                <div class="errorlist">
+                    {% for error in form.role.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">
+                    <i class="fas fa-lock me-2"></i>{{ form.password1.label }} <span class="required">*</span>
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    {{ form.password1 }}
+                    <button type="button" class="btn btn-outline-secondary toggle-password" data-target="password1">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="password-strength">
+                    <div class="bar" id="password-strength-bar"></div>
+                </div>
+                <div id="password-help" class="form-text">
+                    <small id="password-hint">{{ form.password1.help_text }}</small>
+                </div>
+                {% if form.password1.errors %}
+                <div class="errorlist">
+                    {% for error in form.password1.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">
+                    <i class="fas fa-lock me-2"></i>{{ form.password2.label }} <span class="required">*</span>
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
+                    {{ form.password2 }}
+                    <button type="button" class="btn btn-outline-secondary toggle-password" data-target="password2">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                {% if form.password2.errors %}
+                <div class="errorlist">
+                    {% for error in form.password2.errors %}
+                    <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn-register">
+                <i class="fas fa-user-plus me-2"></i>Create Account
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already have an account?
+            <a href="{% url 'accounts:login' %}">Sign In</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Password strength checker
+        document.getElementById('password1').addEventListener('input', function () {
+            const password = this.value;
+            const bar = document.getElementById('password-strength-bar');
+            const hint = document.getElementById('password-hint');
+
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/)) strength++;
+            if (password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+            const strengthMap = {
+                0: { class: 'weak', text: 'Very Weak' },
+                1: { class: 'weak', text: 'Weak' },
+                2: { class: 'medium', text: 'Fair' },
+                3: { class: 'strong', text: 'Good' },
+                4: { class: 'very-strong', text: 'Strong' },
+                5: { class: 'very-strong', text: 'Very Strong' }
+            };
+
+            const result = strengthMap[strength] || strengthMap[0];
+            bar.className = 'bar ' + result.class;
+            hint.textContent = 'Password strength: ' + result.text;
+        });
+
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function () {
+                const target = document.getElementById(this.dataset.target);
+                const icon = this.querySelector('i');
+                if (target.type === 'password') {
+                    target.type = 'text';
+                    icon.className = 'fas fa-eye-slash';
+                } else {
+                    target.type = 'password';
+                    icon.className = 'fas fa-eye';
+                }
+            });
+        });
+
+        // Add validation classes
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('blur', function () {
+                if (this.value) {
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

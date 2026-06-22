@@ -1,0 +1,491 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Course Management{% endblock %}
+{% block page_title %}Course Management{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== STATS CARDS ===== */
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        border-left: 4px solid #3498db;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 30px rgba(52, 152, 219, 0.15);
+    }
+
+    .stats-card .stats-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .stats-card .stats-icon.blue {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    }
+
+    .stats-card .stats-icon.green {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    }
+
+    .stats-card .stats-icon.red {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    }
+
+    .stats-card .stats-icon.orange {
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    }
+
+    .stats-card .stats-number {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-top: 5px;
+    }
+
+    .stats-card .stats-label {
+        color: #7f8c8d;
+        font-size: 14px;
+        font-weight: 500;
+        margin-top: 2px;
+    }
+
+    .stats-card .stats-trend {
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 8px;
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
+    .stats-card .stats-trend.up {
+        color: #27ae60;
+        background: #d5f5e3;
+    }
+
+    .stats-card .stats-trend.down {
+        color: #e74c3c;
+        background: #fadbd8;
+    }
+
+    .stats-card .stats-trend.neutral {
+        color: #f39c12;
+        background: #fdebd0;
+    }
+
+    .course-id-badge {
+        background: #e8f0fe;
+        color: #3498db;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 13px;
+        display: inline-block;
+        min-width: 60px;
+        text-align: center;
+        font-family: 'Courier New', monospace;
+    }
+
+    .status-badge {
+        padding: 3px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .status-badge.active {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .status-badge.inactive {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    .table-action-btn {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        transition: all 0.3s;
+        margin: 0 2px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+    }
+
+    .table-action-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .search-filters {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    .credit-badge {
+        background: #fdebd0;
+        color: #f39c12;
+        padding: 2px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .badge-teacher {
+        background: #d5f5e3;
+        color: #27ae60;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 12px;
+        display: inline-block;
+    }
+
+    .level-badge {
+        background: #e8daef;
+        color: #8e44ad;
+        padding: 2px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+        .stats-card .stats-number {
+            font-size: 24px;
+        }
+
+        .stats-card .stats-icon {
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            top: 15px;
+            right: 15px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .stats-card .stats-number {
+            font-size: 20px;
+        }
+
+        .stats-card .stats-icon {
+            width: 38px;
+            height: 38px;
+            font-size: 16px;
+            top: 12px;
+            right: 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== STATS CARDS ===== -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card">
+            <div class="stats-icon blue">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stats-number">{{ total_courses|default:0 }}</div>
+            <div class="stats-label">Total Courses</div>
+            <span class="stats-trend neutral">
+                <i class="fas fa-minus me-1"></i>All
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-left-color: #27ae60;">
+            <div class="stats-icon green">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stats-number">{{ active_courses|default:0 }}</div>
+            <div class="stats-label">Active Courses</div>
+            <span class="stats-trend up">
+                <i class="fas fa-arrow-up me-1"></i>Active
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-left-color: #e74c3c;">
+            <div class="stats-icon red">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="stats-number">{{ inactive_courses|default:0 }}</div>
+            <div class="stats-label">Inactive Courses</div>
+            <span class="stats-trend down">
+                <i class="fas fa-arrow-down me-1"></i>Inactive
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-left-color: #9b59b6;">
+            <div class="stats-icon orange">
+                <i class="fas fa-list"></i>
+            </div>
+            <div class="stats-number">{{ courses.paginator.count|default:0 }}</div>
+            <div class="stats-label">Showing</div>
+            <span class="stats-trend neutral">
+                <i class="fas fa-eye me-1"></i>Filtered
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SEARCH & FILTER ===== -->
+<div class="search-filters">
+    <form method="GET" class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Search</label>
+            {{ form.search }}
+        </div>
+        <div class="col-md-2">
+            <label class="form-label fw-bold">Level</label>
+            {{ form.level }}
+        </div>
+        <div class="col-md-2">
+            <label class="form-label fw-bold">Status</label>
+            {{ form.status }}
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Major</label>
+            {{ form.major }}
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- ===== ACTIONS BAR ===== -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'courses:course_add' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Add Course
+        </a>
+        <a href="{% url 'courses:course_export_csv' %}" class="btn btn-success">
+            <i class="fas fa-file-export me-2"></i>Export CSV
+        </a>
+    </div>
+    <div>
+        <span class="text-muted">
+            Showing {{ courses.start_index }}-{{ courses.end_index }} of {{ courses.paginator.count }}
+        </span>
+    </div>
+</div>
+
+<!-- ===== COURSE TABLE ===== -->
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Course</th>
+                        <th>Code</th>
+                        <th>Level</th>
+                        <th>Teacher</th>
+                        <th>Credits</th>
+                        <th>Duration</th>
+                        <th>Fee</th>
+                        <th>Status</th>
+                        <th style="width: 140px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <div>
+                                <div class="fw-bold">{{ course.name }}</div>
+                                <small class="text-muted">{{ course.course_id }}</small>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="course-id-badge">{{ course.code }}</span>
+                        </td>
+                        <td>
+                            <span class="level-badge">{{ course.get_level_display }}</span>
+                        </td>
+                        <td>
+                            {% if course.teacher %}
+                            <span class="badge-teacher">
+                                <i class="fas fa-user me-1"></i>{{ course.teacher.get_full_name }}
+                            </span>
+                            {% else %}
+                            <span class="text-muted">Not Assigned</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="credit-badge">{{ course.credits }}</span>
+                        </td>
+                        <td>{{ course.duration }}</td>
+                        <td>${{ course.fee|floatformat:2 }}</td>
+                        <td>
+                            <span class="status-badge {% if course.is_active %}active{% else %}inactive{% endif %}">
+                                {% if course.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a href="{% url 'courses:course_detail' course.pk %}"
+                                    class="btn btn-sm btn-info text-white table-action-btn" data-bs-toggle="tooltip"
+                                    title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'courses:course_edit' course.pk %}"
+                                    class="btn btn-sm btn-warning text-white table-action-btn" data-bs-toggle="tooltip"
+                                    title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'courses:course_toggle_status' course.pk %}"
+                                    class="btn btn-sm {% if course.is_active %}btn-danger{% else %}btn-success{% endif %} table-action-btn"
+                                    data-bs-toggle="tooltip"
+                                    title="{% if course.is_active %}Deactivate{% else %}Activate{% endif %}"
+                                    onclick="return confirm('Are you sure you want to {% if course.is_active %}deactivate{% else %}activate{% endif %} this course?')">
+                                    <i class="fas {% if course.is_active %}fa-times{% else %}fa-check{% endif %}"></i>
+                                </a>
+                                <a href="{% url 'courses:course_delete' course.pk %}"
+                                    class="btn btn-sm btn-danger table-action-btn" data-bs-toggle="tooltip"
+                                    title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="text-center py-5">
+                            <i class="fas fa-book fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
+                            <h6 class="text-muted">No courses found</h6>
+                            <p class="text-muted small">Click "Add Course" to get started</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ===== PAGINATION ===== -->
+{% if courses.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if courses.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">&laquo; First</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ courses.previous_page_number }}">Previous</a>
+        </li>
+        {% endif %}
+
+        {% for num in courses.paginator.page_range %}
+        {% if courses.number == num %}
+        <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+        </li>
+        {% elif num > courses.number|add:'-3' and num < courses.number|add:'3' %} <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if courses.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ courses.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ courses.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+            {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+
+    // Animate stats cards on load
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.stats-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 150);
+        });
+    });
+
+    // Count animation for stats
+    function animateCount(element, target, duration = 1000) {
+        let start = 0;
+        const increment = target / (duration / 16);
+        const timer = setInterval(() => {
+            start += increment;
+            if (start >= target) {
+                start = target;
+                clearInterval(timer);
+            }
+            element.textContent = Math.round(start);
+        }, 16);
+    }
+
+    // Animate numbers when visible
+    document.addEventListener('DOMContentLoaded', function () {
+        const numberElements = document.querySelectorAll('.stats-number');
+        numberElements.forEach(el => {
+            const target = parseInt(el.textContent);
+            if (target > 0) {
+                animateCount(el, target);
+            }
+        });
+    });
+</script>
+{% endblock %}

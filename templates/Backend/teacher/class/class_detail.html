@@ -1,0 +1,798 @@
+{% extends 'Backend/layouts/teacher_layout.html' %}
+{% load static %}
+
+{% block title %}Class Details{% endblock %}
+{% block page_title %}{{ class.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== CLASS HEADER CARD ===== */
+    .class-header-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px 30px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        margin-bottom: 25px;
+        border-left: 5px solid #27ae60;
+    }
+
+    .class-header-card .class-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a472a;
+        margin-bottom: 5px;
+    }
+
+    .class-header-card .class-title i {
+        color: #27ae60;
+        margin-right: 10px;
+    }
+
+    .class-header-card .class-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        color: #7f8c8d;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+
+    .class-header-card .class-meta .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .class-header-card .class-meta .meta-item i {
+        color: #27ae60;
+        width: 18px;
+    }
+
+    .class-header-card .class-meta .meta-item .badge-status {
+        padding: 3px 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .class-header-card .class-meta .meta-item .badge-status.active {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .class-header-card .class-meta .meta-item .badge-status.upcoming {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .class-header-card .class-meta .meta-item .badge-status.completed {
+        background: #e8f0fe;
+        color: #3498db;
+    }
+
+    /* ===== OVERVIEW STATS ===== */
+    .overview-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .overview-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        border-top: 4px solid #e1e5eb;
+        transition: all 0.3s;
+    }
+
+    .overview-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .overview-card .number {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2c3e50;
+        line-height: 1.2;
+    }
+
+    .overview-card .label {
+        font-size: 13px;
+        color: #7f8c8d;
+        font-weight: 500;
+        margin-top: 2px;
+    }
+
+    .overview-card .percentage {
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 4px;
+    }
+
+    .overview-card.present {
+        border-top-color: #27ae60;
+    }
+
+    .overview-card.present .percentage {
+        color: #27ae60;
+    }
+
+    .overview-card.late {
+        border-top-color: #f39c12;
+    }
+
+    .overview-card.late .percentage {
+        color: #f39c12;
+    }
+
+    .overview-card.absent {
+        border-top-color: #e74c3c;
+    }
+
+    .overview-card.absent .percentage {
+        color: #e74c3c;
+    }
+
+    .overview-card.excused {
+        border-top-color: #3498db;
+    }
+
+    .overview-card.excused .percentage {
+        color: #3498db;
+    }
+
+    /* ===== STUDENT TABLE ===== */
+    .student-table-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        margin-top: 25px;
+    }
+
+    .student-table-card .card-header-custom {
+        padding: 15px 25px;
+        border-bottom: 1px solid #ecf0f1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: #fafbfc;
+    }
+
+    .student-table-card .card-header-custom h5 {
+        margin: 0;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 17px;
+    }
+
+    .student-table-card .card-header-custom h5 i {
+        color: #27ae60;
+        margin-right: 8px;
+    }
+
+    .student-avatar-sm {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .student-avatar-sm.blue {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+
+    .student-avatar-sm.green {
+        background: linear-gradient(135deg, #27ae60, #1e8449);
+    }
+
+    .student-avatar-sm.orange {
+        background: linear-gradient(135deg, #f39c12, #d68910);
+    }
+
+    .student-avatar-sm.purple {
+        background: linear-gradient(135deg, #9b59b6, #7d3c98);
+    }
+
+    .student-avatar-sm.red {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+
+    /* ===== ATTENDANCE BUTTONS ===== */
+    .attendance-group {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .attendance-btn {
+        padding: 4px 10px;
+        border-radius: 4px;
+        border: 2px solid #e1e5eb;
+        background: white;
+        font-weight: 600;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 55px;
+        height: 28px;
+        color: #7f8c8d;
+    }
+
+    .attendance-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .attendance-btn:active {
+        transform: scale(0.95);
+    }
+
+    .attendance-btn i {
+        margin-right: 3px;
+        font-size: 10px;
+    }
+
+    .attendance-btn.active-present {
+        background: #27ae60;
+        border-color: #27ae60;
+        color: white;
+    }
+
+    .attendance-btn.active-late {
+        background: #f39c12;
+        border-color: #f39c12;
+        color: white;
+    }
+
+    .attendance-btn.active-absent {
+        background: #e74c3c;
+        border-color: #e74c3c;
+        color: white;
+    }
+
+    .attendance-btn.active-excused {
+        background: #3498db;
+        border-color: #3498db;
+        color: white;
+    }
+
+    .attendance-btn.inactive {
+        opacity: 0.5;
+        border-color: #e1e5eb;
+        background: #f8f9fa;
+        color: #bdc3c7;
+    }
+
+    .attendance-btn.inactive:hover {
+        opacity: 0.8;
+        border-color: #bdc3c7;
+    }
+
+    /* ===== STATUS BADGE ===== */
+    .status-badge {
+        padding: 3px 12px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .status-badge.present {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .status-badge.absent {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    .status-badge.late {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .status-badge.excused {
+        background: #e8f0fe;
+        color: #3498db;
+    }
+
+    .status-badge.not-marked {
+        background: #f0f2f5;
+        color: #7f8c8d;
+    }
+
+    /* ===== TABLE STYLES ===== */
+    .table-attendance {
+        margin-bottom: 0;
+    }
+
+    .table-attendance thead th {
+        background: #f8f9fa;
+        color: #2c3e50;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 12px 15px;
+        border-bottom: 2px solid #ecf0f1;
+        white-space: nowrap;
+    }
+
+    .table-attendance tbody td {
+        padding: 10px 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .table-attendance tbody tr:hover {
+        background: #f8fafb;
+    }
+
+    .table-attendance tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-footer {
+        padding: 15px 25px;
+        border-top: 1px solid #ecf0f1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: #fafbfc;
+    }
+
+    .table-footer .pagination-info {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .action-btn-sm {
+        width: 30px;
+        height: 30px;
+        border-radius: 6px;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        cursor: pointer;
+        color: white;
+        font-size: 12px;
+    }
+
+    .action-btn-sm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-btn-sm.view {
+        background: #3498db;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .empty-state i {
+        font-size: 50px;
+        color: #27ae60;
+        opacity: 0.3;
+        margin-bottom: 15px;
+    }
+
+    .back-btn {
+        margin-top: 20px;
+    }
+
+    @media (max-width: 992px) {
+        .overview-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .class-header-card {
+            padding: 18px 20px;
+        }
+
+        .class-header-card .class-title {
+            font-size: 20px;
+        }
+
+        .overview-card .number {
+            font-size: 22px;
+        }
+
+        .attendance-btn {
+            font-size: 10px;
+            padding: 2px 8px;
+            min-width: 45px;
+            height: 24px;
+        }
+
+        .table-attendance thead th,
+        .table-attendance tbody td {
+            padding: 8px 10px;
+            font-size: 12px;
+        }
+
+        .student-table-card .card-header-custom {
+            padding: 12px 15px;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .overview-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .overview-card {
+            padding: 12px 15px;
+        }
+
+        .overview-card .number {
+            font-size: 18px;
+        }
+
+        .attendance-group {
+            gap: 3px;
+        }
+
+        .attendance-btn {
+            font-size: 9px;
+            padding: 2px 6px;
+            min-width: 35px;
+            height: 20px;
+        }
+
+        .attendance-btn i {
+            display: none;
+        }
+
+        .student-avatar-sm {
+            width: 28px;
+            height: 28px;
+            font-size: 11px;
+        }
+
+        .status-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+        }
+
+        .table-attendance thead th,
+        .table-attendance tbody td {
+            padding: 5px 8px;
+            font-size: 11px;
+        }
+
+        .class-header-card .class-title {
+            font-size: 17px;
+        }
+
+        .class-header-card .class-meta {
+            font-size: 12px;
+            gap: 8px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== CLASS HEADER ===== -->
+<div class="class-header-card">
+    <div class="class-title">
+        <i class="fas fa-chalkboard"></i>{{ class.name }}
+    </div>
+    <div class="class-meta">
+        <span class="meta-item">
+            <i class="fas fa-book"></i> {{ class.course.name|default:"No Course" }}
+        </span>
+        <span class="meta-item">
+            <i class="fas fa-chalkboard-teacher"></i> {{ class.teacher.get_full_name|default:"No Teacher" }}
+        </span>
+        <span class="meta-item">
+            <i class="fas fa-users"></i> {{ total_students }} Students
+        </span>
+        <span class="meta-item">
+            <i class="fas fa-door-open"></i> {{ class.room }}
+        </span>
+        <span class="meta-item">
+            <i class="fas fa-clock"></i> {{ class.schedule }}
+        </span>
+        <span class="meta-item">
+            <i class="fas fa-calendar-alt"></i> {{ class.start_date|date:"M d" }} – {{ class.end_date|date:"M d, Y" }}
+        </span>
+        <span class="meta-item">
+            <i class="fas fa-circle"
+                style="color: {% if class.status == 'active' %}#27ae60{% elif class.status == 'upcoming' %}#f39c12{% else %}#e74c3c{% endif %}; font-size: 10px;"></i>
+            <span class="badge-status {{ class.status }}">{{ class.get_status_display }}</span>
+        </span>
+    </div>
+</div>
+
+<!-- ===== OVERVIEW STATS ===== -->
+<div class="overview-grid">
+    <div class="overview-card present">
+        <div class="number">{{ present_count }}</div>
+        <div class="label"> Present</div>
+        <div class="percentage">{{ present_percentage|default:"0" }}%</div>
+    </div>
+    <div class="overview-card late">
+        <div class="number">{{ late_count }}</div>
+        <div class="label"> Late</div>
+        <div class="percentage">{{ late_percentage|default:"0" }}%</div>
+    </div>
+    <div class="overview-card absent">
+        <div class="number">{{ absent_count }}</div>
+        <div class="label"> Absent</div>
+        <div class="percentage">{{ absent_percentage|default:"0" }}%</div>
+    </div>
+    <div class="overview-card excused">
+        <div class="number">{{ excused_count }}</div>
+        <div class="label"> Excused</div>
+        <div class="percentage">{{ excused_percentage|default:"0" }}%</div>
+    </div>
+</div>
+
+<!-- ===== STUDENT TABLE ===== -->
+<div class="student-table-card">
+    <div class="card-header-custom">
+        <h5><i class="fas fa-user-graduate"></i>Students & Attendance</h5>
+        <div>
+            <span class="badge bg-secondary">{{ today|date:"M d, Y" }}</span>
+            <a href="{% url 'attendance:teacher_take_attendance' class.id %}" class="btn btn-sm btn-primary ms-2">
+                <i class="fas fa-calendar-check me-1"></i>Take Attendance
+            </a>
+        </div>
+    </div>
+    <div class="card-body-custom">
+        <div class="table-responsive">
+            <table class="table table-attendance">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Student Name</th>
+                        <th style="width: 110px;">Student ID</th>
+                        <th style="text-align: center; min-width: 220px;">Attendance</th>
+                        <th style="width: 100px;">Status</th>
+                        <th style="width: 80px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="student-avatar-sm {% cycle 'blue' 'green' 'orange' 'purple' 'red' %}">
+                                    {{ student.first_name|first|upper }}
+                                </div>
+                                <div>
+                                    <div class="fw-bold" style="font-size: 14px;">{{ student.get_full_name }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-secondary" style="font-weight: 400; font-size: 12px;">{{
+                                student.student_id }}</span></td>
+                        <td style="text-align: center;">
+                            <div class="attendance-group">
+                                {% if student.attendance_status == 'present' %}
+                                <button class="attendance-btn active-present"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'present')"
+                                    title="Present">
+                                    <i class="fas fa-check-circle"></i> P
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'late')" title="Late">
+                                    <i class="fas fa-clock"></i> L
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'absent')"
+                                    title="Absent">
+                                    <i class="fas fa-times-circle"></i> A
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'excused')"
+                                    title="Excused">
+                                    <i class="fas fa-check-circle"></i> E
+                                </button>
+                                {% elif student.attendance_status == 'late' %}
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'present')"
+                                    title="Present">
+                                    <i class="fas fa-check-circle"></i> P
+                                </button>
+                                <button class="attendance-btn active-late"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'late')" title="Late">
+                                    <i class="fas fa-clock"></i> L
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'absent')"
+                                    title="Absent">
+                                    <i class="fas fa-times-circle"></i> A
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'excused')"
+                                    title="Excused">
+                                    <i class="fas fa-check-circle"></i> E
+                                </button>
+                                {% elif student.attendance_status == 'absent' %}
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'present')"
+                                    title="Present">
+                                    <i class="fas fa-check-circle"></i> P
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'late')" title="Late">
+                                    <i class="fas fa-clock"></i> L
+                                </button>
+                                <button class="attendance-btn active-absent"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'absent')"
+                                    title="Absent">
+                                    <i class="fas fa-times-circle"></i> A
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'excused')"
+                                    title="Excused">
+                                    <i class="fas fa-check-circle"></i> E
+                                </button>
+                                {% elif student.attendance_status == 'excused' %}
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'present')"
+                                    title="Present">
+                                    <i class="fas fa-check-circle"></i> P
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'late')" title="Late">
+                                    <i class="fas fa-clock"></i> L
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'absent')"
+                                    title="Absent">
+                                    <i class="fas fa-times-circle"></i> A
+                                </button>
+                                <button class="attendance-btn active-excused"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'excused')"
+                                    title="Excused">
+                                    <i class="fas fa-check-circle"></i> E
+                                </button>
+                                {% else %}
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'present')"
+                                    title="Present">
+                                    <i class="fas fa-check-circle"></i> P
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'late')" title="Late">
+                                    <i class="fas fa-clock"></i> L
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'absent')"
+                                    title="Absent">
+                                    <i class="fas fa-times-circle"></i> A
+                                </button>
+                                <button class="attendance-btn inactive"
+                                    onclick="toggleAttendance({{ class.id }}, {{ student.id }}, 'excused')"
+                                    title="Excused">
+                                    <i class="fas fa-check-circle"></i> E
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            {% if student.attendance_status == 'present' %}
+                            <span class="status-badge present">✅ Present</span>
+                            {% elif student.attendance_status == 'late' %}
+                            <span class="status-badge late">⏰ Late</span>
+                            {% elif student.attendance_status == 'absent' %}
+                            <span class="status-badge absent">❌ Absent</span>
+                            {% elif student.attendance_status == 'excused' %}
+                            <span class="status-badge excused">📝 Excused</span>
+                            {% else %}
+                            <span class="status-badge not-marked">❓ Not Marked</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'attendance:admin_student_attendance' student.id %}"
+                                class="action-btn-sm view" title="View Attendance">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <div class="empty-state">
+                                <i class="fas fa-user-graduate"></i>
+                                <h5 class="text-muted">No Students Enrolled</h5>
+                                <p class="text-muted">This class has no students enrolled yet.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="table-footer">
+        <div class="pagination-info">
+            Showing <strong>{{ students|length }}</strong> of <strong>{{ total_students }}</strong> students
+        </div>
+        <div>
+            <span class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                Click P, L, A, E buttons to mark attendance
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== BACK BUTTON ===== -->
+<div class="back-btn">
+    <a href="{% url 'accounts:teacher_class_view' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Back to My Classes
+    </a>
+    <a href="{% url 'attendance:teacher_take_attendance' class.id %}" class="btn btn-primary">
+        <i class="fas fa-calendar-check me-2"></i>Take Attendance
+    </a>
+</div>
+
+<!-- CSRF Token for AJAX -->
+{% csrf_token %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // ===== TOGGLE ATTENDANCE =====
+    function toggleAttendance(classId, studentId, status) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch(`/classes/attendance/toggle/${classId}/${studentId}/`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({ status: status })
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Reload page to update all stats
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to update attendance. Please try again.');
+            });
+    }
+</script>
+{% endblock %}

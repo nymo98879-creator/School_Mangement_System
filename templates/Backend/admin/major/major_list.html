@@ -1,0 +1,311 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Major Management{% endblock %}
+{% block page_title %}Major Management{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        border-left: 4px solid #9b59b6;
+        transition: all 0.3s ease;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-card .stats-number {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .stats-card .stats-label {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .degree-badge {
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .degree-badge.bachelor {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .degree-badge.master {
+        background: #e8f0fe;
+        color: #3498db;
+    }
+
+    .degree-badge.phd {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .degree-badge.diploma {
+        background: #f5e6f5;
+        color: #9b59b6;
+    }
+
+    .status-badge {
+        padding: 3px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .status-badge.active {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .status-badge.inactive {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    .search-filters {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    .table-action-btn {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        transition: all 0.3s;
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .table-action-btn:hover {
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Stats -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">{{ total|default:0 }}</div>
+            <div class="stats-label">Total Majors</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card" style="border-left-color:#27ae60;">
+            <div class="stats-number">{{ active|default:0 }}</div>
+            <div class="stats-label">Active Majors</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card" style="border-left-color:#e74c3c;">
+            <div class="stats-number">{{ inactive|default:0 }}</div>
+            <div class="stats-label">Inactive Majors</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card" style="border-left-color:#3498db;">
+            <div class="stats-number">{{ majors|length|default:0 }}</div>
+            <div class="stats-label">Showing</div>
+        </div>
+    </div>
+</div>
+
+<!-- Search -->
+<div class="search-filters">
+    <form method="GET" class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Search</label>
+            {{ form.search }}
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Department</label>
+            {{ form.department }}
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Degree Type</label>
+            {{ form.degree_type }}
+        </div>
+        <div class="col-md-2">
+            <label class="form-label fw-bold">Status</label>
+            {{ form.status }}
+        </div>
+        <div class="col-md-1 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Actions -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="{% url 'courses:major_add' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Add Major
+    </a>
+    <span class="text-muted">Showing {{ majors.start_index }}-{{ majors.end_index }} of {{ majors.paginator.count
+        }}</span>
+</div>
+
+<!-- Table -->
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Degree</th>
+                        <th>Department</th>
+                        <th>Duration</th>
+                        <th>Credits</th>
+                        <th>Status</th>
+                        <th style="width:140px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for major in majors %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><span class="badge bg-secondary">{{ major.code }}</span></td>
+                        <td>{{ major.name }}</td>
+                        <td><span class="degree-badge {{ major.degree_type }}">{{ major.get_degree_type_display}}</span></td>
+                        <td>{{ major.department.name }}</td>
+                        <td>{{ major.duration }} years</td>
+                        <td>{{ major.total_credits }}</td>
+                        <td>
+                            <span class="status-badge {% if major.is_active %}active{% else %}inactive{% endif %}">
+                                {% if major.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a href="{% url 'courses:major_edit' major.pk %}"
+                                    class="btn btn-sm btn-warning table-action-btn" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'courses:major_toggle_status' major.pk %}"
+                                    class="btn btn-sm {% if major.is_active %}btn-danger{% else %}btn-success{% endif %} table-action-btn"
+                                    onclick="return confirm('Are you sure you want to toggle the status of this major?')"
+                                    title="Toggle Status">
+                                    <i class="fas {% if major.is_active %}fa-times{% else %}fa-check{% endif %}"></i>
+                                </a>
+                                <a href="{% url 'courses:major_delete' major.pk %}"
+                                    class="btn btn-sm btn-danger table-action-btn"
+                                    onclick="return confirm('Are you sure you want to delete this major? This action cannot be undone.')"
+                                    title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center py-4">
+                            <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
+                            <h6>No majors found</h6>
+                            <p class="text-muted small">Click "Add Major" to get started.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if majors.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if majors.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">&laquo; First</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ majors.previous_page_number }}">Previous</a>
+        </li>
+        {% endif %}
+
+        {% for num in majors.paginator.page_range %}
+        {% if majors.number == num %}
+        <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+        </li>
+        {% elif num > majors.number|add:'-3' and num < majors.number|add:'3' %} <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if majors.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ majors.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ majors.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+            {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.stats-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 150);
+        });
+    });
+
+    function animateCount(element, target, duration = 1000) {
+        let start = 0;
+        const increment = target / (duration / 16);
+        const timer = setInterval(() => {
+            start += increment;
+            if (start >= target) {
+                start = target;
+                clearInterval(timer);
+            }
+            element.textContent = Math.round(start);
+        }, 16);
+    }
+
+    document.querySelectorAll('.stats-number').forEach(el => {
+        const target = parseInt(el.textContent);
+        if (target > 0) {
+            animateCount(el, target);
+        }
+    });
+</script>
+{% endblock %}

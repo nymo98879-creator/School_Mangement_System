@@ -1,0 +1,89 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Generate Registration QR Code{% endblock %}
+{% block page_title %}Generate Registration QR Code{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-qrcode me-2"></i>Student Self-Registration QR Code
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="mb-4">
+                    <i class="fas fa-user-plus" style="font-size: 60px; color: #3498db;"></i>
+                    <h4 class="mt-3">Generate Registration QR Code</h4>
+                    <p class="text-muted">
+                        This QR code allows new students to register themselves by scanning with their phone.
+                        Place this QR code on posters, websites, or share it digitally.
+                    </p>
+
+                    {% if qr_generated %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        QR code generated successfully!
+                    </div>
+
+                    <div class="card border-success mb-4">
+                        <div class="card-body">
+                            <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="Registration QR Code"
+                                style="max-width: 300px; border: 1px solid #ddd; padding: 20px; border-radius: 12px;">
+                            <div class="mt-3">
+                                <p><strong>Registration URL:</strong></p>
+                                <code class="bg-light p-2 d-block rounded"
+                                    style="word-break: break-all;">{{ registration_url }}</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="{% url 'students:download_registration_qr' %}" class="btn btn-success btn-lg">
+                            <i class="fas fa-download me-2"></i>Download QR Code
+                        </a>
+                        <button onclick="window.print()" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-print me-2"></i>Print
+                        </button>
+                        <a href="{% url 'students:student_self_register_form' %}" class="btn btn-warning btn-lg"
+                            target="_blank">
+                            <i class="fas fa-external-link-alt me-2"></i>Test Registration Page
+                        </a>
+                        <a href="{% url 'students:student_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back
+                        </a>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <h6><i class="fas fa-info-circle me-2"></i>How to use:</h6>
+                        <ol class="text-start">
+                            <li>Download or print the QR code</li>
+                            <li>Display it where students can scan it</li>
+                            <li>Students scan the QR code with their phone camera</li>
+                            <li>They will be taken to the registration form</li>
+                            <li>Students fill in their details and register</li>
+                        </ol>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Click the button below to generate a QR code for student self-registration.
+                        <br>
+                        <small>Students can scan this QR code to register themselves.</small>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-qrcode me-2"></i>Generate Registration QR Code
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

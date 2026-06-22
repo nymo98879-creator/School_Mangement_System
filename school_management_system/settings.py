@@ -29,7 +29,6 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,14 +36,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Custom Apps
     'accounts',
     'attendance',
     'classes',
     'courses',
-    'examps',
+    'examps',  # Temporarily disabled
     'requestsystem',
     'students',
     'teachers',
+   
 ]
 
 MIDDLEWARE = [
@@ -57,26 +59,36 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# ROOT_URLCONF = 'School_Management_System.urls'
 ROOT_URLCONF = 'school_management_system.urls'
+
+# Custom user model
+AUTH_USER_MODEL = 'accounts.User'
+
+# Authentication URLs
+LOGIN_URL = 'accounts:login'  # Changed from 'login' to 'accounts:login'
+LOGIN_REDIRECT_URL = 'accounts:dashboard'  # Changed from 'dashboard' to 'accounts:dashboard'
+LOGOUT_REDIRECT_URL = 'accounts:login'  # Changed from 'login' to 'accounts:login'
+
+# Messages
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [],
-        'DIRS': [BASE_DIR / 'templates'], 
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'classes.context_processors.sidebar_counts',
             ],
         },
     },
 ]
 
-# WSGI_APPLICATION = 'School_Management_System.wsgi.application'
 WSGI_APPLICATION = 'school_management_system.wsgi.application'
 ASGI_APPLICATION = 'school_management_system.asgi.application'
 
@@ -88,10 +100,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        # Remove PostgreSQL settings if using SQLite
+        # 'USER': 'postgres',
+        # 'PASSWORD': '',
+        # 'HOST': 'localhost',
+        # 'PORT': '5432',
     }
 }
 
@@ -130,7 +143,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-AUTH_USER_MODEL = 'accounts.User'
+# Media files (User uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/6.0/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom user model (already defined above)
+# AUTH_USER_MODEL = 'accounts.User'  # Remove duplicate

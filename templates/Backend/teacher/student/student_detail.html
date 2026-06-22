@@ -1,0 +1,308 @@
+{% extends 'Backend/layouts/teacher_layout.html' %}
+{% load static %}
+
+{% block title %}Student Details{% endblock %}
+{% block page_title %}Student Details{% endblock %}
+
+{% block extra_css %}
+<style>
+    .student-profile {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        flex-wrap: wrap;
+    }
+
+    .student-profile .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #27ae60, #1e8449);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 32px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .student-profile .info h4 {
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 2px;
+    }
+
+    .student-profile .info .details {
+        color: #7f8c8d;
+        font-size: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .student-profile .info .details i {
+        color: #27ae60;
+        margin-right: 4px;
+        width: 16px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        border-top: 4px solid #27ae60;
+    }
+
+    .stat-card .number {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .stat-card .label {
+        font-size: 12px;
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+
+    .stat-card.present {
+        border-top-color: #27ae60;
+    }
+
+    .stat-card.absent {
+        border-top-color: #e74c3c;
+    }
+
+    .stat-card.late {
+        border-top-color: #f39c12;
+    }
+
+    .stat-card.rate {
+        border-top-color: #9b59b6;
+    }
+
+    .status-badge {
+        padding: 3px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .status-badge.present {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .status-badge.absent {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    .status-badge.late {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .status-badge.excused {
+        background: #e8f0fe;
+        color: #3498db;
+    }
+
+    .detail-item {
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+
+    .detail-item .label {
+        color: #7f8c8d;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .detail-item .value {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .student-profile {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .student-profile .info .details {
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== STUDENT PROFILE ===== -->
+<div class="student-profile">
+    <div class="avatar">
+        {{ student.first_name|first|upper }}
+    </div>
+    <div class="info">
+        <h4>{{ student.get_full_name }}</h4>
+        <div class="details">
+            <span><i class="fas fa-id-card"></i> {{ student.student_id }}</span>
+            <span><i class="fas fa-envelope"></i> {{ student.email }}</span>
+            <span><i class="fas fa-phone"></i> {{ student.phone }}</span>
+            <span><i class="fas fa-cubes"></i> {{ student.class_enrolled.name|default:"No Class" }}</span>
+            <span><i class="fas fa-calendar-alt"></i> Enrolled: {{ student.enrollment_date|date:"M d, Y" }}</span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== STATS ===== -->
+<div class="stats-grid">
+    <div class="stat-card present">
+        <div class="number">{{ present }}</div>
+        <div class="label"> Present</div>
+    </div>
+    <div class="stat-card late">
+        <div class="number">{{ late }}</div>
+        <div class="label"> Late</div>
+    </div>
+    <div class="stat-card absent">
+        <div class="number">{{ absent }}</div>
+        <div class="label"> Absent</div>
+    </div>
+    <div class="stat-card rate">
+        <div class="number">{{ attendance_rate }}%</div>
+        <div class="label">Attendance Rate</div>
+    </div>
+</div>
+
+<!-- ===== DETAILS ===== -->
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-user me-2" style="color: #27ae60;"></i>Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="detail-item">
+                    <div class="label">Full Name</div>
+                    <div class="value">{{ student.get_full_name }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Student ID</div>
+                    <div class="value">{{ student.student_id }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Date of Birth</div>
+                    <div class="value">{{ student.date_of_birth|date:"F d, Y" }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Gender</div>
+                    <div class="value">{{ student.get_gender_display }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Email</div>
+                    <div class="value">{{ student.email }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Phone</div>
+                    <div class="value">{{ student.phone }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Address</div>
+                    <div class="value">{{ student.address|default:"Not provided" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-user-tie me-2" style="color: #27ae60;"></i>Guardian Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="detail-item">
+                    <div class="label">Guardian Name</div>
+                    <div class="value">{{ student.guardian_name }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Guardian Phone</div>
+                    <div class="value">{{ student.guardian_phone }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Guardian Email</div>
+                    <div class="value">{{ student.guardian_email|default:"Not provided" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5><i class="fas fa-calendar-check me-2" style="color: #27ae60;"></i>Recent Attendance</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Class</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for att in recent_attendances|slice:":5" %}
+                            <tr>
+                                <td>{{ att.date|date:"M d, Y" }}</td>
+                                <td>{{ att.class_obj.name|default:"N/A" }}</td>
+                                <td>
+                                    <span class="status-badge {{ att.status }}">
+                                        {{ att.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center py-3">
+                                    <span class="text-muted">No recent attendance</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{% url 'accounts:teacher_student_view' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Back to Students
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,614 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Teacher Dashboard{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset & Body */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            background: linear-gradient(180deg, #1a472a 0%, #2d7d46 50%, #1a472a 100%);
+            color: white;
+            padding: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .sidebar-brand {
+            padding: 25px 25px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .sidebar-brand .brand-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 28px;
+            color: #f1c40f;
+        }
+
+        .sidebar-brand h3 {
+            font-weight: 700;
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-brand h3 i {
+            color: #f1c40f;
+        }
+
+        .sidebar-brand small {
+            display: block;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            margin-top: 3px;
+            letter-spacing: 1px;
+        }
+
+        /* User Profile in Sidebar */
+        .sidebar-user {
+            padding: 15px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-user .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-user .user-info {
+            flex: 1;
+        }
+
+        .sidebar-user .user-info .name {
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+        }
+
+        .sidebar-user .user-info .role {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .sidebar-user .user-info .role i {
+            margin-right: 3px;
+        }
+
+        /* Sidebar Menu */
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu .menu-header {
+            padding: 15px 25px 8px;
+            color: rgba(255, 255, 255, 0.35);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .sidebar-menu li a:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border-left-color: #f1c40f;
+        }
+
+        .sidebar-menu li a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: #f1c40f;
+        }
+
+        .sidebar-menu li a.active::before {
+            content: '';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #f1c40f;
+        }
+
+        .sidebar-menu li a i {
+            width: 22px;
+            margin-right: 12px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .sidebar-menu li a .badge-notification {
+            margin-left: auto;
+            background: #e74c3c;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu .logout-section {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        .sidebar-menu .logout-section a {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .sidebar-menu .logout-section a:hover {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+            border-left-color: #e74c3c;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 20px 25px;
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .top-nav .left-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .top-nav .left-section .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: #2c3e50;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .top-nav .left-section .menu-toggle:hover {
+            background: #f0f2f5;
+        }
+
+        .top-nav .page-title {
+            margin: 0;
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 20px;
+        }
+
+        .top-nav .page-title span {
+            color: #27ae60;
+        }
+
+        .top-nav .right-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .top-nav .right-section .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #7f8c8d;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .top-nav .right-section .notification-btn:hover {
+            background: #f0f2f5;
+            color: #2c3e50;
+        }
+
+        .top-nav .right-section .notification-btn .badge-dot {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 8px;
+            height: 8px;
+            background: #e74c3c;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .top-nav .right-section .user-dropdown {
+            cursor: pointer;
+        }
+
+        .top-nav .right-section .user-dropdown .user-info-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 12px 5px 5px;
+            border-radius: 50px;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #2c3e50;
+        }
+
+        .top-nav .right-section .user-dropdown .user-info-display:hover {
+            background: #f0f2f5;
+        }
+
+        .top-nav .right-section .user-dropdown .user-info-display .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #27ae60 0%, #2d7d46 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .top-nav .right-section .user-dropdown .user-info-display .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .top-nav .right-section .user-dropdown .user-info-display .user-name small {
+            font-weight: 400;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        /* Content Area */
+        .content-area {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stats Card (Base) */
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 22px 25px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .top-nav {
+                padding: 12px 18px;
+            }
+
+            .top-nav .page-title {
+                font-size: 17px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .top-nav .right-section .user-dropdown .user-info-display .user-name {
+                display: none;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .main-content {
+                padding: 10px;
+            }
+
+            .top-nav {
+                padding: 10px 15px;
+                border-radius: 10px;
+            }
+
+            .top-nav .page-title {
+                font-size: 15px;
+            }
+        }
+
+        /* Scrollbar for main content */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f0f2f5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c5c7c9;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a9ab;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <!-- Brand -->
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h3><i class="fas fa-school"></i> School MS</h3>
+            <small>Teacher Panel</small>
+        </div>
+
+        <!-- User Profile -->
+        <div class="sidebar-user">
+            <div class="avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-info">
+                <div class="name">{{ user.get_full_name|default:user.username }}</div>
+                <div class="role"><i class="fas fa-chalkboard-teacher"></i> Teacher</div>
+            </div>
+        </div>
+
+        <!-- Menu -->
+        <ul class="sidebar-menu">
+            <li class="menu-header">Main Navigation</li>
+            <li>
+                <a href="{% url 'accounts:dashboard' %}"
+                    class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+        
+            <li class="menu-header">Teaching</li>
+            <li>
+                <a href="{% url 'accounts:teacher_class_view' %}" class="{% if 'classes' in request.path %}active{% endif %}">
+                    <i class="fas fa-cubes"></i> My Classes
+                    <span class="badge-notification">{{ total_classes|default:0 }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'accounts:teacher_student_view' %}"
+                    class="{% if 'students' in request.path %}active{% endif %}">
+                    <i class="fas fa-users"></i> My Students
+                    <span class="badge-notification">{{ total_students|default:0 }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'attendance:teacher_attendance' %}"
+                    class="{% if 'attendance' in request.path %}active{% endif %}">
+                    <i class="fas fa-calendar-check"></i> Attendance
+                </a>
+            </li>
+        
+            <li class="menu-header">Account</li>
+            <li class="logout-section">
+                <a href="{% url 'accounts:logout' %}">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <div class="left-section">
+                <button class="menu-toggle d-md-none" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h4 class="page-title">
+                    <i class="fas fa-chalkboard-teacher me-2" style="color: #27ae60;"></i>
+                    {% block page_title %}Teacher Dashboard{% endblock %}
+                </h4>
+            </div>
+            <div class="right-section">
+                <button class="notification-btn" data-bs-toggle="tooltip" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge-dot"></span>
+                </button>
+                <div class="dropdown user-dropdown">
+                    <a class="user-info-display" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="user-avatar">
+                            {{ user.username|make_list|first|upper }}
+                        </div>
+                        <div class="user-name">
+                            {{ user.username }}
+                            <small>(Teacher)</small>
+                        </div>
+                        <i class="fas fa-chevron-down ms-1" style="font-size: 12px; color: #7f8c8d;"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0"
+                        style="border-radius: 12px; padding: 8px 0; min-width: 200px;">
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user-circle me-2" style="color: #27ae60;"></i>Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-cog me-2" style="color: #3498db;"></i>Settings
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider" style="margin: 5px 0;">
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content-area">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle Sidebar
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+            document.getElementById('mainContent').classList.toggle('sidebar-open');
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function (event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.querySelector('.menu-toggle');
+
+            if (window.innerWidth <= 992) {
+                if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                    sidebar.classList.remove('show');
+                }
+            }
+        });
+
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+
+        // Active link highlight
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.sidebar-menu li a').forEach(function (link) {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

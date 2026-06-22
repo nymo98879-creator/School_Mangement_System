@@ -1,0 +1,983 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Attendance Records{% endblock %}
+{% block page_title %}Attendance Records{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== STATS CARDS ===== */
+    .stats-card {
+        background: white;
+        border-radius: 16px;
+        padding: 22px 25px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        border-bottom: 4px solid #3498db;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-card .stats-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        color: white;
+        margin-bottom: 12px;
+    }
+
+    .stats-card .stats-icon.blue {
+        background: linear-gradient(135deg, #3498db, #5dade2);
+    }
+
+    .stats-card .stats-icon.green {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+    }
+
+    .stats-card .stats-icon.orange {
+        background: linear-gradient(135deg, #f39c12, #f7dc6f);
+    }
+
+    .stats-card .stats-icon.red {
+        background: linear-gradient(135deg, #e74c3c, #ec7063);
+    }
+
+    .stats-card .stats-icon.purple {
+        background: linear-gradient(135deg, #9b59b6, #af7ac5);
+    }
+
+    .stats-card .stats-number {
+        font-size: 32px;
+        font-weight: 800;
+        color: #2c3e50;
+        line-height: 1.2;
+    }
+
+    .stats-card .stats-label {
+        color: #95a5a6;
+        font-size: 13px;
+        font-weight: 500;
+        margin-top: 2px;
+    }
+
+    .stats-card .stats-trend {
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 6px;
+        display: inline-block;
+        padding: 3px 14px;
+        border-radius: 20px;
+        background: #ecf0f1;
+    }
+
+    .stats-card .stats-trend.up {
+        color: #27ae60;
+        background: #d5f5e3;
+    }
+
+    .stats-card .stats-trend.down {
+        color: #e74c3c;
+        background: #fadbd8;
+    }
+
+    .stats-card .stats-trend.neutral {
+        color: #f39c12;
+        background: #fdebd0;
+    }
+
+    /* ===== SEARCH BAR ===== */
+    .search-filters {
+        background: white;
+        border-radius: 16px;
+        padding: 20px 25px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+        margin-bottom: 25px;
+    }
+
+    .search-filters .filter-group {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+    }
+
+    .search-filters .filter-group .form-group {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .search-filters .filter-group .form-group label {
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 13px;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .search-filters .filter-group .form-group .form-control,
+    .search-filters .filter-group .form-group .form-select {
+        border: 2px solid #e1e5eb;
+        border-radius: 10px;
+        padding: 8px 15px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .search-filters .filter-group .form-group .form-control:focus,
+    .search-filters .filter-group .form-group .form-select:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.15);
+        outline: none;
+    }
+
+    .search-filters .filter-group .btn-search {
+        padding: 8px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #3498db, #5dade2);
+        border: none;
+        color: white;
+        transition: all 0.3s;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .search-filters .filter-group .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+    }
+
+    .search-filters .filter-group .btn-reset {
+        padding: 8px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        background: #ecf0f1;
+        border: none;
+        color: #2c3e50;
+        transition: all 0.3s;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .search-filters .filter-group .btn-reset:hover {
+        background: #d5dbdb;
+        transform: translateY(-2px);
+    }
+
+    /* ===== TABLE ===== */
+    .table-container {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+    }
+
+    .table-container .table-header {
+        padding: 18px 25px;
+        border-bottom: 1px solid #f0f2f5;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .table-container .table-header .header-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .table-container .table-header .header-left h5 {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .table-container .table-header .header-left h5 i {
+        color: #3498db;
+        margin-right: 10px;
+    }
+
+    .table-container .table-header .header-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .table-container .table-header .header-right .badge-count {
+        background: #e8f0fe;
+        color: #3498db;
+        padding: 4px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .table-container .table-header .header-right .btn-export {
+        padding: 6px 20px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        border: none;
+        color: white;
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .table-container .table-header .header-right .btn-export:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+        color: white;
+    }
+
+    .table-scroll {
+        overflow-x: auto;
+        padding: 0 5px;
+    }
+
+    .table-scroll::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .table-scroll::-webkit-scrollbar-track {
+        background: #f0f2f5;
+        border-radius: 10px;
+    }
+
+    .table-scroll::-webkit-scrollbar-thumb {
+        background: #c5c7c9;
+        border-radius: 10px;
+    }
+
+    .table-scroll::-webkit-scrollbar-thumb:hover {
+        background: #a8a9ab;
+    }
+
+    .attendance-table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+        margin: 0;
+    }
+
+    .attendance-table thead th {
+        background: #f8fafb;
+        border: none;
+        padding: 14px 18px;
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .attendance-table tbody td {
+        padding: 14px 18px;
+        vertical-align: middle;
+        border: none;
+        border-bottom: 1px solid #f0f2f5;
+        font-size: 14px;
+        color: #2c3e50;
+    }
+
+    .attendance-table tbody tr {
+        transition: all 0.3s;
+    }
+
+    .attendance-table tbody tr:hover {
+        background: #f8fafb;
+    }
+
+    .attendance-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* ===== STATUS BADGES ===== */
+    .status-badge {
+        padding: 4px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+        text-align: center;
+        min-width: 80px;
+        border: none;
+    }
+
+    .status-badge.present {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .status-badge.absent {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    .status-badge.late {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .status-badge.excused {
+        background: #e8f0fe;
+        color: #3498db;
+    }
+
+    .status-badge.holiday {
+        background: #e8daef;
+        color: #8e44ad;
+    }
+
+    /* ===== STUDENT AVATAR ===== */
+    .student-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        flex-shrink: 0;
+        margin-right: 10px;
+    }
+
+    .student-avatar.blue {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+
+    .student-avatar.green {
+        background: linear-gradient(135deg, #27ae60, #1e8449);
+    }
+
+    .student-avatar.orange {
+        background: linear-gradient(135deg, #f39c12, #d68910);
+    }
+
+    .student-avatar.purple {
+        background: linear-gradient(135deg, #9b59b6, #7d3c98);
+    }
+
+    .student-avatar.red {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+
+    .student-avatar.teal {
+        background: linear-gradient(135deg, #1abc9c, #148f77);
+    }
+
+    .student-avatar.pink {
+        background: linear-gradient(135deg, #e91e63, #c2185b);
+    }
+
+    .student-avatar.indigo {
+        background: linear-gradient(135deg, #3f51b5, #303f9f);
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .empty-state i {
+        font-size: 60px;
+        color: #3498db;
+        opacity: 0.2;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h5 {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .empty-state p {
+        color: #7f8c8d;
+    }
+
+    /* ===== PAGINATION ===== */
+    .pagination-wrapper {
+        padding: 18px 25px;
+        border-top: 1px solid #f0f2f5;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .pagination-wrapper .pagination-info {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .pagination-wrapper .pagination-info strong {
+        color: #2c3e50;
+    }
+
+    .pagination-wrapper .pagination {
+        margin: 0;
+        gap: 4px;
+    }
+
+    .pagination-wrapper .pagination .page-link {
+        border: 2px solid #e1e5eb;
+        border-radius: 8px;
+        color: #2c3e50;
+        font-weight: 500;
+        padding: 6px 14px;
+        transition: all 0.3s;
+        background: white;
+    }
+
+    .pagination-wrapper .pagination .page-link:hover {
+        background: #f0f2f5;
+        border-color: #bdc3c7;
+        transform: translateY(-1px);
+    }
+
+    .pagination-wrapper .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #3498db, #5dade2);
+        border-color: #3498db;
+        color: white;
+    }
+
+    .pagination-wrapper .pagination .page-item.disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 992px) {
+        .search-filters .filter-group .form-group {
+            min-width: 150px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .stats-card .stats-number {
+            font-size: 24px;
+        }
+
+        .search-filters {
+            padding: 15px 20px;
+        }
+
+        .search-filters .filter-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .search-filters .filter-group .form-group {
+            width: 100%;
+            min-width: unset;
+        }
+
+        .search-filters .filter-group .btn-search,
+        .search-filters .filter-group .btn-reset {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .table-container .table-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px 20px;
+        }
+
+        .table-container .table-header .header-right {
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .table-container .table-header .header-right .btn-export {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .pagination-wrapper {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .student-avatar {
+            width: 30px;
+            height: 30px;
+            font-size: 12px;
+            margin-right: 6px;
+        }
+
+        .attendance-table thead th,
+        .attendance-table tbody td {
+            padding: 10px 12px;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            min-width: 60px;
+            font-size: 11px;
+            padding: 3px 10px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .stats-card .stats-number {
+            font-size: 20px;
+        }
+
+        .stats-card .stats-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+        }
+
+        .table-container .table-header .header-left h5 {
+            font-size: 16px;
+        }
+
+        .attendance-table thead th,
+        .attendance-table tbody td {
+            padding: 8px 10px;
+            font-size: 12px;
+        }
+
+        .attendance-table thead th {
+            font-size: 11px;
+        }
+
+        .status-badge {
+            min-width: 50px;
+            font-size: 10px;
+            padding: 2px 8px;
+        }
+
+        .pagination-wrapper .pagination .page-link {
+            padding: 4px 10px;
+            font-size: 13px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== STATS CARDS ===== -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card">
+            <div class="stats-icon blue">
+                <i class="fas fa-list"></i>
+            </div>
+            <div class="stats-number">{{ total_records|default:attendances.count }}</div>
+            <div class="stats-label">Total Records</div>
+            <span class="stats-trend up">
+                <i class="fas fa-arrow-up me-1"></i> All Time
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-bottom-color: #27ae60;">
+            <div class="stats-icon green">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stats-number">{{ present_count|default:0 }}</div>
+            <div class="stats-label">Present</div>
+            <span class="stats-trend up">
+                <i class="fas fa-arrow-up me-1"></i> {{ present_percentage|default:0 }}%
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-bottom-color: #e74c3c;">
+            <div class="stats-icon red">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="stats-number">{{ absent_count|default:0 }}</div>
+            <div class="stats-label">Absent</div>
+            <span class="stats-trend down">
+                <i class="fas fa-arrow-down me-1"></i> {{ absent_percentage|default:0 }}%
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-bottom-color: #f39c12;">
+            <div class="stats-icon orange">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stats-number">{{ late_count|default:0 }}</div>
+            <div class="stats-label">Late</div>
+            <span class="stats-trend neutral">
+                <i class="fas fa-minus me-1"></i> {{ late_percentage|default:0 }}%
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SEARCH FILTERS ===== -->
+<div class="search-filters">
+    <form method="GET" class="filter-group">
+        <div class="form-group">
+            <label for="search"><i class="fas fa-search me-1" style="color: #3498db;"></i> Search</label>
+            <input type="text" class="form-control" id="search" name="search"
+                placeholder="Search by student or class..." value="{{ search|default:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="status"><i class="fas fa-filter me-1" style="color: #f39c12;"></i> Status</label>
+            <select class="form-select" id="status" name="status">
+                <option value="">All Status</option>
+                <option value="present" {% if status == 'present' %}selected{% endif %}>Present</option>
+                <option value="absent" {% if status == 'absent' %}selected{% endif %}>Absent</option>
+                <option value="late" {% if status == 'late' %}selected{% endif %}>Late</option>
+                <option value="excused" {% if status == 'excused' %}selected{% endif %}>Excused</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="date_from"><i class="fas fa-calendar-alt me-1" style="color: #27ae60;"></i> From</label>
+            <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from|default:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="date_to"><i class="fas fa-calendar-alt me-1" style="color: #e74c3c;"></i> To</label>
+            <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to|default:'' }}">
+        </div>
+        <div class="form-group" style="flex: 0 0 auto;">
+            <button type="submit" class="btn-search">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+        <div class="form-group" style="flex: 0 0 auto;">
+            <a href="{% url 'accounts:admin_attendance_report' %}" class="btn-reset">
+                <i class="fas fa-undo"></i> Reset
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- ===== TABLE ===== -->
+<div class="table-container">
+    <div class="table-header">
+        <div class="header-left">
+            <h5>
+                <i class="fas fa-list"></i>
+                Attendance Records
+            </h5>
+        </div>
+        <div class="header-right">
+            <span class="badge-count">
+                <i class="fas fa-database me-1"></i>
+                {{ attendances|length }} Records
+            </span>
+            <a href="#" class="btn-export" onclick="exportTable()">
+                <i class="fas fa-download"></i> Export
+            </a>
+        </div>
+    </div>
+
+    <div class="table-scroll">
+        <table class="attendance-table table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th style="min-width: 200px;">Student</th>
+                    <th style="min-width: 150px;">Class</th>
+                    <th style="width: 130px;">Date</th>
+                    <th style="width: 130px;">Status</th>
+                    <th style="min-width: 150px;">Marked By</th>
+                    <th style="width: 80px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attendance in attendances %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <span
+                                class="student-avatar {% cycle 'blue' 'green' 'orange' 'purple' 'red' 'teal' 'pink' 'indigo' %}">
+                                {{ attendance.student.first_name|first|upper }}
+                            </span>
+                            <div>
+                                <div class="fw-bold">{{ attendance.student.get_full_name }}</div>
+                                <small class="text-muted">{{ attendance.student.student_id }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="fw-medium">{{ attendance.class_obj.name|default:"N/A" }}</span>
+                        <br>
+                        <small class="text-muted">{{ attendance.class_obj.code|default:"" }}</small>
+                    </td>
+                    <td>
+                        <span class="fw-medium">{{ attendance.date|date:"M d, Y" }}</span>
+                        <br>
+                        <small class="text-muted">{{ attendance.date|date:"l" }}</small>
+                    </td>
+                    <td>
+                        <span class="status-badge {{ attendance.status }}">
+                            {{ attendance.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar-sm"
+                                style="width: 28px; height: 28px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; color: #3498db; font-weight: 600; font-size: 12px;">
+                                {{ attendance.marked_by.get_full_name|first|upper|default:"S" }}
+                            </div>
+                            <span>{{ attendance.marked_by.get_full_name|default:"System" }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" title="View Details"
+                            onclick="viewAttendance({{ attendance.id }})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="fas fa-clipboard-list"></i>
+                            <h5>No Attendance Records</h5>
+                            <p>There are no attendance records matching your criteria.</p>
+                            <a href="{% url 'accounts:admin_attendance_report' %}" class="btn btn-primary">
+                                <i class="fas fa-undo me-2"></i>Reset Filters
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ===== PAGINATION ===== -->
+    {% if attendances.has_other_pages %}
+    <div class="pagination-wrapper">
+        <div class="pagination-info">
+            Showing <strong>{{ attendances.start_index }}</strong> - <strong>{{ attendances.end_index }}</strong>
+            of <strong>{{ attendances.paginator.count }}</strong> records
+        </div>
+        <nav>
+            <ul class="pagination">
+                {% if attendances.has_previous %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page=1{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ attendances.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in attendances.paginator.page_range %}
+                {% if attendances.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > attendances.number|add:'-3' and num < attendances.number|add:'3' %} <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
+                        {{ num }}
+                    </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if attendances.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?page={{ attendances.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?page={{ attendances.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<!-- ===== VIEW ATTENDANCE MODAL ===== -->
+<div class="modal fade" id="viewAttendanceModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #3498db, #5dade2); color: white;">
+                <h5 class="modal-title">
+                    <i class="fas fa-clipboard-check me-2"></i>Attendance Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="attendanceDetailBody">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="window.print()">
+                    <i class="fas fa-print me-2"></i>Print
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // ===== VIEW ATTENDANCE DETAILS =====
+    function viewAttendance(id) {
+        const modal = new bootstrap.Modal(document.getElementById('viewAttendanceModal'));
+        const body = document.getElementById('attendanceDetailBody');
+
+        // Show loading
+        body.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `;
+
+        modal.show();
+
+        // Fetch attendance details
+        fetch(`/attendance/api/detail/${id}/`)
+            .then(response => response.json())
+            .then(data => {
+                body.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small">Student</label>
+                                <p class="fs-5 mb-0">${data.student}</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small">Class</label>
+                                <p class="fs-5 mb-0">${data.class_name}</p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small">Date</label>
+                                <p class="fs-5 mb-0">${data.date}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small">Status</label>
+                                <p class="fs-5 mb-0">
+                                    <span class="status-badge ${data.status}">
+                                        ${data.status_display}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small">Marked By</label>
+                                <p class="fs-5 mb-0">${data.marked_by}</p>
+                            </div>
+                            ${data.remarks ? `
+                            <div class="mb-3">
+                                <label class="fw-bold text-muted small">Remarks</label>
+                                <p class="fs-5 mb-0">${data.remarks}</p>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            })
+            .catch(error => {
+                body.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        Error loading attendance details. Please try again.
+                    </div>
+                `;
+            });
+    }
+
+    // ===== EXPORT TABLE =====
+    function exportTable() {
+        const table = document.querySelector('.attendance-table');
+        let csv = [];
+
+        // Get headers
+        const headers = [];
+        document.querySelectorAll('.attendance-table thead th').forEach(th => {
+            if (th.textContent.trim() !== '') {
+                headers.push(th.textContent.trim());
+            }
+        });
+        csv.push(headers.join(','));
+
+        // Get rows
+        document.querySelectorAll('.attendance-table tbody tr').forEach(tr => {
+            if (tr.querySelector('td')) {
+                const row = [];
+                tr.querySelectorAll('td').forEach((td, index) => {
+                    // Skip the action column (last column)
+                    if (index < tr.querySelectorAll('td').length - 1) {
+                        let text = td.textContent.trim();
+                        // Clean up the text
+                        text = text.replace(/,/g, ' ');
+                        text = text.replace(/\s+/g, ' ');
+                        row.push(text);
+                    }
+                });
+                if (row.length > 0) {
+                    csv.push(row.join(','));
+                }
+            }
+        });
+
+        // Download CSV
+        const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `attendance_records_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }
+</script>
+{% endblock %}

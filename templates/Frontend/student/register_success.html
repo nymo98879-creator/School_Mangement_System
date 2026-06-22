@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Successful</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .success-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: bounceIn 0.8s ease;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-icon {
+            font-size: 80px;
+            color: #27ae60;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .success-container h2 {
+            color: #2c3e50;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .success-container .subtitle {
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* ===== RECEIPT STYLES ===== */
+        .receipt {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px dashed #27ae60;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px solid #27ae60;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .receipt-header h4 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .receipt-header p {
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-bottom: 0;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .receipt-row:last-child {
+            border-bottom: none;
+        }
+
+        .receipt-row .label {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .receipt-row .value {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #27ae60;
+        }
+
+        .receipt-footer p {
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-bottom: 0;
+        }
+
+        .btn-print {
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            border: none;
+            color: white;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(39, 174, 96, 0.4);
+            color: white;
+        }
+
+        .btn-secondary-custom {
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 10px;
+            background: #3498db;
+            border: none;
+            color: white;
+            transition: all 0.3s;
+            margin: 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4);
+            color: white;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+            }
+
+            .success-container {
+                box-shadow: none !important;
+            }
+
+            .receipt {
+                border: 1px solid #ddd !important;
+            }
+        }
+
+        .student-id-badge {
+            font-size: 24px;
+            font-weight: 700;
+            color: #27ae60;
+            background: #d5f5e3;
+            padding: 5px 20px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="success-container">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h2>Registration Successful!</h2>
+        <p class="subtitle">Your student account has been created successfully.</p>
+
+        <!-- ===== RECEIPT ===== -->
+        <div class="receipt" id="receipt">
+            <div class="receipt-header">
+                <h4><i class="fas fa-school me-2"></i>Student Registration Receipt</h4>
+                <p>Date: {% now "F d, Y" %} | Time: {% now "h:i A" %}</p>
+            </div>
+
+            <div class="receipt-row">
+                <span class="label">Student ID</span>
+                <span class="value student-id-badge">{{ student.student_id }}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Full Name</span>
+                <span class="value">{{ student.get_full_name }}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Email</span>
+                <span class="value">{{ student.email }}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Phone</span>
+                <span class="value">{{ student.phone }}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Gender</span>
+                <span class="value">{{ student.get_gender_display }}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Class</span>
+                <span class="value">{{ student.class_enrolled.name|default:"Not Assigned" }}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Guardian</span>
+                <span class="value">{{ student.guardian_name }}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Guardian Phone</span>
+                <span class="value">{{ student.guardian_phone }}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Enrollment Date</span>
+                <span class="value">{{ student.enrollment_date|date:"F d, Y" }}</span>
+            </div>
+            <div class="receipt-row">
+                <span class="label">Status</span>
+                <span class="value"><span class="badge bg-success">Active</span></span>
+            </div>
+
+            <div class="receipt-footer">
+                <p><i class="fas fa-qrcode me-1"></i> Your QR code is available in your student profile</p>
+                <p class="mt-1"><small>This is a system-generated receipt. Please keep for your records.</small></p>
+            </div>
+        </div>
+
+        <!-- ===== BUTTONS ===== -->
+        <div class="d-flex flex-wrap justify-content-center gap-2 no-print">
+            <button onclick="window.print()" class="btn-print">
+                <i class="fas fa-print me-2"></i>Print Receipt
+            </button>
+            <a href="{% url 'students:student_dashboard' %}" class="btn-secondary-custom">
+                <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+            </a>
+            <a href="/" class="btn-secondary-custom" style="background: #95a5a6;">
+                <i class="fas fa-home me-2"></i>Home
+            </a>
+        </div>
+
+        <div class="text-center mt-3 no-print">
+            <small class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                You can print this receipt for your records.
+            </small>
+        </div>
+    </div>
+
+    <script>
+        // Auto-print after 2 seconds (optional)
+        // setTimeout(function() { window.print(); }, 2000);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,735 @@
+{% extends 'Backend/layouts/teacher_layout.html' %}
+{% load static %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+{% block page_title %}Teacher Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Stats Cards - Green Theme */
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        border-left: 4px solid #27ae60;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 30px rgba(39, 174, 96, 0.15);
+    }
+
+    .stats-card .stats-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .stats-card .stats-icon.green {
+        background: linear-gradient(135deg, #27ae60 0%, #2d7d46 100%);
+    }
+
+    .stats-card .stats-icon.blue {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    }
+
+    .stats-card .stats-icon.orange {
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    }
+
+    .stats-card .stats-icon.purple {
+        background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+    }
+
+    .stats-card .stats-icon.red {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    }
+
+    .stats-card .stats-number {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-top: 5px;
+    }
+
+    .stats-card .stats-label {
+        color: #7f8c8d;
+        font-size: 14px;
+        font-weight: 500;
+        margin-top: 2px;
+    }
+
+    .stats-card .stats-trend {
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 8px;
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+    }
+
+    .stats-card .stats-trend.up {
+        color: #27ae60;
+        background: #d5f5e3;
+    }
+
+    .stats-card .stats-trend.down {
+        color: #e74c3c;
+        background: #fadbd8;
+    }
+
+    .stats-card .stats-trend.neutral {
+        color: #f39c12;
+        background: #fdebd0;
+    }
+
+    /* Quick Action Cards - Green Theme */
+    .action-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 2px solid transparent;
+        text-decoration: none;
+        display: block;
+        height: 100%;
+    }
+
+    .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(39, 174, 96, 0.15);
+        border-color: #27ae60;
+    }
+
+    .action-card .action-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        font-size: 30px;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .action-card .action-icon.green {
+        background: linear-gradient(135deg, #27ae60 0%, #2d7d46 100%);
+    }
+
+    .action-card .action-icon.blue {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    }
+
+    .action-card .action-icon.orange {
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    }
+
+    .action-card .action-icon.purple {
+        background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+    }
+
+    .action-card .action-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+
+    .action-card .action-desc {
+        font-size: 13px;
+        color: #7f8c8d;
+        margin: 0;
+    }
+
+    .action-card:hover .action-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    /* Welcome Banner - Green Theme */
+    .welcome-banner {
+        background: linear-gradient(135deg, #1a472a 0%, #27ae60 50%, #2d7d46 100%);
+        border-radius: 15px;
+        padding: 30px 35px;
+        color: white;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-banner::before {
+        content: '';
+        position: absolute;
+        right: -50px;
+        top: -50px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+    }
+
+    .welcome-banner::after {
+        content: '';
+        position: absolute;
+        right: 30px;
+        bottom: -70px;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .welcome-banner h3 {
+        font-weight: 700;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .welcome-banner h3 i {
+        color: #f1c40f;
+    }
+
+    .welcome-banner p {
+        opacity: 0.9;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        font-size: 15px;
+    }
+
+    .welcome-banner .welcome-icon {
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 80px;
+        opacity: 0.12;
+        z-index: 0;
+    }
+
+    .welcome-banner .badge-today {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 4px 16px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-top: 8px;
+    }
+
+    /* Card Styles - Green Theme */
+    .custom-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        border: none;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .custom-card:hover {
+        box-shadow: 0 8px 25px rgba(39, 174, 96, 0.1);
+    }
+
+    .custom-card .card-header-custom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0faf5;
+    }
+
+    .custom-card .card-header-custom h5 {
+        margin: 0;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .custom-card .card-header-custom h5 i {
+        color: #27ae60;
+    }
+
+    .custom-card .card-header-custom .badge-count {
+        background: linear-gradient(135deg, #27ae60 0%, #2d7d46 100%);
+        color: white;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Class List Table - Green Theme */
+    .class-table {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .class-table thead {
+        background: linear-gradient(135deg, #1a472a 0%, #27ae60 100%);
+        color: white;
+    }
+
+    .class-table thead th {
+        padding: 15px 20px;
+        font-weight: 600;
+        border: none;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .class-table thead th i {
+        margin-right: 5px;
+    }
+
+    .class-table tbody td {
+        padding: 15px 20px;
+        vertical-align: middle;
+        border-bottom: 1px solid #ecf0f1;
+    }
+
+    .class-table tbody tr:hover {
+        background: #f0faf5;
+    }
+
+    .class-badge {
+        display: inline-block;
+        padding: 4px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .class-badge.active {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .class-badge.upcoming {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .class-badge.completed {
+        background: #e8f0fe;
+        color: #3498db;
+    }
+
+    .badge-teacher {
+        background: #d5f5e3;
+        color: #27ae60;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    /* Activity Timeline */
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e8f5ee;
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 25px;
+        padding-left: 15px;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -30px;
+        top: 5px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #27ae60;
+        border: 3px solid white;
+        box-shadow: 0 0 0 3px #27ae60;
+    }
+
+    .timeline-item.timeline-success::before {
+        background: #27ae60;
+        box-shadow: 0 0 0 3px #27ae60;
+    }
+
+    .timeline-item.timeline-warning::before {
+        background: #f39c12;
+        box-shadow: 0 0 0 3px #f39c12;
+    }
+
+    .timeline-item.timeline-danger::before {
+        background: #e74c3c;
+        box-shadow: 0 0 0 3px #e74c3c;
+    }
+
+    .timeline-item .timeline-time {
+        font-size: 12px;
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+
+    .timeline-item .timeline-content {
+        font-size: 14px;
+        color: #2c3e50;
+        margin-top: 3px;
+    }
+
+    .timeline-item .timeline-content strong {
+        color: #2c3e50;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .welcome-banner {
+            padding: 20px;
+        }
+
+        .welcome-banner .welcome-icon {
+            font-size: 50px;
+            right: 15px;
+        }
+
+        .stats-card .stats-number {
+            font-size: 24px;
+        }
+
+        .stats-card .stats-icon {
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            top: 15px;
+            right: 15px;
+        }
+
+        .action-card {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== WELCOME BANNER ===== -->
+<div class="welcome-banner">
+    <div class="welcome-icon">
+        <i class="fas fa-chalkboard-teacher"></i>
+    </div>
+    <h3>
+        <i class="fas fa-hand-wave me-2"></i>
+        Welcome back, {{ user.get_full_name|default:user.username }}! 
+    </h3>
+    <p>
+        <i class="fas fa-calendar-alt me-2"></i>
+        Today is {{ current_date|date:"l, F d, Y" }} - {{ current_time|time:"g:i A" }}
+        <span class="badge-today">
+            <i class="fas fa-clock me-1"></i>
+            {{ my_classes|length }} class{{ my_classes|length|pluralize }} assigned
+        </span>
+    </p>
+</div>
+
+<!-- ===== STATS CARDS ===== -->
+<div class="row g-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card">
+            <div class="stats-icon green">
+                <i class="fas fa-cubes"></i>
+            </div>
+            <div class="stats-number">{{ my_classes|length|default:0 }}</div>
+            <div class="stats-label">My Classes</div>
+            <span class="stats-trend up">
+                <i class="fas fa-arrow-up me-1"></i>Active
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-left-color: #3498db;">
+            <div class="stats-icon blue">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stats-number">{{ my_students|length|default:0 }}</div>
+            <div class="stats-label">My Students</div>
+            <span class="stats-trend up">
+                <i class="fas fa-arrow-up me-1"></i>Enrolled
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-left-color: #f39c12;">
+            <div class="stats-icon orange">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stats-number">{{ today_attendance|default:0 }}</div>
+            <div class="stats-label">Today's Attendance</div>
+            <span class="stats-trend neutral">
+                <i class="fas fa-minus me-1"></i>Recorded
+            </span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="stats-card" style="border-left-color: #9b59b6;">
+            <div class="stats-icon purple">
+                <i class="fas fa-percentage"></i>
+            </div>
+            <div class="stats-number">{{ attendance_rate|default:"0%" }}</div>
+            <div class="stats-label">Attendance Rate</div>
+            <span class="stats-trend up">
+                <i class="fas fa-arrow-up me-1"></i>{{ attendance_rate|default:"0%" }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== QUICK ACTION CARDS ===== -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="custom-card">
+            <div class="card-header-custom">
+                <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                <span class="badge-count">
+                    <i class="fas fa-arrow-right me-1"></i>Get Started
+                </span>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-3 col-sm-6">
+                    <a href="{% url 'attendance:teacher_attendance' %}" class="action-card">
+                        <div class="action-icon green">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="action-title">Take Attendance</div>
+                        <p class="action-desc">Mark attendance for your classes</p>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="{% url 'accounts:teacher_class_view' %}" class="action-card">
+                        <div class="action-icon blue">
+                            <i class="fas fa-cubes"></i>
+                        </div>
+                        <div class="action-title">My Classes</div>
+                        <p class="action-desc">See all your assigned classes</p>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="{% url 'accounts:teacher_student_view' %}" class="action-card">
+                        <div class="action-icon orange">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="action-title">My Students</div>
+                        <p class="action-desc">See all your students</p>
+                    </a>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <a href="#" class="action-card">
+                        <div class="action-icon purple">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="action-title">Reports</div>
+                        <p class="action-desc">View attendance reports</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== CLASSES LIST ===== -->
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="custom-card">
+            <div class="card-header-custom">
+                <h5><i class="fas fa-cubes me-2"></i>My Classes</h5>
+                <span class="badge-count">{{ my_classes|length }} Classes</span>
+            </div>
+            <div class="class-table">
+                {% if my_classes %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-tag"></i>Class Name</th>
+                                <th><i class="fas fa-book"></i>Course</th>
+                                <th><i class="fas fa-users"></i>Students</th>
+                                <th><i class="fas fa-clock"></i>Schedule</th>
+                                <th><i class="fas fa-circle"></i>Status</th>
+                                <th><i class="fas fa-cog"></i>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for class in my_classes %}
+                            <tr>
+                                <td><strong>{{ class.name }}</strong></td>
+                                <td>{{ class.course.name|default:"N/A" }}</td>
+                                <td>
+                                    <span class="badge-teacher">
+                                        <i class="fas fa-user me-1"></i>{{ class.students.count|default:0 }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <i class="far fa-clock me-1"></i>
+                                    {{ class.schedule|default:"TBA" }}
+                                </td>
+                                <td>
+                                    <span
+                                        class="class-badge {% if class.status == 'active' %}active{% elif class.status == 'upcoming' %}upcoming{% else %}completed{% endif %}">
+                                        {% if class.status == 'active' %}
+                                        <i class="fas fa-circle me-1" style="font-size: 8px;"></i>Active
+                                        {% elif class.status == 'upcoming' %}
+                                        <i class="fas fa-circle me-1" style="font-size: 8px;"></i>Upcoming
+                                        {% else %}
+                                        <i class="fas fa-circle me-1" style="font-size: 8px;"></i>Completed
+                                        {% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{% url 'attendance:teacher_take_attendance' class.id %}"
+                                        class="btn btn-sm btn-primary rounded-pill px-3" data-bs-toggle="tooltip"
+                                        title="Take Attendance">
+                                        <i class="fas fa-calendar-check me-1"></i>Mark
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-cubes fa-3x text-muted mb-3" style="opacity: 0.2; color: #27ae60 !important;"></i>
+                    <h6 class="text-muted">No classes assigned to you yet</h6>
+                    <p class="text-muted small">Contact admin to get class assignments</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RECENT ACTIVITY ===== -->
+    <div class="col-lg-4">
+        <div class="custom-card">
+            <div class="card-header-custom">
+                <h5><i class="fas fa-bell me-2"></i>Recent Activity</h5>
+                <span class="badge-count">
+                    <i class="fas fa-rotate me-1"></i>Latest
+                </span>
+            </div>
+            <div class="timeline">
+                {% if recent_activities %}
+                {% for activity in recent_activities %}
+                <div
+                    class="timeline-item {% if activity.type == 'attendance' %}timeline-success{% elif activity.type == 'warning' %}timeline-warning{% elif activity.type == 'danger' %}timeline-danger{% endif %}">
+                    <div class="timeline-time">
+                        <i class="far fa-clock me-1"></i>{{ activity.time|timesince }} ago
+                    </div>
+                    <div class="timeline-content">
+                        <strong>{{ activity.title }}</strong>
+                        <span class="text-muted">{{ activity.description }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-inbox fa-2x mb-2" style="opacity: 0.2; color: #27ae60;"></i>
+                    <p class="text-muted small mb-0">No recent activities</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+
+    // Animate stats cards on load
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.stats-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 150);
+        });
+    });
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function () {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function (alert) {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(function () {
+                alert.style.display = 'none';
+            }, 500);
+        });
+    }, 5000);
+
+    // Count animation for stats
+    function animateCount(element, target, duration = 1000) {
+        let start = 0;
+        const increment = target / (duration / 16);
+        const timer = setInterval(() => {
+            start += increment;
+            if (start >= target) {
+                start = target;
+                clearInterval(timer);
+            }
+            element.textContent = Math.round(start);
+        }, 16);
+    }
+
+    // Animate numbers when visible
+    document.addEventListener('DOMContentLoaded', function () {
+        const numberElements = document.querySelectorAll('.stats-number');
+        numberElements.forEach(el => {
+            const target = parseInt(el.textContent);
+            if (target > 0) {
+                animateCount(el, target);
+            }
+        });
+    });
+</script>
+{% endblock %}

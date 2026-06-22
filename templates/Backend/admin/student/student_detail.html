@@ -1,0 +1,278 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Student Details{% endblock %}
+{% block page_title %}Student Details{% endblock %}
+
+{% block extra_css %}
+<style>
+    .detail-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    .detail-card .detail-title {
+        font-weight: 600;
+        color: #2c3e50;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e8f0fe;
+        margin-bottom: 20px;
+    }
+
+    .detail-card .detail-title i {
+        color: #3498db;
+        margin-right: 10px;
+    }
+
+    .profile-avatar-large {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #e8f0fe;
+    }
+
+    .profile-avatar-placeholder {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 48px;
+        font-weight: 700;
+        border: 4px solid #e8f0fe;
+    }
+
+    .detail-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+
+    .detail-item .label {
+        color: #7f8c8d;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .detail-item .value {
+        font-weight: 500;
+        color: #2c3e50;
+        margin-top: 2px;
+    }
+
+    .status-badge-large {
+        padding: 6px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .status-badge-large.active {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .status-badge-large.inactive {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    .action-buttons .btn {
+        padding: 10px 25px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Profile & Quick Actions -->
+    <div class="col-lg-4">
+        <div class="detail-card text-center">
+            {% if student.profile_picture %}
+            <img src="{{ student.profile_picture.url }}" alt="Profile" class="profile-avatar-large mb-3">
+            {% else %}
+            <div class="profile-avatar-placeholder mx-auto mb-3">
+                {{ student.first_name|first|upper }}
+            </div>
+            {% endif %}
+
+            <h4 class="fw-bold mb-1">{{ student.get_full_name }}</h4>
+            <p class="text-muted">{{ student.student_id }}</p>
+
+            <span class="status-badge-large {% if student.is_active %}active{% else %}inactive{% endif %} mb-3">
+                {% if student.is_active %}
+                <i class="fas fa-circle me-1" style="font-size: 8px;"></i> Active
+                {% else %}
+                <i class="fas fa-circle me-1" style="font-size: 8px;"></i> Inactive
+                {% endif %}
+            </span>
+
+            <div class="action-buttons mt-3">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'students:student_edit' student.pk %}" class="btn btn-warning text-white">
+                        <i class="fas fa-edit me-2"></i>Edit Student
+                    </a>
+                    <a href="{% url 'students:student_toggle_status' student.pk %}"
+                        class="btn {% if student.is_active %}btn-danger{% else %}btn-success{% endif %}"
+                        onclick="return confirm('Are you sure you want to {% if student.is_active %}deactivate{% else %}activate{% endif %} this student?')">
+                        <i
+                            class="fas {% if student.is_active %}fa-user-slash{% else %}fa-user-check{% endif %} me-2"></i>
+                        {% if student.is_active %}Deactivate{% else %}Activate{% endif %}
+                    </a>
+                    <a href="{% url 'students:student_delete' student.pk %}" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Delete Student
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-title">
+                <i class="fas fa-calendar-alt"></i>Quick Info
+            </div>
+            <div class="detail-item">
+                <div class="label">Enrollment Date</div>
+                <div class="value">{{ student.enrollment_date|date:"F d, Y" }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="label">Days Enrolled</div>
+                <div class="value">{{ student.enrollment_date|timesince }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="label">Last Updated</div>
+                <div class="value">{{ student.updated_at|date:"F d, Y H:i" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details -->
+    <div class="col-lg-8">
+        <!-- Personal Information -->
+        <div class="detail-card">
+            <div class="detail-title">
+                <i class="fas fa-user-graduate"></i>Personal Information
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <div class="label">Full Name</div>
+                        <div class="value">{{ student.get_full_name }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Student ID</div>
+                        <div class="value"><span class="badge bg-secondary">{{ student.student_id }}</span></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Date of Birth</div>
+                        <div class="value">{{ student.date_of_birth|date:"F d, Y" }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Gender</div>
+                        <div class="value">{{ student.get_gender_display }}</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <div class="label">Email</div>
+                        <div class="value">{{ student.email }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Phone</div>
+                        <div class="value">{{ student.phone }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Class</div>
+                        <div class="value">
+                            {% if student.class_enrolled %}
+                            <span class="badge bg-info text-white">{{ student.class_enrolled.name }}</span>
+                            {% else %}
+                            <span class="text-muted">Not Assigned</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="label">Address</div>
+                        <div class="value">{{ student.address|default:"Not provided" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Guardian Information -->
+        <div class="detail-card">
+            <div class="detail-title">
+                <i class="fas fa-user-tie"></i>Guardian Information
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <div class="label">Guardian Name</div>
+                        <div class="value">{{ student.guardian_name }}</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <div class="label">Guardian Phone</div>
+                        <div class="value">{{ student.guardian_phone }}</div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="detail-item">
+                        <div class="label">Guardian Email</div>
+                        <div class="value">{{ student.guardian_email|default:"Not provided" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Add to student_detail.html -->
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-qrcode me-2"></i>QR Code
+            </div>
+            <div class="card-body text-center">
+                {% if student.qr_code %}
+                <img src="{{ student.qr_code.url }}" alt="QR Code"
+                    style="max-width: 200px; border: 1px solid #ddd; padding: 10px; border-radius: 8px;">
+                <div class="mt-3">
+                    <!-- In student_detail.html, fix the download QR button -->
+                    <a href="{% url 'students:download_qr_code' student.pk %}" class="btn btn-success">
+                        <i class="fas fa-download me-2"></i>Download QR
+                    </a>
+                    <button class="btn btn-primary" onclick="window.print()">
+                        <i class="fas fa-print me-2"></i>Print QR
+                    </button>
+                </div>
+                {% else %}
+                <p class="text-muted">No QR code generated yet.</p>
+                <a href="{% url 'students:generate_student_qr' student.id %}" class="btn btn-primary">
+                    <i class="fas fa-qrcode me-2"></i>Generate QR Code
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="detail-card">
+            <div class="detail-title">
+                <i class="fas fa-clock"></i>Recent Activity
+            </div>
+            <div class="text-center py-3">
+                <i class="fas fa-calendar-alt fa-2x text-muted mb-2" style="opacity: 0.3;"></i>
+                <p class="text-muted">Attendance records will appear here</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

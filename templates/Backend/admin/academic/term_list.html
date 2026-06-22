@@ -1,0 +1,262 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Term Management{% endblock %}
+{% block page_title %}Term Management{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        border-left: 4px solid #3498db;
+        transition: all 0.3s ease;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-card .stats-number {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .stats-card .stats-label {
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .status-badge {
+        padding: 3px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .status-badge.active {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .status-badge.inactive {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    .status-badge.current {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .term-badge {
+        padding: 2px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .term-badge.fall {
+        background: #fdebd0;
+        color: #e67e22;
+    }
+
+    .term-badge.spring {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .term-badge.summer {
+        background: #e8f0fe;
+        color: #3498db;
+    }
+
+    .term-badge.winter {
+        background: #e8daef;
+        color: #8e44ad;
+    }
+
+    .table-action-btn {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        transition: all 0.3s;
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .table-action-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .search-filters {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-number">{{ total|default:0 }}</div>
+            <div class="stats-label">Total Terms</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card" style="border-left-color: #27ae60;">
+            <div class="stats-number">{{ active|default:0 }}</div>
+            <div class="stats-label">Active Terms</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card" style="border-left-color: #f39c12;">
+            <div class="stats-number">{{ current|default:0 }}</div>
+            <div class="stats-label">Current Term</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card" style="border-left-color: #e74c3c;">
+            <div class="stats-number">{{ inactive|default:0 }}</div>
+            <div class="stats-label">Inactive Terms</div>
+        </div>
+    </div>
+</div>
+
+<!-- Actions -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="{% url 'classes:term_add' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Add Term
+    </a>
+    <span class="text-muted">Showing {{ terms.start_index }}-{{ terms.end_index }} of {{ terms.paginator.count }}</span>
+</div>
+
+<!-- Table -->
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Name</th>
+                        <th>Term</th>
+                        <th>Academic Year</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th style="width: 160px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for term in terms %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><strong>{{ term.name }}</strong></td>
+                        <td>
+                            <span class="term-badge {{ term.term_type }}">
+                                {{ term.get_term_type_display }}
+                            </span>
+                        </td>
+                        <td>{{ term.academic_year }}</td>
+                        <td>{{ term.start_date|date:"M d, Y" }}</td>
+                        <td>{{ term.end_date|date:"M d, Y" }}</td>
+                        <td>
+                            <span class="status-badge 
+                                {% if term.is_current %}current
+                                {% elif term.is_active %}active
+                                {% else %}inactive{% endif %}">
+                                {% if term.is_current %}Current
+                                {% elif term.is_active %}Active
+                                {% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                {% if not term.is_current %}
+                                <a href="{% url 'classes:term_set_current' term.pk %}"
+                                    class="btn btn-sm btn-success table-action-btn"
+                                    onclick="return confirm('Set this as current term?')" title="Set Current">
+                                    <i class="fas fa-star"></i>
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'classes:term_edit' term.pk %}"
+                                    class="btn btn-sm btn-warning table-action-btn" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'classes:term_toggle_status' term.pk %}"
+                                    class="btn btn-sm {% if term.is_active %}btn-danger{% else %}btn-success{% endif %} table-action-btn"
+                                    onclick="return confirm('Are you sure you want to toggle the status?')"
+                                    title="Toggle Status">
+                                    <i class="fas {% if term.is_active %}fa-times{% else %}fa-check{% endif %}"></i>
+                                </a>
+                                <a href="{% url 'classes:term_delete' term.pk %}"
+                                    class="btn btn-sm btn-danger table-action-btn"
+                                    onclick="return confirm('Delete this term?')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-5">
+                            <i class="fas fa-calendar-alt fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
+                            <h6>No terms found</h6>
+                            <p class="text-muted small">Click "Add Term" to get started.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if terms.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">&laquo; First</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ terms.previous_page_number }}">Previous</a>
+        </li>
+        {% endif %}
+
+        {% for num in terms.paginator.page_range %}
+        {% if terms.number == num %}
+        <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+        </li>
+        {% elif num > terms.number|add:'-3' and num < terms.number|add:'3' %} <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if terms.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ terms.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ terms.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+            {% endif %}
+    </ul>
+</nav>
+
+{% endblock %}

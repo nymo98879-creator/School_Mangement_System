@@ -14,9 +14,33 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+"""
+URL configuration for School_Management_System project.
+"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.shortcuts import redirect
+from django.views.generic import RedirectView  # Correct import
 
 urlpatterns = [
+    # Redirect root to login
+    path('', lambda request: redirect('accounts:login')),
+    
+    # Django admin panel
     path('admin/', admin.site.urls),
+    
+    # Your custom apps
+    path('', include('accounts.urls')),
+    path('students/', include('students.urls')),
+    path('teachers/', include('teachers.urls')),
+    path('courses/', include('courses.urls')),
+    path('classes/', include('classes.urls')),
+    path('attendance/', include('attendance.urls')),
 ]
+
+# Serve media and static files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
