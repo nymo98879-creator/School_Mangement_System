@@ -173,6 +173,48 @@
         font-weight: 500;
     }
 
+    /* ===== SEARCH & FILTER ===== */
+    .search-filters {
+        background: white;
+        border-radius: 16px;
+        padding: 20px 25px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+        margin-bottom: 25px;
+    }
+
+    .search-filters .search-input {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        transition: all 0.2s;
+        background: #fafbfc;
+        width: 100%;
+    }
+
+    .search-filters .search-input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .search-filters .form-select {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        background: #fafbfc;
+        transition: all 0.2s;
+        width: 100%;
+    }
+
+    .search-filters .form-select:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
     /* ===== CLASS CARD GRID ===== */
     .class-grid {
         display: grid;
@@ -283,11 +325,6 @@
         color: #27ae60;
     }
 
-    .class-card .card-body .class-info .badge-status.completed {
-        background: #e8f0fe;
-        color: #3498db;
-    }
-
     .class-card .card-body .class-info .badge-status.inactive {
         background: #fadbd8;
         color: #e74c3c;
@@ -356,27 +393,6 @@
         background: linear-gradient(90deg, #e74c3c, #ec7063);
     }
 
-    .progress-custom .progress-bar-custom::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        animation: shimmer 2s infinite;
-    }
-
-    @keyframes shimmer {
-        0% {
-            transform: translateX(-100%);
-        }
-
-        100% {
-            transform: translateX(100%);
-        }
-    }
-
     /* ===== CARD FOOTER ===== */
     .class-card .card-footer {
         padding: 14px 22px;
@@ -404,24 +420,6 @@
         flex: 1;
         min-width: 80px;
         gap: 6px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .class-card .card-footer .btn-action::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-    }
-
-    .class-card .card-footer .btn-action:hover::after {
-        transform: translateX(0);
     }
 
     .class-card .card-footer .btn-action:hover {
@@ -440,15 +438,6 @@
 
     .class-card .card-footer .btn-action.btn-success {
         background: linear-gradient(135deg, #2c3e50, #34495e);
-    }
-
-    .class-card .card-footer .btn-action.btn-warning {
-        background: linear-gradient(135deg, #f39c12, #f7dc6f);
-        color: #2c3e50;
-    }
-
-    .class-card .card-footer .btn-action.btn-danger {
-        background: linear-gradient(135deg, #e74c3c, #ec7063);
     }
 
     /* ===== SECTION HEADER ===== */
@@ -506,18 +495,39 @@
         color: #7f8c8d;
     }
 
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        display: none;
+        grid-column: 1 / -1;
+    }
+
+    .no-results i {
+        font-size: 56px;
+        color: #e2e8f0;
+        margin-bottom: 16px;
+    }
+
+    .no-results h5 {
+        color: #1a1a2e;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .no-results p {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .no-results.show {
+        display: block;
+    }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 992px) {
         .class-grid {
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        }
-
-        .welcome-banner {
-            padding: 25px;
-        }
-
-        .welcome-banner h4 {
-            font-size: 20px;
         }
     }
 
@@ -530,13 +540,8 @@
             grid-template-columns: 1fr 1fr;
         }
 
-        .welcome-banner .welcome-stats {
-            gap: 15px;
-        }
-
-        .welcome-banner .welcome-stats .stat-item {
-            padding: 6px 14px;
-            font-size: 12px;
+        .search-filters {
+            padding: 15px 20px;
         }
     }
 
@@ -567,10 +572,6 @@
         .section-header {
             flex-direction: column;
             align-items: flex-start;
-        }
-
-        .section-header h5 {
-            font-size: 17px;
         }
 
         .welcome-banner {
@@ -642,14 +643,13 @@
                         <i class="fas fa-calendar-day"></i>
                         <span>{{ today|date:"l, F d, Y" }}</span>
                     </div>
-                    <!-- FIX: Use date format only for date objects -->
                     <div class="stat-item">
                         <i class="fas fa-clock"></i>
                         <span>{{ current_time|time:"h:i A"|default:"Current Time" }}</span>
                     </div>
                     <div class="stat-item">
                         <i class="fas fa-cubes"></i>
-                        <span>{{ classes|length }} Class{{ classes|length|pluralize }}</span>
+                        <span id="totalClassCount">{{ classes|length }} Class{{ classes|length|pluralize }}</span>
                     </div>
                 </div>
             </div>
@@ -667,7 +667,7 @@
             <div class="stats-icon green">
                 <i class="fas fa-cubes"></i>
             </div>
-            <div class="stats-number">{{ classes|length|default:0 }}</div>
+            <div class="stats-number" id="totalClasses">{{ classes|length|default:0 }}</div>
             <div class="stats-label">My Classes</div>
             <span class="stats-trend up">
                 <i class="fas fa-arrow-up me-1"></i> Active
@@ -679,7 +679,7 @@
             <div class="stats-icon blue">
                 <i class="fas fa-users"></i>
             </div>
-            <div class="stats-number">{{ total_students|default:0 }}</div>
+            <div class="stats-number" id="totalStudents">{{ total_students|default:0 }}</div>
             <div class="stats-label">Total Students</div>
             <span class="stats-trend up">
                 <i class="fas fa-arrow-up me-1"></i> Enrolled
@@ -691,7 +691,7 @@
             <div class="stats-icon orange">
                 <i class="fas fa-calendar-check"></i>
             </div>
-            <div class="stats-number">{{ today_attendance|default:0 }}</div>
+            <div class="stats-number" id="todayAttendance">{{ today_attendance|default:0 }}</div>
             <div class="stats-label">Today's Attendance</div>
             <span class="stats-trend neutral">
                 <i class="fas fa-minus me-1"></i> Recorded
@@ -703,11 +703,43 @@
             <div class="stats-icon purple">
                 <i class="fas fa-percentage"></i>
             </div>
-            <div class="stats-number">{{ attendance_rate|default:"0%" }}</div>
+            <div class="stats-number" id="attendanceRate">{{ attendance_rate|default:"0%" }}</div>
             <div class="stats-label">Attendance Rate</div>
             <span class="stats-trend up">
                 <i class="fas fa-arrow-up me-1"></i> {{ attendance_rate|default:"0%" }}
             </span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SEARCH & FILTER ===== -->
+<div class="search-filters">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label fw-bold">Search</label>
+            <input type="text" class="form-control search-input" id="searchInput"
+                placeholder="Search by class name or code...">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Status</label>
+            <select class="form-select" id="statusFilter">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label fw-bold">Sort By</label>
+            <select class="form-select" id="sortFilter">
+                <option value="name">Name</option>
+                <option value="students">Students</option>
+                <option value="status">Status</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" id="clearFiltersBtn">
+                <i class="fas fa-undo"></i> Reset
+            </button>
         </div>
     </div>
 </div>
@@ -718,23 +750,25 @@
         <i class="fas fa-calendar-check"></i>
         My Classes
     </h5>
-    <span class="badge-count">
+    <span class="badge-count" id="visibleClassCount">
         {{ classes|length }} Class{{ classes|length|pluralize }}
     </span>
 </div>
 <hr class="mt-2 mb-4">
 
 <!-- ===== CLASS CARDS GRID ===== -->
-<div class="class-grid">
+<div class="class-grid" id="classGrid">
     {% if classes %}
     {% for class in classes %}
     {% with student_count=class.get_student_count capacity=class.capacity|default:30 %}
-    <div class="class-card" data-class-id="{{ class.id }}">
+    <div class="class-card" data-class-id="{{ class.id }}" data-name="{{ class.name|lower }}"
+        data-code="{{ class.code|lower|default:'' }}"
+        data-status="{% if class.is_active %}active{% else %}inactive{% endif %}" data-students="{{ student_count }}">
         <!-- Card Header -->
         <div class="card-header">
             <div class="class-title">
                 <i class="fas fa-cube"></i>
-                {{ class.name }}
+                <span class="class-name-text">{{ class.name }}</span>
                 <span class="class-code">{{ class.code|default:"" }}</span>
             </div>
         </div>
@@ -778,7 +812,7 @@
                     {% if student_count >= capacity %}full
                     {% elif student_count >= capacity|add:" -5" %}near-full {% else %}available{% endif %}">
                     <i class="fas fa-user"></i>
-                    {{ student_count }}/{{ capacity }}
+                    <span class="student-count-text">{{ student_count }}</span>/{{ capacity }}
                     {% if student_count >= capacity %}
                     <i class="fas fa-exclamation-circle ms-1"></i>
                     {% endif %}
@@ -845,6 +879,13 @@
     {% endif %}
 </div>
 
+<!-- No Results Message -->
+<div class="no-results" id="noResults">
+    <i class="fas fa-search"></i>
+    <h5>No Classes Found</h5>
+    <p>Try adjusting your search or filter criteria.</p>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
@@ -901,9 +942,117 @@
 
         const numberElements = document.querySelectorAll('.stats-number');
         numberElements.forEach(el => {
-            const target = parseInt(el.textContent.replace(/,/g, ''));
+            const target = parseInt(el.textContent.replace(/,/g, '').replace('%', ''));
             if (target > 0 && !isNaN(target)) {
-                animateCount(el, target);
+                if (el.id === 'attendanceRate') {
+                    // Handle percentage
+                    animateCount(el, target);
+                } else {
+                    animateCount(el, target);
+                }
+            }
+        });
+
+        // ===== FILTER FUNCTION =====
+        function filterClasses() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+
+            const cards = document.querySelectorAll('.class-card');
+            let visibleCount = 0;
+            let totalStudents = 0;
+
+            cards.forEach(function (card) {
+                const name = card.dataset.name || '';
+                const code = card.dataset.code || '';
+                const status = card.dataset.status || '';
+                const students = parseInt(card.dataset.students || 0);
+
+                let show = true;
+
+                // Search filter
+                if (searchTerm) {
+                    const match = name.includes(searchTerm) || code.includes(searchTerm);
+                    if (!match) show = false;
+                }
+
+                // Status filter
+                if (statusFilter && status !== statusFilter) show = false;
+
+                card.style.display = show ? '' : 'none';
+                if (show) {
+                    visibleCount++;
+                    totalStudents += students;
+                }
+            });
+
+            // Update counts
+            document.getElementById('visibleClassCount').textContent = `${visibleCount} Class${visibleCount !== 1 ? 'es' : ''}`;
+            document.getElementById('totalClassCount').textContent = `${visibleCount} Class${visibleCount !== 1 ? 'es' : ''}`;
+            document.getElementById('totalClasses').textContent = visibleCount;
+            document.getElementById('totalStudents').textContent = totalStudents;
+
+            // Show/hide no results message
+            const noResults = document.getElementById('noResults');
+            const classGrid = document.getElementById('classGrid');
+            const emptyState = document.querySelector('.empty-state');
+
+            if (visibleCount === 0 && cards.length > 0) {
+                noResults.classList.add('show');
+                if (emptyState) emptyState.style.display = 'none';
+            } else {
+                noResults.classList.remove('show');
+                if (emptyState) emptyState.style.display = '';
+            }
+
+            // Sort
+            if (sortFilter) {
+                const grid = document.getElementById('classGrid');
+                const visibleCards = Array.from(cards).filter(card => card.style.display !== 'none');
+
+                visibleCards.sort((a, b) => {
+                    if (sortFilter === 'name') {
+                        return (a.dataset.name || '').localeCompare(b.dataset.name || '');
+                    } else if (sortFilter === 'students') {
+                        return (parseInt(b.dataset.students || 0) - parseInt(a.dataset.students || 0));
+                    } else if (sortFilter === 'status') {
+                        return (a.dataset.status || '').localeCompare(b.dataset.status || '');
+                    }
+                    return 0;
+                });
+
+                visibleCards.forEach(card => grid.appendChild(card));
+            }
+        }
+
+        // ===== EVENT LISTENERS =====
+        const searchInput = document.getElementById('searchInput');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterClasses, 300);
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', filterClasses);
+        document.getElementById('sortFilter').addEventListener('change', filterClasses);
+
+        // ===== CLEAR FILTERS =====
+        document.getElementById('clearFiltersBtn').addEventListener('click', function () {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('sortFilter').value = '';
+            filterClasses();
+            searchInput.focus();
+        });
+
+        // ===== KEYBOARD SHORTCUT: Escape to clear search =====
+        searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                this.blur();
+                filterClasses();
             }
         });
 
@@ -913,6 +1062,9 @@
                 this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
             });
         });
+
+        // ===== INITIAL FILTER =====
+        setTimeout(filterClasses, 500);
     });
 </script>
 {% endblock %}

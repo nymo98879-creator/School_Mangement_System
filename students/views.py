@@ -52,10 +52,10 @@ def student_list(request):
     
     if form.is_valid():
         search = form.cleaned_data.get('search')
-        class_filter = form.cleaned_data.get('class_filter')
+        major_filter = form.cleaned_data.get('major_filter')  # Changed
         gender_filter = form.cleaned_data.get('gender_filter')
         status_filter = form.cleaned_data.get('status_filter')
-        qr_status = form.cleaned_data.get('qr_status')
+        qr_status = form.cleaned_data.get('has_qr')  # Fixed field name
         
         if search:
             students = students.filter(
@@ -65,9 +65,9 @@ def student_list(request):
                 Q(email__icontains=search)
             )
         
-        if class_filter:
-            students = students.filter(class_enrolled=class_filter)
-        
+        if major_filter:  # Changed
+            students = students.filter(major=major_filter)  
+            
         if gender_filter:
             students = students.filter(gender=gender_filter)
         
@@ -412,7 +412,7 @@ def student_export_csv(request):
     writer = csv.writer(response)
     writer.writerow([
         'ID', 'Student ID', 'Full Name', 'Email', 'Phone', 'Gender', 
-        'Date of Birth', 'Class', 'Guardian Name', 'Guardian Phone',
+        'Date of Birth', 'Major', 'Guardian Name', 'Guardian Phone',
         'Guardian Email', 'Address', 'QR Registered', 'Enrollment Date', 'Status'
     ])
     
@@ -426,7 +426,7 @@ def student_export_csv(request):
             student.phone,
             student.get_gender_display(),
             student.date_of_birth,
-            student.class_enrolled.name if student.class_enrolled else 'Not Assigned',
+            student.major.name if student.major else 'Not Assigned',
             student.guardian_name,
             student.guardian_phone,
             student.guardian_email or '',

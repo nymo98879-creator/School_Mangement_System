@@ -99,7 +99,7 @@ urlpatterns = [
     path('<int:class_pk>/remove-student/<int:student_pk>/', views.class_remove_student, name='class_remove_student'),
     
     # ===== ATTENDANCE URLs =====
-    path('save-attendance/<int:class_id>/', views.save_attendance, name='save_attendance'),
+      path('save-attendance/<int:class_id>/', views.save_attendance, name='save_attendance'),
     path('remark/save/<int:class_pk>/<int:student_pk>/', views.save_remark, name='save_remark'),
     
     # ===== BUILDING URLs =====

@@ -121,6 +121,18 @@
         background: linear-gradient(135deg, #9b59b6, #7d3c98);
     }
 
+    .teacher-avatar.green {
+        background: linear-gradient(135deg, #27ae60, #1e8449);
+    }
+
+    .teacher-avatar.red {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+
+    .teacher-avatar.teal {
+        background: linear-gradient(135deg, #1abc9c, #16a085);
+    }
+
     .status-badge {
         padding: 3px 12px;
         border-radius: 12px;
@@ -213,6 +225,39 @@
         margin-bottom: 20px;
     }
 
+    .search-filters .search-input {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        transition: all 0.2s;
+        background: #fafbfc;
+        width: 100%;
+    }
+
+    .search-filters .search-input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .search-filters .form-select {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        background: #fafbfc;
+        transition: all 0.2s;
+        width: 100%;
+    }
+
+    .search-filters .form-select:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
     .specialization-tag {
         background: #e8f0fe;
         color: #3498db;
@@ -230,6 +275,34 @@
     .department-head-icon {
         color: #3498db;
         margin-left: 4px;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        display: none;
+    }
+
+    .no-results i {
+        font-size: 56px;
+        color: #e2e8f0;
+        margin-bottom: 16px;
+    }
+
+    .no-results h5 {
+        color: #1a1a2e;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .no-results p {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .no-results.show {
+        display: block;
     }
 
     /* ===== RESPONSIVE ===== */
@@ -319,29 +392,50 @@
 
 <!-- ===== SEARCH & FILTER ===== -->
 <div class="search-filters">
-    <form method="GET" class="row g-3">
+    <div class="row g-3 align-items-end">
         <div class="col-md-4">
             <label class="form-label fw-bold">Search</label>
-            {{ form.search }}
+            <input type="text" class="form-control search-input" id="searchInput"
+                placeholder="Search by name, ID, or email...">
         </div>
         <div class="col-md-2">
             <label class="form-label fw-bold">Gender</label>
-            {{ form.gender_filter }}
+            <select class="form-select" id="genderFilter">
+                <option value="">All Genders</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+            </select>
         </div>
         <div class="col-md-2">
             <label class="form-label fw-bold">Position</label>
-            {{ form.position_filter }}
+            <select class="form-select" id="positionFilter">
+                <option value="">All Positions</option>
+                <option value="dean">Dean</option>
+                <option value="associate_dean">Associate Dean</option>
+                <option value="department_head">Department Head</option>
+                <option value="professor">Professor</option>
+                <option value="associate_professor">Associate Professor</option>
+                <option value="assistant_professor">Assistant Professor</option>
+                <option value="lecturer">Lecturer</option>
+                <option value="instructor">Instructor</option>
+                <option value="teaching_assistant">Teaching Assistant</option>
+            </select>
         </div>
         <div class="col-md-2">
             <label class="form-label fw-bold">Status</label>
-            {{ form.status_filter }}
+            <select class="form-select" id="statusFilter">
+                <option value="">All</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
         </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="fas fa-search"></i>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" id="clearFiltersBtn">
+                <i class="fas fa-undo"></i> Reset
             </button>
         </div>
-    </form>
+    </div>
 </div>
 
 <!-- ===== ACTIONS BAR ===== -->
@@ -353,10 +447,13 @@
         <a href="{% url 'teachers:teacher_export_csv' %}" class="btn btn-success">
             <i class="fas fa-file-export me-2"></i>Export CSV
         </a>
+        <a href="{% url 'teachers:teacher_list' %}" class="btn btn-secondary" id="refreshBtn">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+        </a>
     </div>
     <div>
-        <span class="text-muted">
-            Showing {{ teachers.start_index }}-{{ teachers.end_index }} of {{ teachers.paginator.count }}
+        <span class="text-muted" id="resultCount">
+            Showing <span id="visibleCount">0</span> of <span id="totalCount">{{ teachers.paginator.count }}</span>
         </span>
     </div>
 </div>
@@ -379,9 +476,12 @@
                         <th style="width: 180px;">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tableBody">
                     {% for teacher in teachers %}
-                    <tr>
+                    <tr class="teacher-row" data-name="{{ teacher.get_full_name|lower }}"
+                        data-email="{{ teacher.email|lower }}" data-id="{{ teacher.teacher_id|lower }}"
+                        data-gender="{{ teacher.gender }}" data-position="{{ teacher.position }}"
+                        data-status="{% if teacher.is_active %}active{% else %}inactive{% endif %}">
                         <td>{{ forloop.counter }}</td>
                         <td>
                             <div class="d-flex align-items-center gap-2">
@@ -389,7 +489,7 @@
                                 <img src="{{ teacher.profile_picture.url }}" alt="Avatar" class="rounded-circle"
                                     width="40" height="40" style="object-fit: cover;">
                                 {% else %}
-                                <div class="teacher-avatar {% cycle 'blue' 'orange' 'purple' %}">
+                                <div class="teacher-avatar {% cycle 'blue' 'orange' 'purple' 'green' 'red' 'teal' %}">
                                     {{ teacher.first_name|first|upper }}
                                 </div>
                                 {% endif %}
@@ -463,6 +563,13 @@
     </div>
 </div>
 
+<!-- No Results Message -->
+<div class="no-results" id="noResults">
+    <i class="fas fa-search"></i>
+    <h5>No Teachers Found</h5>
+    <p>Try adjusting your search or filter criteria.</p>
+</div>
+
 <!-- ===== PAGINATION ===== -->
 {% if teachers.has_other_pages %}
 <nav class="mt-4">
@@ -503,16 +610,14 @@
 
 {% block extra_js %}
 <script>
-    // Initialize tooltips
     document.addEventListener('DOMContentLoaded', function () {
+        // ===== TOOLTIPS =====
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
-    });
 
-    // Animate stats cards on load
-    document.addEventListener('DOMContentLoaded', function () {
+        // ===== ANIMATE STATS CARDS =====
         const cards = document.querySelectorAll('.stats-card');
         cards.forEach((card, index) => {
             card.style.opacity = '0';
@@ -523,24 +628,21 @@
                 card.style.transform = 'translateY(0)';
             }, index * 150);
         });
-    });
 
-    // Count animation for stats
-    function animateCount(element, target, duration = 1000) {
-        let start = 0;
-        const increment = target / (duration / 16);
-        const timer = setInterval(() => {
-            start += increment;
-            if (start >= target) {
-                start = target;
-                clearInterval(timer);
-            }
-            element.textContent = Math.round(start);
-        }, 16);
-    }
+        // ===== COUNT ANIMATION =====
+        function animateCount(element, target, duration = 1000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    start = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(start);
+            }, 16);
+        }
 
-    // Animate numbers when visible
-    document.addEventListener('DOMContentLoaded', function () {
         const numberElements = document.querySelectorAll('.stats-number');
         numberElements.forEach(el => {
             const target = parseInt(el.textContent);
@@ -548,6 +650,107 @@
                 animateCount(el, target);
             }
         });
+
+        // ===== FILTER FUNCTION =====
+        function filterTeachers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const genderFilter = document.getElementById('genderFilter').value;
+            const positionFilter = document.getElementById('positionFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const rows = document.querySelectorAll('.teacher-row');
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const name = row.dataset.name || '';
+                const email = row.dataset.email || '';
+                const id = row.dataset.id || '';
+                const gender = row.dataset.gender || '';
+                const position = row.dataset.position || '';
+                const status = row.dataset.status || '';
+
+                let show = true;
+
+                // Search filter
+                if (searchTerm) {
+                    const match = name.includes(searchTerm) || email.includes(searchTerm) || id.includes(searchTerm);
+                    if (!match) show = false;
+                }
+
+                // Gender filter
+                if (genderFilter && gender !== genderFilter) show = false;
+
+                // Position filter
+                if (positionFilter && position !== positionFilter) show = false;
+
+                // Status filter
+                if (statusFilter && status !== statusFilter) show = false;
+
+                row.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
+            });
+
+            // Update visible count
+            document.getElementById('visibleCount').textContent = visibleCount;
+
+            // Show/hide no results message
+            const noResults = document.getElementById('noResults');
+            if (visibleCount === 0 && rows.length > 0) {
+                noResults.classList.add('show');
+            } else {
+                noResults.classList.remove('show');
+            }
+        }
+
+        // ===== EVENT LISTENERS =====
+        const searchInput = document.getElementById('searchInput');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterTeachers, 300);
+        });
+
+        // Filter dropdowns
+        document.getElementById('genderFilter').addEventListener('change', filterTeachers);
+        document.getElementById('positionFilter').addEventListener('change', filterTeachers);
+        document.getElementById('statusFilter').addEventListener('change', filterTeachers);
+
+        // Clear filters button
+        document.getElementById('clearFiltersBtn').addEventListener('click', function () {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('genderFilter').value = '';
+            document.getElementById('positionFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            filterTeachers();
+            searchInput.focus();
+        });
+
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('searchInput').value = '';
+            document.getElementById('genderFilter').value = '';
+            document.getElementById('positionFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            filterTeachers();
+            searchInput.focus();
+        });
+
+        // ===== KEYBOARD SHORTCUT: Escape to clear search =====
+        searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                this.blur();
+                filterTeachers();
+            }
+        });
+
+        // ===== UPDATE TOTAL COUNT =====
+        document.getElementById('totalCount').textContent = document.querySelectorAll('.teacher-row').length;
+
+        // ===== INITIAL FILTER =====
+        filterTeachers();
     });
 </script>
 {% endblock %}

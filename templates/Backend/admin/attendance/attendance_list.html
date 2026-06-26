@@ -314,6 +314,34 @@
         border-bottom: none;
     }
 
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        display: none;
+    }
+
+    .no-results i {
+        font-size: 56px;
+        color: #e2e8f0;
+        margin-bottom: 16px;
+    }
+
+    .no-results h5 {
+        color: #1a1a2e;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .no-results p {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .no-results.show {
+        display: block;
+    }
+
     /* ===== STATUS BADGES ===== */
     .status-badge {
         padding: 4px 16px;
@@ -594,7 +622,7 @@
             <div class="stats-icon blue">
                 <i class="fas fa-list"></i>
             </div>
-            <div class="stats-number">{{ total_records|default:attendances.count }}</div>
+            <div class="stats-number" id="totalRecords">{{ total_records|default:attendances.count }}</div>
             <div class="stats-label">Total Records</div>
             <span class="stats-trend up">
                 <i class="fas fa-arrow-up me-1"></i> All Time
@@ -606,7 +634,7 @@
             <div class="stats-icon green">
                 <i class="fas fa-check-circle"></i>
             </div>
-            <div class="stats-number">{{ present_count|default:0 }}</div>
+            <div class="stats-number" id="presentCount">{{ present_count|default:0 }}</div>
             <div class="stats-label">Present</div>
             <span class="stats-trend up">
                 <i class="fas fa-arrow-up me-1"></i> {{ present_percentage|default:0 }}%
@@ -618,7 +646,7 @@
             <div class="stats-icon red">
                 <i class="fas fa-times-circle"></i>
             </div>
-            <div class="stats-number">{{ absent_count|default:0 }}</div>
+            <div class="stats-number" id="absentCount">{{ absent_count|default:0 }}</div>
             <div class="stats-label">Absent</div>
             <span class="stats-trend down">
                 <i class="fas fa-arrow-down me-1"></i> {{ absent_percentage|default:0 }}%
@@ -630,7 +658,7 @@
             <div class="stats-icon orange">
                 <i class="fas fa-clock"></i>
             </div>
-            <div class="stats-number">{{ late_count|default:0 }}</div>
+            <div class="stats-number" id="lateCount">{{ late_count|default:0 }}</div>
             <div class="stats-label">Late</div>
             <span class="stats-trend neutral">
                 <i class="fas fa-minus me-1"></i> {{ late_percentage|default:0 }}%
@@ -641,41 +669,37 @@
 
 <!-- ===== SEARCH FILTERS ===== -->
 <div class="search-filters">
-    <form method="GET" class="filter-group">
+    <div class="filter-group">
         <div class="form-group">
-            <label for="search"><i class="fas fa-search me-1" style="color: #3498db;"></i> Search</label>
-            <input type="text" class="form-control" id="search" name="search"
-                placeholder="Search by student or class..." value="{{ search|default:'' }}">
+            <label for="searchInput"><i class="fas fa-search me-1" style="color: #3498db;"></i> Search</label>
+            <input type="text" class="form-control" id="searchInput" placeholder="Search by student or class..."
+                value="{{ search|default:'' }}">
         </div>
         <div class="form-group">
-            <label for="status"><i class="fas fa-filter me-1" style="color: #f39c12;"></i> Status</label>
-            <select class="form-select" id="status" name="status">
+            <label for="statusFilter"><i class="fas fa-filter me-1" style="color: #f39c12;"></i> Status</label>
+            <select class="form-select" id="statusFilter">
                 <option value="">All Status</option>
-                <option value="present" {% if status == 'present' %}selected{% endif %}>Present</option>
-                <option value="absent" {% if status == 'absent' %}selected{% endif %}>Absent</option>
-                <option value="late" {% if status == 'late' %}selected{% endif %}>Late</option>
-                <option value="excused" {% if status == 'excused' %}selected{% endif %}>Excused</option>
+                <option value="present">Present</option>
+                <option value="absent">Absent</option>
+                <option value="late">Late</option>
+                <option value="excused">Excused</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="date_from"><i class="fas fa-calendar-alt me-1" style="color: #27ae60;"></i> From</label>
-            <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from|default:'' }}">
+            <label for="dateFrom"><i class="fas fa-calendar-alt me-1" style="color: #27ae60;"></i> From</label>
+            <input type="date" class="form-control" id="dateFrom" value="{{ date_from|default:'' }}">
         </div>
         <div class="form-group">
-            <label for="date_to"><i class="fas fa-calendar-alt me-1" style="color: #e74c3c;"></i> To</label>
-            <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to|default:'' }}">
+            <label for="dateTo"><i class="fas fa-calendar-alt me-1" style="color: #e74c3c;"></i> To</label>
+            <input type="date" class="form-control" id="dateTo" value="{{ date_to|default:'' }}">
         </div>
         <div class="form-group" style="flex: 0 0 auto;">
-            <button type="submit" class="btn-search">
-                <i class="fas fa-search"></i> Search
+            <button class="btn btn-primary" id="clearFiltersBtn"
+                style="height: 42px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border-radius: 10px;">
+                <i class="fas fa-undo"></i> Reset
             </button>
         </div>
-        <div class="form-group" style="flex: 0 0 auto;">
-            <a href="{% url 'accounts:admin_attendance_report' %}" class="btn-reset">
-                <i class="fas fa-undo"></i> Reset
-            </a>
-        </div>
-    </form>
+    </div>
 </div>
 
 <!-- ===== TABLE ===== -->
@@ -688,9 +712,9 @@
             </h5>
         </div>
         <div class="header-right">
-            <span class="badge-count">
+            <span class="badge-count" id="recordBadge">
                 <i class="fas fa-database me-1"></i>
-                {{ attendances|length }} Records
+                <span id="visibleCount">0</span> Records
             </span>
             <a href="#" class="btn-export" onclick="exportTable()">
                 <i class="fas fa-download"></i> Export
@@ -711,9 +735,12 @@
                     <th style="width: 80px;"></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="tableBody">
                 {% for attendance in attendances %}
-                <tr>
+                <tr class="attendance-row" data-student="{{ attendance.student.get_full_name|lower }}"
+                    data-student-id="{{ attendance.student.student_id|lower }}"
+                    data-class="{{ attendance.class_obj.name|lower|default:'n/a' }}"
+                    data-status="{{ attendance.status }}" data-date="{{ attendance.date|date:'Y-m-d' }}">
                     <td>{{ forloop.counter }}</td>
                     <td>
                         <div class="d-flex align-items-center">
@@ -765,15 +792,19 @@
                             <i class="fas fa-clipboard-list"></i>
                             <h5>No Attendance Records</h5>
                             <p>There are no attendance records matching your criteria.</p>
-                            <a href="{% url 'accounts:admin_attendance_report' %}" class="btn btn-primary">
-                                <i class="fas fa-undo me-2"></i>Reset Filters
-                            </a>
                         </div>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <!-- No Results Message -->
+    <div class="no-results" id="noResults">
+        <i class="fas fa-search"></i>
+        <h5>No Records Found</h5>
+        <p>Try adjusting your search or filter criteria.</p>
     </div>
 
     <!-- ===== PAGINATION ===== -->
@@ -865,12 +896,127 @@
 
 {% block extra_js %}
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // ===== FILTER FUNCTION =====
+        function filterAttendance() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+
+            const rows = document.querySelectorAll('.attendance-row');
+            let visibleCount = 0;
+            let presentCount = 0;
+            let absentCount = 0;
+            let lateCount = 0;
+
+            rows.forEach(function (row) {
+                const student = row.dataset.student || '';
+                const studentId = row.dataset.studentId || '';
+                const className = row.dataset.class || '';
+                const status = row.dataset.status || '';
+                const date = row.dataset.date || '';
+
+                let show = true;
+
+                // Search filter
+                if (searchTerm) {
+                    const match = student.includes(searchTerm) ||
+                        studentId.includes(searchTerm) ||
+                        className.includes(searchTerm);
+                    if (!match) show = false;
+                }
+
+                // Status filter
+                if (statusFilter && status !== statusFilter) show = false;
+
+                // Date from filter
+                if (dateFrom && date < dateFrom) show = false;
+
+                // Date to filter
+                if (dateTo && date > dateTo) show = false;
+
+                row.style.display = show ? '' : 'none';
+                if (show) {
+                    visibleCount++;
+                    if (status === 'present') presentCount++;
+                    else if (status === 'absent') absentCount++;
+                    else if (status === 'late') lateCount++;
+                }
+            });
+
+            // Update visible count
+            document.getElementById('visibleCount').textContent = visibleCount;
+            document.getElementById('recordBadge').innerHTML = `
+                <i class="fas fa-database me-1"></i>
+                ${visibleCount} Records
+            `;
+
+            // Update stats
+            document.getElementById('totalRecords').textContent = visibleCount;
+            document.getElementById('presentCount').textContent = presentCount;
+            document.getElementById('absentCount').textContent = absentCount;
+            document.getElementById('lateCount').textContent = lateCount;
+
+            // Update percentages
+            const total = visibleCount || 1;
+            document.querySelector('.stats-card:nth-child(2) .stats-trend').innerHTML =
+                `<i class="fas fa-arrow-up me-1"></i> ${Math.round((presentCount / total) * 100)}%`;
+            document.querySelector('.stats-card:nth-child(3) .stats-trend').innerHTML =
+                `<i class="fas fa-arrow-down me-1"></i> ${Math.round((absentCount / total) * 100)}%`;
+            document.querySelector('.stats-card:nth-child(4) .stats-trend').innerHTML =
+                `<i class="fas fa-minus me-1"></i> ${Math.round((lateCount / total) * 100)}%`;
+
+            // Show/hide no results message
+            const noResults = document.getElementById('noResults');
+            if (visibleCount === 0 && rows.length > 0) {
+                noResults.classList.add('show');
+            } else {
+                noResults.classList.remove('show');
+            }
+        }
+
+        // ===== EVENT LISTENERS =====
+        const searchInput = document.getElementById('searchInput');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterAttendance, 300);
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', filterAttendance);
+        document.getElementById('dateFrom').addEventListener('change', filterAttendance);
+        document.getElementById('dateTo').addEventListener('change', filterAttendance);
+
+        // ===== CLEAR FILTERS =====
+        document.getElementById('clearFiltersBtn').addEventListener('click', function () {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            filterAttendance();
+            searchInput.focus();
+        });
+
+        // ===== KEYBOARD SHORTCUT: Escape to clear search =====
+        searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                this.blur();
+                filterAttendance();
+            }
+        });
+
+        // ===== INITIAL FILTER =====
+        setTimeout(filterAttendance, 100);
+    });
+
     // ===== VIEW ATTENDANCE DETAILS =====
     function viewAttendance(id) {
         const modal = new bootstrap.Modal(document.getElementById('viewAttendanceModal'));
         const body = document.getElementById('attendanceDetailBody');
 
-        // Show loading
         body.innerHTML = `
             <div class="text-center py-4">
                 <div class="spinner-border text-primary" role="status">
@@ -881,7 +1027,6 @@
 
         modal.show();
 
-        // Fetch attendance details
         fetch(`/attendance/api/detail/${id}/`)
             .then(response => response.json())
             .then(data => {
@@ -939,6 +1084,14 @@
         const table = document.querySelector('.attendance-table');
         let csv = [];
 
+        // Get visible rows only
+        const visibleRows = document.querySelectorAll('.attendance-row:not([style*="display: none"])');
+
+        if (visibleRows.length === 0) {
+            alert('No records to export. Please adjust your filters.');
+            return;
+        }
+
         // Get headers
         const headers = [];
         document.querySelectorAll('.attendance-table thead th').forEach(th => {
@@ -949,22 +1102,19 @@
         csv.push(headers.join(','));
 
         // Get rows
-        document.querySelectorAll('.attendance-table tbody tr').forEach(tr => {
-            if (tr.querySelector('td')) {
-                const row = [];
-                tr.querySelectorAll('td').forEach((td, index) => {
-                    // Skip the action column (last column)
-                    if (index < tr.querySelectorAll('td').length - 1) {
-                        let text = td.textContent.trim();
-                        // Clean up the text
-                        text = text.replace(/,/g, ' ');
-                        text = text.replace(/\s+/g, ' ');
-                        row.push(text);
-                    }
-                });
-                if (row.length > 0) {
-                    csv.push(row.join(','));
+        visibleRows.forEach(tr => {
+            const row = [];
+            tr.querySelectorAll('td').forEach((td, index) => {
+                // Skip the action column (last column)
+                if (index < tr.querySelectorAll('td').length - 1) {
+                    let text = td.textContent.trim();
+                    text = text.replace(/,/g, ' ');
+                    text = text.replace(/\s+/g, ' ');
+                    row.push(text);
                 }
+            });
+            if (row.length > 0) {
+                csv.push(row.join(','));
             }
         });
 

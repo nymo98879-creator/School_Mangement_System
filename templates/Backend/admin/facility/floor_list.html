@@ -71,6 +71,67 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         margin-bottom: 20px;
     }
+
+    .search-filters .search-input {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        transition: all 0.2s;
+        background: #fafbfc;
+        width: 100%;
+    }
+
+    .search-filters .search-input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .search-filters .form-select {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        background: #fafbfc;
+        transition: all 0.2s;
+        width: 100%;
+    }
+
+    .search-filters .form-select:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        display: none;
+    }
+
+    .no-results i {
+        font-size: 56px;
+        color: #e2e8f0;
+        margin-bottom: 16px;
+    }
+
+    .no-results h5 {
+        color: #1a1a2e;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .no-results p {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .no-results.show {
+        display: block;
+    }
 </style>
 {% endblock %}
 
@@ -79,19 +140,19 @@
 <div class="row g-4 mb-4">
     <div class="col-md-4">
         <div class="stats-card">
-            <div class="stats-number">{{ total|default:0 }}</div>
+            <div class="stats-number" id="totalCount">{{ total|default:0 }}</div>
             <div class="stats-label">Total Floors</div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="stats-card" style="border-left-color: #27ae60;">
-            <div class="stats-number">{{ active|default:0 }}</div>
+            <div class="stats-number" id="activeCount">{{ active|default:0 }}</div>
             <div class="stats-label">Active Floors</div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="stats-card" style="border-left-color: #e74c3c;">
-            <div class="stats-number">{{ inactive|default:0 }}</div>
+            <div class="stats-number" id="inactiveCount">{{ inactive|default:0 }}</div>
             <div class="stats-label">Inactive Floors</div>
         </div>
     </div>
@@ -99,31 +160,50 @@
 
 <!-- Search & Filters -->
 <div class="search-filters">
-    <form method="GET" class="row g-3">
+    <div class="row g-3 align-items-end">
         <div class="col-md-4">
-            {{ form.search }}
+            <label class="form-label fw-bold">Search</label>
+            <input type="text" class="form-control search-input" id="searchInput"
+                placeholder="Search by floor number or name...">
         </div>
         <div class="col-md-4">
-            {{ form.building }}
+            <label class="form-label fw-bold">Building</label>
+            <select class="form-select" id="buildingFilter">
+                <option value="">All Buildings</option>
+                {% for building in buildings %}
+                <option value="{{ building.id }}">{{ building.name }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="col-md-2">
-            {{ form.status }}
+            <label class="form-label fw-bold">Status</label>
+            <select class="form-select" id="statusFilter">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
         </div>
         <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="fas fa-search me-2"></i>Search
+            <button class="btn btn-primary w-100" id="clearFiltersBtn">
+                <i class="fas fa-undo"></i> Reset
             </button>
         </div>
-    </form>
+    </div>
 </div>
 
 <!-- Actions -->
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <a href="{% url 'classes:floor_add' %}" class="btn btn-primary">
-        <i class="fas fa-plus me-2"></i>Add Floor
-    </a>
-    <span class="text-muted">Showing {{ floors.start_index }}-{{ floors.end_index }} of {{ floors.paginator.count
-        }}</span>
+    <div class="d-flex gap-2">
+        <a href="{% url 'classes:floor_add' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Add Floor
+        </a>
+        <a href="{% url 'classes:floor_list' %}" class="btn btn-secondary" id="refreshBtn">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+        </a>
+    </div>
+    <span class="text-muted" id="resultCount">
+        Showing <span id="visibleCount">0</span> of <span id="totalFloors">{{ floors.paginator.count }}</span>
+    </span>
 </div>
 
 <!-- Table -->
@@ -142,9 +222,11 @@
                         <th style="width: 140px;">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tableBody">
                     {% for floor in floors %}
-                    <tr>
+                    <tr class="floor-row" data-number="{{ floor.floor_number|lower }}"
+                        data-name="{{ floor.name|lower|default:'' }}" data-building="{{ floor.building.id }}"
+                        data-status="{% if floor.is_active %}active{% else %}inactive{% endif %}">
                         <td>{{ forloop.counter }}</td>
                         <td><strong>Floor {{ floor.floor_number }}</strong></td>
                         <td>{{ floor.building.name }}</td>
@@ -180,10 +262,12 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" class="text-center py-5">
-                            <i class="fas fa-layer-group fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
-                            <h6>No floors found</h6>
-                            <p class="text-muted small">Click "Add Floor" to get started.</p>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-layer-group fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
+                                <h6>No floors found</h6>
+                                <p class="text-muted small">Click "Add Floor" to get started.</p>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -191,6 +275,13 @@
             </table>
         </div>
     </div>
+</div>
+
+<!-- No Results Message -->
+<div class="no-results" id="noResults">
+    <i class="fas fa-search"></i>
+    <h5>No Floors Found</h5>
+    <p>Try adjusting your search or filter criteria.</p>
 </div>
 
 <!-- Pagination -->
@@ -226,4 +317,113 @@
             {% endif %}
     </ul>
 </nav>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // ===== FILTER FUNCTION =====
+        function filterFloors() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const buildingFilter = document.getElementById('buildingFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const rows = document.querySelectorAll('.floor-row');
+            let visibleCount = 0;
+            let activeCount = 0;
+            let inactiveCount = 0;
+
+            rows.forEach(function (row) {
+                const number = row.dataset.number || '';
+                const name = row.dataset.name || '';
+                const building = row.dataset.building || '';
+                const status = row.dataset.status || '';
+
+                let show = true;
+
+                // Search filter
+                if (searchTerm) {
+                    const match = number.includes(searchTerm) || name.includes(searchTerm);
+                    if (!match) show = false;
+                }
+
+                // Building filter
+                if (buildingFilter && building !== buildingFilter) show = false;
+
+                // Status filter
+                if (statusFilter && status !== statusFilter) show = false;
+
+                row.style.display = show ? '' : 'none';
+                if (show) {
+                    visibleCount++;
+                    if (status === 'active') activeCount++;
+                    else if (status === 'inactive') inactiveCount++;
+                }
+            });
+
+            // Update counts
+            document.getElementById('visibleCount').textContent = visibleCount;
+            document.getElementById('totalFloors').textContent = document.querySelectorAll('.floor-row').length;
+            document.getElementById('totalCount').textContent = visibleCount;
+            document.getElementById('activeCount').textContent = activeCount;
+            document.getElementById('inactiveCount').textContent = inactiveCount;
+
+            // Update result text
+            document.getElementById('resultCount').innerHTML = `
+                Showing <span id="visibleCount">${visibleCount}</span> of <span id="totalFloors">${document.querySelectorAll('.floor-row').length}</span>
+            `;
+
+            // Show/hide no results message
+            const noResults = document.getElementById('noResults');
+            if (visibleCount === 0 && rows.length > 0) {
+                noResults.classList.add('show');
+            } else {
+                noResults.classList.remove('show');
+            }
+        }
+
+        // ===== EVENT LISTENERS =====
+        const searchInput = document.getElementById('searchInput');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterFloors, 300);
+        });
+
+        document.getElementById('buildingFilter').addEventListener('change', filterFloors);
+        document.getElementById('statusFilter').addEventListener('change', filterFloors);
+
+        // ===== CLEAR FILTERS =====
+        document.getElementById('clearFiltersBtn').addEventListener('click', function () {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('buildingFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            filterFloors();
+            searchInput.focus();
+        });
+
+        // ===== REFRESH BUTTON =====
+        document.getElementById('refreshBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('searchInput').value = '';
+            document.getElementById('buildingFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            filterFloors();
+            searchInput.focus();
+        });
+
+        // ===== KEYBOARD SHORTCUT: Escape to clear search =====
+        searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                this.blur();
+                filterFloors();
+            }
+        });
+
+        // ===== INITIAL FILTER =====
+        filterFloors();
+    });
+</script>
 {% endblock %}

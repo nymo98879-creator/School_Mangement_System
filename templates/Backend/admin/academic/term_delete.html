@@ -1,0 +1,190 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Delete Term{% endblock %}
+{% block page_title %}Delete Term{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center p-5">
+                    <!-- Warning Icon -->
+                    <div class="mb-4">
+                        <div class="avatar-lg mx-auto mb-3"
+                            style="width: 80px; height: 80px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 36px; color: #dc2626;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h5 class="text-danger fw-bold mb-2">Delete Term</h5>
+                    <p class="text-muted mb-4">
+                        Are you sure you want to delete the term <strong>"{{ term.name }}"</strong>?
+                    </p>
+
+                    <!-- Warning Details -->
+                    <div class="alert alert-warning text-start mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Warning:</strong> This action cannot be undone!
+                        {% if term.classes.exists %}
+                        <ul class="mb-0 mt-2">
+                            <li><i class="fas fa-link text-danger me-2"></i> This term has <strong>{{ term.classes.count
+                                    }}</strong> class(es) associated with it.</li>
+                            <li class="mt-1"><i class="fas fa-link text-danger me-2"></i> Deleting this term will affect
+                                all related classes.</li>
+                        </ul>
+                        {% else %}
+                        <p class="mb-0 mt-1">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            No classes are currently associated with this term.
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Term Info -->
+                    <div class="card bg-light mb-4 text-start">
+                        <div class="card-body py-3 px-4">
+                            <div class="row g-2">
+                                <div class="col-4 text-muted">Name</div>
+                                <div class="col-8 fw-bold">{{ term.name }}</div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-4 text-muted">Term Type</div>
+                                <div class="col-8 fw-bold">{{ term.get_term_type_display }}</div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-4 text-muted">Academic Year</div>
+                                <div class="col-8 fw-bold">{{ term.academic_year }}</div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-4 text-muted">Start Date</div>
+                                <div class="col-8 fw-bold">{{ term.start_date|date:"M d, Y" }}</div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-4 text-muted">End Date</div>
+                                <div class="col-8 fw-bold">{{ term.end_date|date:"M d, Y" }}</div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-4 text-muted">Status</div>
+                                <div class="col-8">
+                                    <span class="badge {% if term.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                                        {% if term.is_active %}Active{% else %}Inactive{% endif %}
+                                    </span>
+                                    {% if term.is_current %}
+                                    <span class="badge bg-primary ms-1">Current</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if term.description %}
+                            <div class="row g-2">
+                                <div class="col-4 text-muted">Description</div>
+                                <div class="col-8">{{ term.description|truncatechars:50 }}</div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="d-flex gap-3 justify-content-center">
+                            <a href="{% url 'classes:term_list' %}" class="btn btn-light px-4">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger px-4">
+                                <i class="fas fa-trash me-2"></i>Delete Term
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-lg {
+        width: 80px;
+        height: 80px;
+        background: #fee2e2;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .avatar-lg i {
+        font-size: 36px;
+        color: #dc2626;
+    }
+
+    .card {
+        border-radius: 16px;
+    }
+
+    .card-body {
+        border-radius: 16px;
+    }
+
+    .btn {
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 10px 24px;
+    }
+
+    .btn-light {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        color: #4a5568;
+    }
+
+    .btn-light:hover {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+    }
+
+    .btn-danger {
+        background: #dc2626;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background: #b91c1c;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+
+    .alert-warning {
+        background: #fef3c7;
+        border: 1px solid #fcd34d;
+        color: #92400e;
+        border-radius: 10px;
+    }
+
+    .alert-warning ul {
+        padding-left: 20px;
+    }
+
+    .card.bg-light {
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 30px 20px !important;
+        }
+
+        .d-flex.gap-3 {
+            flex-direction: column;
+        }
+
+        .d-flex.gap-3 .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}

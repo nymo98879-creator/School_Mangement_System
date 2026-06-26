@@ -2,6 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from .models import Student
 from classes.models import Class
+from courses.models import Major
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -39,7 +40,7 @@ class StudentForm(forms.ModelForm):
         fields = [
             'first_name', 'last_name', 'date_of_birth', 
             'gender', 'phone', 'email', 'address', 'guardian_name', 
-            'guardian_phone', 'guardian_email', 'class_enrolled', 
+            'guardian_phone', 'guardian_email', 'major', 
             'is_active', 'profile_picture'
         ]
         widgets = {
@@ -61,7 +62,7 @@ class StudentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.is_edit = kwargs.pop('is_edit', False)
         super().__init__(*args, **kwargs)
-        
+        from courses.models import Major 
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
         self.fields['date_of_birth'].required = True
@@ -78,11 +79,11 @@ class StudentForm(forms.ModelForm):
             self.fields['password'].help_text = "Leave blank to keep current password"
             self.fields['confirm_password'].help_text = "Leave blank to keep current password"
         
-        self.fields['class_enrolled'].label = 'Class'
+        self.fields['major'].label = 'Major'  # Changed
         self.fields['is_active'].label = 'Active Status'
         self.fields['profile_picture'].label = 'Profile Picture'
-        self.fields['class_enrolled'].empty_label = 'Select Class'
-        self.fields['class_enrolled'].queryset = Class.objects.filter(is_active=True)
+        self.fields['major'].empty_label = 'Select Major'  # Changed
+        self.fields['major'].queryset = Major.objects.filter(is_active=True) 
     
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -152,13 +153,13 @@ class StudentSearchForm(forms.Form):
             'placeholder': 'Search by name, ID, or email...'
         })
     )
-    class_filter = forms.ModelChoiceField(
-        queryset=Class.objects.filter(is_active=True),
+    major_filter = forms.ModelChoiceField(  # Changed from class_filter
+        queryset=Major.objects.filter(is_active=True),
         required=False,
         widget=forms.Select(attrs={
             'class': 'form-control'
         }),
-        empty_label='All Classes'
+        empty_label='All Majors'
     )
     gender_filter = forms.ChoiceField(
         choices=[('', 'All Genders')] + list(Student.GENDER_CHOICES),
@@ -212,7 +213,7 @@ class StudentSelfRegistrationForm(forms.ModelForm):
         fields = [
             'first_name', 'last_name', 'email', 'phone', 'date_of_birth',
             'gender', 'address', 'guardian_name', 'guardian_phone', 
-            'guardian_email', 'class_enrolled', 'profile_picture'
+            'guardian_email', 'major', 'profile_picture'
         ]
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'}),
@@ -231,11 +232,12 @@ class StudentSelfRegistrationForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['class_enrolled'].queryset = Class.objects.filter(is_active=True)
-        self.fields['class_enrolled'].empty_label = 'Select Class'
+        from courses.models import Major  # Import Major model
+        self.fields['major'].queryset = Major.objects.filter(is_active=True)
+        self.fields['major'].empty_label = 'Select Major'
         self.fields['gender'].choices = [('', 'Select Gender')] + list(Student.GENDER_CHOICES)
         self.fields['gender'].required = True
-        self.fields['class_enrolled'].required = True
+        self.fields['major'].required = True
     
     def clean_email(self):
         email = self.cleaned_data.get('email')

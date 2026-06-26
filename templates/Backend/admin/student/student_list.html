@@ -121,6 +121,18 @@
         background: linear-gradient(135deg, #9b59b6, #7d3c98);
     }
 
+    .student-avatar.blue {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+
+    .student-avatar.red {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+
+    .student-avatar.teal {
+        background: linear-gradient(135deg, #1abc9c, #16a085);
+    }
+
     .status-badge {
         padding: 3px 12px;
         border-radius: 12px;
@@ -164,6 +176,39 @@
         margin-bottom: 20px;
     }
 
+    .search-filters .search-input {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        transition: all 0.2s;
+        background: #fafbfc;
+        width: 100%;
+    }
+
+    .search-filters .search-input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .search-filters .form-select {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        background: #fafbfc;
+        transition: all 0.2s;
+        width: 100%;
+    }
+
+    .search-filters .form-select:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
     .btn-qr-generate {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -178,6 +223,34 @@
         transform: translateY(-2px);
         box-shadow: 0 5px 20px rgba(118, 75, 162, 0.4);
         color: white;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        display: none;
+    }
+
+    .no-results i {
+        font-size: 56px;
+        color: #e2e8f0;
+        margin-bottom: 16px;
+    }
+
+    .no-results h5 {
+        color: #1a1a2e;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .no-results p {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .no-results.show {
+        display: block;
     }
 
     /* ===== RESPONSIVE ===== */
@@ -256,7 +329,7 @@
             <div class="stats-icon orange">
                 <i class="fas fa-users"></i>
             </div>
-            <div class="stats-number">{{ students|length }}</div>
+            <div class="stats-number" id="visibleCountCard">{{ students|length }}</div>
             <div class="stats-label">Showing</div>
             <span class="stats-trend neutral">
                 <i class="fas fa-minus me-1"></i>Current
@@ -267,29 +340,44 @@
 
 <!-- ===== SEARCH & FILTER ===== -->
 <div class="search-filters">
-    <form method="GET" class="row g-3">
+    <div class="row g-3 align-items-end">
         <div class="col-md-4">
             <label class="form-label fw-bold">Search</label>
-            {{ form.search }}
+            <input type="text" class="form-control search-input" id="searchInput"
+                placeholder="Search by name, ID, or email...">
         </div>
         <div class="col-md-3">
             <label class="form-label fw-bold">Class</label>
-            {{ form.class_filter }}
+            <select class="form-select" id="classFilter">
+                <option value="">All Classes</option>
+                {% for class in classes %}
+                <option value="{{ class.id }}">{{ class.name }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="col-md-2">
             <label class="form-label fw-bold">Gender</label>
-            {{ form.gender_filter }}
+            <select class="form-select" id="genderFilter">
+                <option value="">All Genders</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+            </select>
         </div>
         <div class="col-md-2">
             <label class="form-label fw-bold">Status</label>
-            {{ form.status_filter }}
+            <select class="form-select" id="statusFilter">
+                <option value="">All</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
         </div>
-        <div class="col-md-1 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="fas fa-search"></i>
+        <div class="col-md-1">
+            <button class="btn btn-primary w-100" id="clearFiltersBtn">
+                <i class="fas fa-undo"></i>
             </button>
         </div>
-    </form>
+    </div>
 </div>
 
 <!-- ===== ACTIONS BAR ===== -->
@@ -304,15 +392,16 @@
         <a href="{% url 'students:student_export_csv' %}" class="btn btn-secondary">
             <i class="fas fa-file-export me-2"></i>Export CSV
         </a>
-
-        <!-- ===== GENERATE REGISTRATION QR BUTTON ===== -->
         <a href="{% url 'students:generate_registration_qr' %}" class="btn btn-qr-generate">
             <i class="fas fa-qrcode me-2"></i>Generate Registration QR
         </a>
+        <a href="{% url 'students:student_list' %}" class="btn btn-secondary" id="refreshBtn">
+            <i class="fas fa-sync-alt me-2"></i>Refresh
+        </a>
     </div>
     <div>
-        <span class="text-muted">
-            Showing {{ students.start_index }}-{{ students.end_index }} of {{ students.paginator.count }}
+        <span class="text-muted" id="resultCount">
+            Showing <span id="visibleCount">0</span> of <span id="totalCount">{{ students.paginator.count }}</span>
         </span>
     </div>
 </div>
@@ -334,9 +423,12 @@
                         <th style="width: 180px;">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tableBody">
                     {% for student in students %}
-                    <tr>
+                    <tr class="student-row" data-name="{{ student.get_full_name|lower }}"
+                        data-email="{{ student.email|lower }}" data-id="{{ student.student_id|lower }}"
+                        data-class="{{ student.class_enrolled.id|default:'' }}" data-gender="{{ student.gender }}"
+                        data-status="{% if student.is_active %}active{% else %}inactive{% endif %}">
                         <td>{{ forloop.counter }}</td>
                         <td>
                             <div class="d-flex align-items-center gap-2">
@@ -344,7 +436,7 @@
                                 <img src="{{ student.profile_picture.url }}" alt="Avatar" class="rounded-circle"
                                     width="40" height="40" style="object-fit: cover;">
                                 {% else %}
-                                <div class="student-avatar {% cycle 'green' 'orange' 'purple' %}">
+                                <div class="student-avatar {% cycle 'green' 'orange' 'purple' 'blue' 'red' 'teal' %}">
                                     {{ student.first_name|first|upper }}
                                 </div>
                                 {% endif %}
@@ -355,7 +447,12 @@
                             </div>
                         </td>
                         <td><span class="badge bg-secondary">{{ student.student_id }}</span></td>
-                        <td>{{ student.class_enrolled.name|default:"<span class='text-muted'>Not Assigned</span>" }}
+                        <td>
+                            {% if student.class_enrolled %}
+                            {{ student.class_enrolled.name }}
+                            {% else %}
+                            <span class="text-muted">Not Assigned</span>
+                            {% endif %}
                         </td>
                         <td>{{ student.get_gender_display }}</td>
                         <td>
@@ -410,6 +507,13 @@
     </div>
 </div>
 
+<!-- No Results Message -->
+<div class="no-results" id="noResults">
+    <i class="fas fa-search"></i>
+    <h5>No Students Found</h5>
+    <p>Try adjusting your search or filter criteria.</p>
+</div>
+
 <!-- ===== PAGINATION ===== -->
 {% if students.has_other_pages %}
 <nav class="mt-4">
@@ -450,16 +554,14 @@
 
 {% block extra_js %}
 <script>
-    // Initialize tooltips
     document.addEventListener('DOMContentLoaded', function () {
+        // ===== TOOLTIPS =====
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
-    });
 
-    // Animate stats cards on load
-    document.addEventListener('DOMContentLoaded', function () {
+        // ===== ANIMATE STATS CARDS =====
         const cards = document.querySelectorAll('.stats-card');
         cards.forEach((card, index) => {
             card.style.opacity = '0';
@@ -470,24 +572,21 @@
                 card.style.transform = 'translateY(0)';
             }, index * 150);
         });
-    });
 
-    // Count animation for stats
-    function animateCount(element, target, duration = 1000) {
-        let start = 0;
-        const increment = target / (duration / 16);
-        const timer = setInterval(() => {
-            start += increment;
-            if (start >= target) {
-                start = target;
-                clearInterval(timer);
-            }
-            element.textContent = Math.round(start);
-        }, 16);
-    }
+        // ===== COUNT ANIMATION =====
+        function animateCount(element, target, duration = 1000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    start = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(start);
+            }, 16);
+        }
 
-    // Animate numbers when visible
-    document.addEventListener('DOMContentLoaded', function () {
         const numberElements = document.querySelectorAll('.stats-number');
         numberElements.forEach(el => {
             const target = parseInt(el.textContent);
@@ -495,6 +594,108 @@
                 animateCount(el, target);
             }
         });
+
+        // ===== FILTER FUNCTION =====
+        function filterStudents() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const classFilter = document.getElementById('classFilter').value;
+            const genderFilter = document.getElementById('genderFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const rows = document.querySelectorAll('.student-row');
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const name = row.dataset.name || '';
+                const email = row.dataset.email || '';
+                const id = row.dataset.id || '';
+                const studentClass = row.dataset.class || '';
+                const gender = row.dataset.gender || '';
+                const status = row.dataset.status || '';
+
+                let show = true;
+
+                // Search filter
+                if (searchTerm) {
+                    const match = name.includes(searchTerm) || email.includes(searchTerm) || id.includes(searchTerm);
+                    if (!match) show = false;
+                }
+
+                // Class filter
+                if (classFilter && studentClass !== classFilter) show = false;
+
+                // Gender filter
+                if (genderFilter && gender !== genderFilter) show = false;
+
+                // Status filter
+                if (statusFilter && status !== statusFilter) show = false;
+
+                row.style.display = show ? '' : 'none';
+                if (show) visibleCount++;
+            });
+
+            // Update visible count
+            document.getElementById('visibleCount').textContent = visibleCount;
+            document.getElementById('visibleCountCard').textContent = visibleCount;
+
+            // Show/hide no results message
+            const noResults = document.getElementById('noResults');
+            if (visibleCount === 0 && rows.length > 0) {
+                noResults.classList.add('show');
+            } else {
+                noResults.classList.remove('show');
+            }
+        }
+
+        // ===== EVENT LISTENERS =====
+        const searchInput = document.getElementById('searchInput');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterStudents, 300);
+        });
+
+        // Filter dropdowns
+        document.getElementById('classFilter').addEventListener('change', filterStudents);
+        document.getElementById('genderFilter').addEventListener('change', filterStudents);
+        document.getElementById('statusFilter').addEventListener('change', filterStudents);
+
+        // Clear filters button
+        document.getElementById('clearFiltersBtn').addEventListener('click', function () {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('classFilter').value = '';
+            document.getElementById('genderFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            filterStudents();
+            searchInput.focus();
+        });
+
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('searchInput').value = '';
+            document.getElementById('classFilter').value = '';
+            document.getElementById('genderFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            filterStudents();
+            searchInput.focus();
+        });
+
+        // ===== KEYBOARD SHORTCUT: Escape to clear search =====
+        searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                this.blur();
+                filterStudents();
+            }
+        });
+
+        // ===== UPDATE TOTAL COUNT =====
+        document.getElementById('totalCount').textContent = document.querySelectorAll('.student-row').length;
+
+        // ===== INITIAL FILTER =====
+        filterStudents();
     });
 </script>
 {% endblock %}

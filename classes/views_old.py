@@ -545,15 +545,10 @@ def class_list(request):
     total_classes = Class.objects.count()
     active_classes = Class.objects.filter(is_active=True).count()
     inactive_classes = Class.objects.filter(is_active=False).count()
-    total_students = Student.objects.count()
     
     paginator = Paginator(classes, 10)
     page = request.GET.get('page')
     classes_page = paginator.get_page(page)
-    
-    # Get teachers and buildings for dropdowns
-    teachers = Teacher.objects.filter(is_active=True)
-    buildings = Building.objects.filter(is_active=True)
     
     context = {
         'classes': classes_page,
@@ -561,15 +556,11 @@ def class_list(request):
         'total_classes': total_classes,
         'active_classes': active_classes,
         'inactive_classes': inactive_classes,
-        'total_students': total_students,
-        'teachers': teachers,      # Add this
-        'buildings': buildings,    # Add this
     }
-    
-    
     return render(request, 'Backend/admin/class/class_list.html', context)
 
 # ==================== CLASS CREATE & EDIT VIEWS ====================
+
 @login_required
 @admin_required
 def class_create(request):
@@ -584,12 +575,11 @@ def class_create(request):
     else:
         form = ClassForm()
     
-    # Get data for dropdowns
     context = {
         'form': form,
         'title': 'Add New Class',
         'is_edit': False,
-        # Pass data for dropdowns - CRITICAL FOR FIX
+        # Pass data for dropdowns
         'buildings': Building.objects.filter(is_active=True),
         'floors': Floor.objects.filter(is_active=True),
         'rooms': Room.objects.filter(is_active=True),
@@ -617,13 +607,44 @@ def class_edit(request, pk):
     else:
         form = ClassForm(instance=class_obj)
     
-    # Get data for dropdowns
     context = {
         'form': form,
         'title': 'Edit Class',
         'class': class_obj,
         'is_edit': True,
-        # Pass data for dropdowns - CRITICAL FOR FIX
+        'buildings': Building.objects.filter(is_active=True),
+        'floors': Floor.objects.filter(is_active=True),
+        'rooms': Room.objects.filter(is_active=True),
+        'terms': Term.objects.filter(is_active=True),
+        'time_slots': TimeSlot.objects.filter(is_active=True),
+        'teachers': Teacher.objects.filter(is_active=True),
+        'courses': Course.objects.filter(is_active=True),
+    }
+    return render(request, 'Backend/admin/class/class_form.html', context)
+
+
+@login_required
+@admin_required
+def class_edit(request, pk):
+    class_obj = get_object_or_404(Class, pk=pk)
+    
+    if request.method == 'POST':
+        form = ClassForm(request.POST, instance=class_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'✅ Class "{class_obj.name}" updated successfully!')
+            return redirect('classes:class_detail', pk=class_obj.pk)
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = ClassForm(instance=class_obj)
+    
+    context = {
+        'form': form,
+        'title': 'Edit Class',
+        'class': class_obj,
+        'is_edit': True,
+        # ===== ADD THESE FOR DROPDOWNS =====
         'buildings': Building.objects.filter(is_active=True),
         'floors': Floor.objects.filter(is_active=True),
         'rooms': Room.objects.filter(is_active=True),
@@ -745,7 +766,6 @@ def class_remove_student(request, class_pk, student_pk):
     }
     return render(request, 'Backend/admin/class/remove_student.html', context)
 
-
 # ==================== AJAX ENDPOINTS ====================
 @login_required
 @admin_required
@@ -782,6 +802,17 @@ def get_term_details(request, term_id):
 
 
 # ==================== ATTENDANCE VIEWS ====================
+import json
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from datetime import date
+from accounts.decorators import admin_required
+from .models import Class
+from attendance.models import Attendance
+from students.models import Student
+
+
 @login_required
 @admin_required
 def save_attendance(request, class_id):

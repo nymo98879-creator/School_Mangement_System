@@ -113,13 +113,14 @@
 
         <div class="row g-3">
             <div class="col-md-6">
-                <label for="{{ form.class_enrolled.id_for_label }}" class="form-label">
-                    Class <span class="required">*</span>
+                <label for="{{ form.major.id_for_label }}" class="form-label">
+                    Major <span class="required">*</span>
                 </label>
-                {{ form.class_enrolled }}
-                {% if form.class_enrolled.errors %}
+                {{ form.major }}
+                <div class="form-text">Select the student's major/program</div>
+                {% if form.major.errors %}
                 <div class="errorlist">
-                    {% for error in form.class_enrolled.errors %}
+                    {% for error in form.major.errors %}
                     <li><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</li>
                     {% endfor %}
                 </div>
