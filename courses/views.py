@@ -319,6 +319,7 @@ def course_list(request):
         'total_courses': total_courses,
         'active_courses': active_courses,
         'inactive_courses': inactive_courses,
+        'majors': Major.objects.filter(is_active=True).select_related('department'),
     }
     return render(request, 'Backend/admin/course/course_list.html', context)
 

@@ -67,7 +67,7 @@
 
     .class-header-card .class-meta .meta-item .badge-status.completed {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
     }
 
     /* ===== OVERVIEW STATS ===== */
@@ -138,11 +138,11 @@
     }
 
     .overview-card.excused {
-        border-top-color: #3498db;
+        border-top-color: #4263eb;
     }
 
     .overview-card.excused .percentage {
-        color: #3498db;
+        color: #4263eb;
     }
 
     /* ===== STUDENT TABLE ===== */
@@ -191,7 +191,7 @@
     }
 
     .student-avatar-sm.blue {
-        background: linear-gradient(135deg, #3498db, #2980b9);
+        background: linear-gradient(135deg, #4263eb, #3b5bdb);
     }
 
     .student-avatar-sm.green {
@@ -269,8 +269,8 @@
     }
 
     .attendance-btn.active-excused {
-        background: #3498db;
-        border-color: #3498db;
+        background: #4263eb;
+        border-color: #4263eb;
         color: white;
     }
 
@@ -313,11 +313,11 @@
 
     .status-badge.excused {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
     }
 
     .status-badge.not-marked {
-        background: #f0f2f5;
+        background: #f0f2f8;
         color: #7f8c8d;
     }
 
@@ -339,7 +339,7 @@
     .table-attendance tbody td {
         padding: 10px 15px;
         vertical-align: middle;
-        border-bottom: 1px solid #f0f2f5;
+        border-bottom: 1px solid #f0f2f8;
     }
 
     .table-attendance tbody tr:hover {
@@ -386,7 +386,7 @@
     }
 
     .action-btn-sm.view {
-        background: #3498db;
+        background: #4263eb;
     }
 
     .empty-state {
@@ -523,7 +523,7 @@
             <i class="fas fa-door-open"></i> {{ class.room }}
         </span>
         <span class="meta-item">
-            <i class="fas fa-clock"></i> {{ class.schedule }}
+            <i class="fas fa-clock"></i> {{ class.get_schedule_display }}
         </span>
         <span class="meta-item">
             <i class="fas fa-calendar-alt"></i> {{ class.start_date|date:"M d" }} – {{ class.end_date|date:"M d, Y" }}

@@ -11,13 +11,14 @@ import json
 from accounts.decorators import admin_required, teacher_or_admin_required
 from .models import Attendance
 from .forms import AttendanceFilterForm
+from .utils import attendance_rate_percent
 from classes.models import Class
 from students.models import Student
 from teachers.models import Teacher
+from courses.models import Course
 
 
 # ==================== TAKE ATTENDANCE (Shared for Admin & Teacher) ====================
-
 @login_required
 @teacher_or_admin_required
 def take_attendance(request, class_id=None):
@@ -48,15 +49,20 @@ def take_attendance(request, class_id=None):
                 messages.error(request, 'Teacher profile not found.')
                 return redirect('attendance:teacher_attendance')
         
-        students = Student.objects.filter(class_enrolled=selected_class, is_active=True)
+        # Use ManyToMany relationship
+        students = selected_class.enrolled_students.filter(is_active=True)
+        
+        # Get course from class using M2M
+        course = selected_class.courses.first()
         
         # Check if attendance already taken today
-        existing_attendances = Attendance.objects.filter(
-            class_obj=selected_class,
-            date=today
-        )
-        for att in existing_attendances:
-            existing_status[str(att.student.id)] = att.status
+        if course:
+            existing_attendances = Attendance.objects.filter(
+                course=course,
+                date=today
+            )
+            for att in existing_attendances:
+                existing_status[str(att.student.id)] = att.status
     
     # Handle POST request - Save attendance
     if request.method == 'POST':
@@ -71,7 +77,25 @@ def take_attendance(request, class_id=None):
             attendance_date = today.isoformat()
         
         selected_class = get_object_or_404(Class, id=class_id)
-        students_list = Student.objects.filter(class_enrolled=selected_class, is_active=True)
+        
+        # Check permissions for teachers
+        if request.user.role != 'admin':
+            try:
+                teacher = Teacher.objects.get(user=request.user)
+                if selected_class.teacher != teacher:
+                    messages.error(request, 'You can only take attendance for your own classes.')
+                    return redirect('attendance:teacher_attendance')
+            except Teacher.DoesNotExist:
+                pass
+        
+        # Use ManyToMany relationship
+        students_list = selected_class.enrolled_students.filter(is_active=True)
+        
+        # Get the course from the class using M2M
+        course = selected_class.courses.first()
+        if not course:
+            messages.error(request, 'This class is not associated with any course.')
+            return redirect('attendance:teacher_attendance')
         
         # Get the teacher (if exists)
         marked_by = None
@@ -82,24 +106,54 @@ def take_attendance(request, class_id=None):
                 pass
         
         # Process each student's attendance
-        for student in students_list:
-            status = request.POST.get(f'student_{student.id}')
-            if status:
-                attendance, created = Attendance.objects.get_or_create(
-                    student=student,
-                    class_obj=selected_class,
-                    date=attendance_date,
-                    defaults={
-                        'status': status,
-                        'marked_by': marked_by
-                    }
-                )
-                if not created:
-                    attendance.status = status
-                    attendance.marked_by = marked_by
-                    attendance.save()
+        saved_count = 0
+        errors = []
         
-        messages.success(request, f'Attendance for {selected_class.name} recorded successfully!')
+        for student in students_list:
+            # Check both possible field names
+            status = request.POST.get(f'student_{student.id}') or request.POST.get(f'status_{student.id}')
+            
+            if status:
+                try:
+                    attendance, created = Attendance.objects.get_or_create(
+                        student=student,
+                        course=course,
+                        date=attendance_date,
+                        defaults={
+                            'status': status,
+                            'marked_by': marked_by
+                        }
+                    )
+                    if not created:
+                        attendance.status = status
+                        attendance.marked_by = marked_by
+                        attendance.save()
+                    saved_count += 1
+                except Exception as e:
+                    errors.append(f'Error saving attendance for {student.get_full_name()}: {str(e)}')
+            else:
+                # If no status was submitted, mark as absent
+                try:
+                    attendance, created = Attendance.objects.get_or_create(
+                        student=student,
+                        course=course,
+                        date=attendance_date,
+                        defaults={
+                            'status': 'absent',
+                            'marked_by': marked_by
+                        }
+                    )
+                    saved_count += 1
+                except Exception as e:
+                    errors.append(f'Error saving default attendance for {student.get_full_name()}: {str(e)}')
+        
+        if saved_count > 0:
+            messages.success(request, f'Attendance saved for {saved_count} student(s)!')
+        else:
+            messages.warning(request, 'No attendance records were saved. Please try again.')
+        
+        if errors:
+            messages.warning(request, f'Errors: {", ".join(errors[:5])}')
         
         # Redirect based on user role
         if request.user.role == 'admin':
@@ -113,7 +167,7 @@ def take_attendance(request, class_id=None):
     else:
         try:
             teacher = Teacher.objects.get(user=request.user)
-            classes = Class.objects.filter(teacher=teacher, is_active=True)
+            classes = Class.objects.filter(teacher=teacher, is_active=True).distinct()
         except Teacher.DoesNotExist:
             classes = []
     
@@ -144,14 +198,14 @@ def admin_attendance_list(request):
     form = AttendanceFilterForm(request.GET or None)
     
     if form.is_valid():
-        class_obj = form.cleaned_data.get('class_obj')
+        course = form.cleaned_data.get('course')
         date_from = form.cleaned_data.get('date_from')
         date_to = form.cleaned_data.get('date_to')
         status = form.cleaned_data.get('status')
         student_search = form.cleaned_data.get('student')
         
-        if class_obj:
-            attendances = attendances.filter(class_obj=class_obj)
+        if course:
+            attendances = attendances.filter(course=course)
         if date_from:
             attendances = attendances.filter(date__gte=date_from)
         if date_to:
@@ -177,7 +231,7 @@ def admin_attendance_list(request):
     
     attendance_rate = 0
     if total_attendances > 0:
-        attendance_rate = round((present_count / total_attendances) * 100, 1)
+        attendance_rate = attendance_rate_percent(present_count, total_attendances)
     
     context = {
         'attendances': attendances_page,
@@ -188,7 +242,7 @@ def admin_attendance_list(request):
         'late_count': late_count,
         'excused_count': excused_count,
         'attendance_rate': attendance_rate,
-        'classes': Class.objects.filter(is_active=True),
+        'courses': Course.objects.filter(is_active=True),
     }
     return render(request, 'Backend/admin/attendance/attendance_list.html', context)
 
@@ -201,14 +255,14 @@ def admin_attendance_report(request):
     form = AttendanceFilterForm(request.GET or None)
     
     if form.is_valid():
-        class_obj = form.cleaned_data.get('class_obj')
+        course = form.cleaned_data.get('course')
         date_from = form.cleaned_data.get('date_from')
         date_to = form.cleaned_data.get('date_to')
         status = form.cleaned_data.get('status')
         student_search = form.cleaned_data.get('student')
         
-        if class_obj:
-            attendances = attendances.filter(class_obj=class_obj)
+        if course:
+            attendances = attendances.filter(course=course)
         if date_from:
             attendances = attendances.filter(date__gte=date_from)
         if date_to:
@@ -230,7 +284,7 @@ def admin_attendance_report(request):
     
     attendance_rate = 0
     if total_attendances > 0:
-        attendance_rate = round((present_count / total_attendances) * 100, 1)
+        attendance_rate = attendance_rate_percent(present_count, total_attendances)
     
     context = {
         'attendances': attendances,
@@ -241,42 +295,77 @@ def admin_attendance_report(request):
         'late_count': late_count,
         'excused_count': excused_count,
         'attendance_rate': attendance_rate,
-        'classes': Class.objects.filter(is_active=True),
+        'courses': Course.objects.filter(is_active=True),
     }
     return render(request, 'Backend/admin/attendance/attendance_report.html', context)
 
 
 @login_required
 @admin_required
-def admin_class_attendance(request):
-    """Admin view for class-wise attendance"""
-    classes = Class.objects.filter(is_active=True)
-    for cls in classes:
-        attendances = Attendance.objects.filter(class_obj=cls)
+def admin_course_attendance(request):
+    """Admin view for course-wise attendance"""
+    today = date.today()
+    courses = Course.objects.filter(is_active=True)
+    
+    for course in courses:
+        course_year = course.level[0] if course.level and len(course.level) > 0 else None
+        if course_year:
+            student_count = Student.objects.filter(
+                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                year=course_year,
+                is_active=True
+            ).distinct().count()
+        else:
+            student_count = Student.objects.filter(
+                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                is_active=True
+            ).distinct().count()
+        course.student_count = student_count
+
+        attendances = Attendance.objects.filter(course=course)
         total = attendances.count()
         present = attendances.filter(status='present').count()
-        cls.attendance_rate = round((present / total) * 100, 1) if total > 0 else 0
+        course.attendance_rate = attendance_rate_percent(present, total)
+        course.attendance_taken = Attendance.objects.filter(course=course, date=today).exists()
+        present_today_count = Attendance.objects.filter(
+            course=course,
+            date=today,
+            status='present'
+        ).values('student_id').distinct().count()
+        course.present_today = min(present_today_count, student_count)
+        course.class_obj = course.class_offerings.first()
     
-    context = {'classes': classes}
-    return render(request, 'Backend/admin/attendance/class_attendance.html', context)
+    context = {'courses': courses}
+    return render(request, 'Backend/admin/attendance/course_attendance.html', context)
 
 
 @login_required
 @admin_required
-def admin_class_attendance_detail(request, class_id):
-    """Admin view for detailed class attendance"""
-    class_obj = get_object_or_404(Class, id=class_id)
-    students = Student.objects.filter(class_enrolled=class_obj, is_active=True)
+def admin_course_attendance_detail(request, course_id):
+    """Admin view for detailed course attendance"""
+    course = get_object_or_404(Course, id=course_id)
+    course_year = course.level[0] if course.level and len(course.level) > 0 else None
+    if course_year:
+        students = Student.objects.filter(
+            Q(courses__id=course.id) | Q(class_offerings__courses=course),
+            year=course_year,
+            is_active=True
+        ).distinct()
+    else:
+        students = Student.objects.filter(
+            Q(courses__id=course.id) | Q(class_offerings__courses=course),
+            is_active=True
+        ).distinct()
     
     student_data = []
     for student in students:
-        attendances = Attendance.objects.filter(student=student, class_obj=class_obj)
+        attendances = Attendance.objects.filter(student=student, course=course)
         total = attendances.count()
         present = attendances.filter(status='present').count()
         absent = attendances.filter(status='absent').count()
         late = attendances.filter(status='late').count()
         excused = attendances.filter(status='excused').count()
-        rate = round((present / total) * 100, 1) if total > 0 else 0
+        rate = attendance_rate_percent(present, total)
         
         student_data.append({
             'student': student,
@@ -289,11 +378,28 @@ def admin_class_attendance_detail(request, class_id):
         })
     
     context = {
-        'class': class_obj,
+        'course': course,
         'student_data': student_data,
-        'total_students': len(student_data),
+        'total_students': students.count(),
     }
-    return render(request, 'Backend/admin/attendance/class_attendance_detail.html', context)
+    return render(request, 'Backend/admin/attendance/course_attendance_detail.html', context)
+
+
+@login_required
+@admin_required
+def admin_class_attendance(request):
+    return redirect('attendance:admin_course_attendance')
+
+
+@login_required
+@admin_required
+def admin_class_attendance_detail(request, class_id):
+    class_obj = get_object_or_404(Class, id=class_id)
+    course = class_obj.courses.first()
+    if not course:
+        messages.error(request, 'Selected class is not associated with any course.')
+        return redirect('attendance:admin_course_attendance')
+    return redirect('attendance:admin_course_attendance_detail', course_id=course.id)
 
 
 @login_required
@@ -311,7 +417,7 @@ def admin_student_attendance(request, student_id):
     
     attendance_rate = 0
     if total > 0:
-        attendance_rate = round((present / total) * 100, 1)
+        attendance_rate = attendance_rate_percent(present, total)
     
     context = {
         'student': student,
@@ -368,7 +474,7 @@ def admin_export_attendance(request):
     
     writer = csv.writer(response)
     writer.writerow([
-        'Student ID', 'Student Name', 'Class', 'Date', 'Status', 'Time In', 'Marked By'
+        'Student ID', 'Student Name', 'Course', 'Date', 'Status', 'Time In', 'Marked By'
     ])
     
     attendances = Attendance.objects.all().order_by('-date')
@@ -376,7 +482,7 @@ def admin_export_attendance(request):
         writer.writerow([
             attendance.student.student_id,
             attendance.student.get_full_name(),
-            attendance.class_obj.name if attendance.class_obj else 'N/A',
+            attendance.course.name if attendance.course else 'N/A',
             attendance.date.strftime('%Y-%m-%d'),
             attendance.get_status_display(),
             attendance.time_in.strftime('%H:%M') if attendance.time_in else '',
@@ -390,51 +496,83 @@ def admin_export_attendance(request):
 @login_required
 @teacher_or_admin_required
 def teacher_attendance_view(request):
-    """Teachers can take and view attendance for their classes"""
+    """Teachers can take and view attendance for their courses"""
     if request.user.role == 'admin':
         classes = Class.objects.filter(is_active=True)
+        courses = Course.objects.filter(is_active=True).distinct()
     else:
         try:
             teacher = Teacher.objects.get(user=request.user)
-            classes = Class.objects.filter(teacher=teacher, is_active=True)
+            classes = Class.objects.filter(teacher=teacher, is_active=True).distinct()
+            # FIXED: Use M2M relationship with class_offerings
+            courses = Course.objects.filter(class_offerings__in=classes, is_active=True).distinct()
         except Teacher.DoesNotExist:
-            classes = []
+            classes = Class.objects.none()
+            courses = Course.objects.none()
     
     today = date.today()
     
-    # Calculate total classes
-    total_classes = classes.count()
+    # Calculate statistics for each course
+    for course in courses:
+        course_year = course.level[0] if course.level and len(course.level) > 0 else None
+        if course_year:
+            course.student_count = Student.objects.filter(
+                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                year=course_year,
+                is_active=True
+            ).distinct().count()
+        else:
+            course.student_count = Student.objects.filter(
+                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                is_active=True
+            ).distinct().count()
+        course.attendance_taken = Attendance.objects.filter(course=course, date=today).exists()
+        present_today_count = Attendance.objects.filter(
+            course=course,
+            date=today,
+            status='present'
+        ).values('student_id').distinct().count()
+        course.present_today = min(present_today_count, course.student_count)
+        
+        # Attach the class containing this course
+        if request.user.role == 'admin':
+            course.class_obj = course.class_offerings.first()
+        else:
+            course.class_obj = course.class_offerings.filter(id__in=classes).first()
+            
+    # Calculate today's attendance - get courses
+    course_ids = [c.id for c in courses]
     
-    # Calculate today's attendance
-    today_attendance = Attendance.objects.filter(date=today)
-    if request.user.role != 'admin':
-        try:
-            teacher = Teacher.objects.get(user=request.user)
-            today_attendance = today_attendance.filter(class_obj__teacher=teacher)
-        except Teacher.DoesNotExist:
-            pass
-    today_attendance_count = today_attendance.count()
+    # FIXED: Use QuerySet instead of list
+    if course_ids:
+        today_attendance = Attendance.objects.filter(date=today, course_id__in=course_ids)
+        today_attendance_count = today_attendance.count()
+    else:
+        today_attendance = Attendance.objects.none()
+        today_attendance_count = 0
     
-    # Calculate total students across all classes
+    # Calculate total students across all classes using ManyToMany
     total_students = Student.objects.filter(is_active=True)
-    if request.user.role != 'admin':
-        try:
-            teacher = Teacher.objects.get(user=request.user)
-            total_students = total_students.filter(class_enrolled__teacher=teacher).distinct()
-        except Teacher.DoesNotExist:
-            pass
+    if request.user.role != 'admin' and classes.exists():
+        total_students = total_students.filter(classes_enrolled__in=classes).distinct()
     total_students_count = total_students.count()
     
     # Calculate attendance rate
     attendance_rate = 0
-    if total_students_count > 0:
-        # Get present count for today
-        present_today = today_attendance.filter(status='present').count()
-        attendance_rate = round((present_today / total_students_count) * 100, 1)
+    if total_students_count > 0 and course_ids:
+        present_today = (
+            today_attendance.filter(status='present')
+            .values('student_id')
+            .distinct()
+            .count()
+        )
+        attendance_rate = attendance_rate_percent(present_today, total_students_count)
     
     context = {
         'classes': classes,
-        'total_classes': total_classes,
+        'courses': courses,
+        'total_classes': classes.count(),
+        'total_courses': courses.count(),
         'today_attendance': today_attendance_count,
         'total_students': total_students_count,
         'attendance_rate': f"{attendance_rate}%",
@@ -460,21 +598,30 @@ def teacher_take_attendance(request, class_id):
             messages.error(request, 'Teacher profile not found.')
             return redirect('attendance:teacher_attendance')
     
-    students = Student.objects.filter(class_enrolled=class_obj, is_active=True)
+    students = class_obj.enrolled_students.filter(is_active=True)
+    
+    # Get the course from the class using M2M
+    course = class_obj.courses.first()
+    if not course:
+        messages.error(request, 'This class is not associated with any course.')
+        return redirect('attendance:teacher_attendance')
     
     if request.method == 'POST':
         attendance_date = request.POST.get('date')
         if not attendance_date:
             attendance_date = date.today().isoformat()
         
-        marked_by = class_obj.teacher if class_obj.teacher else None
+        try:
+            marked_by = Teacher.objects.get(user=request.user)
+        except Teacher.DoesNotExist:
+            marked_by = class_obj.teacher if class_obj.teacher else None
         
         for student in students:
             status = request.POST.get(f'student_{student.id}')
             if status:
                 attendance, created = Attendance.objects.get_or_create(
                     student=student,
-                    class_obj=class_obj,
+                    course=course,
                     date=attendance_date,
                     defaults={
                         'status': status,
@@ -490,7 +637,7 @@ def teacher_take_attendance(request, class_id):
         return redirect('attendance:teacher_attendance')
     
     today = date.today()
-    existing_attendances = Attendance.objects.filter(class_obj=class_obj, date=today)
+    existing_attendances = Attendance.objects.filter(course=course, date=today)
     existing_status = {str(att.student.id): att.status for att in existing_attendances}
     
     context = {
@@ -501,6 +648,7 @@ def teacher_take_attendance(request, class_id):
         'total_students': students.count(),
     }
     return render(request, 'Backend/teacher/attendance/take_attendance.html', context)
+
 
 @login_required
 @teacher_or_admin_required
@@ -519,7 +667,9 @@ def teacher_attendance_history(request, class_id):
             messages.error(request, 'Teacher profile not found.')
             return redirect('attendance:teacher_attendance')
     
-    attendances = Attendance.objects.filter(class_obj=class_obj).order_by('-date')
+    # Get the course from the class using M2M
+    course = class_obj.courses.first()
+    attendances = Attendance.objects.filter(course=course).order_by('-date') if course else Attendance.objects.none()
     
     # Filter by date range
     date_from = request.GET.get('date_from')
@@ -558,9 +708,6 @@ def teacher_attendance_history(request, class_id):
 
 def export_attendance_csv(attendances, class_obj):
     """Export attendance records to CSV"""
-    import csv
-    from django.http import HttpResponse
-    
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="attendance_{class_obj.name}_{date.today()}.csv"'
     
@@ -581,6 +728,7 @@ def export_attendance_csv(attendances, class_obj):
     
     return response
 
+
 # ==================== TEACHER STUDENT ATTENDANCE ====================
 
 @login_required
@@ -593,9 +741,8 @@ def teacher_student_attendance(request, student_id):
     if request.user.role != 'admin':
         try:
             teacher = Teacher.objects.get(user=request.user)
-            # Check if student is in any of the teacher's classes
-            student_classes = Class.objects.filter(teacher=teacher, is_active=True)
-            if not student.class_enrolled or student.class_enrolled not in student_classes:
+            teacher_classes = Class.objects.filter(teacher=teacher, is_active=True).distinct()
+            if not student.classes_enrolled.filter(id__in=teacher_classes).exists():
                 messages.error(request, 'You do not have permission to view this student.')
                 return redirect('attendance:teacher_attendance')
         except Teacher.DoesNotExist:
@@ -614,7 +761,7 @@ def teacher_student_attendance(request, student_id):
     
     attendance_rate = 0
     if total > 0:
-        attendance_rate = round((present / total) * 100, 1)
+        attendance_rate = attendance_rate_percent(present, total)
     
     context = {
         'student': student,
@@ -627,3 +774,59 @@ def teacher_student_attendance(request, student_id):
         'attendance_rate': attendance_rate,
     }
     return render(request, 'Backend/teacher/attendance/student_attendance_detail.html', context)
+
+
+# ==================== COURSE ATTENDANCE VIEWS ====================
+
+@login_required
+@teacher_or_admin_required
+def teacher_course_attendance(request):
+    """Teachers can take attendance for their courses"""
+    if request.user.role == 'admin':
+        courses = Course.objects.filter(is_active=True)
+    else:
+        try:
+            teacher = Teacher.objects.get(user=request.user)
+            courses = Course.objects.filter(teacher=teacher, is_active=True)
+        except Teacher.DoesNotExist:
+            courses = Course.objects.none()
+    
+    today = date.today()
+    
+    course_data = []
+    for course in courses:
+        course_year = course.level[0] if course.level and len(course.level) > 0 else None
+        if course_year:
+            students = Student.objects.filter(
+                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                year=course_year,
+                is_active=True
+            ).distinct()
+        else:
+            students = Student.objects.filter(
+                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                is_active=True
+            ).distinct()
+        attendance_taken = Attendance.objects.filter(
+            course=course,
+            date=today
+        ).exists()
+        student_count = students.count()
+        present_today_count = Attendance.objects.filter(
+            course=course,
+            date=today,
+            status='present'
+        ).values('student_id').distinct().count()
+        
+        course_data.append({
+            'course': course,
+            'student_count': student_count,
+            'attendance_taken': attendance_taken,
+            'present_today': min(present_today_count, student_count),
+        })
+    
+    context = {
+        'courses': course_data,
+        'today': today,
+    }
+    return render(request, 'Backend/teacher/attendance/course_attendance.html', context)

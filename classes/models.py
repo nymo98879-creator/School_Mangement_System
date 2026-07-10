@@ -1,4 +1,3 @@
-
 from django.db import models
 from teachers.models import Teacher
 from courses.models import Course
@@ -79,12 +78,10 @@ class Room(models.Model):
 
 
 class Term(models.Model):
-    """Academic term"""
+    """Academic term - 6 months each"""
     TERM_TYPES = [
-        ('fall', 'Fall Semester'),
-        ('spring', 'Spring Semester'),
-        ('summer', 'Summer Semester'),
-        ('winter', 'Winter Semester'),
+        ('semester1', 'Semester 1'),
+        ('semester2', 'Semester 2'),
     ]
     
     name = models.CharField(max_length=50)
@@ -99,7 +96,7 @@ class Term(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.get_term_type_display()} {self.academic_year}"
+        return f"{self.get_term_type_display()} - {self.academic_year}"
     
     def save(self, *args, **kwargs):
         if self.is_current:
@@ -180,69 +177,83 @@ class TimeSlot(models.Model):
 
 
 class Class(models.Model):
-    """Main Class Model"""
-    
+    """Main Class Model — one class can hold multiple courses"""
+
     # ===== BASIC INFORMATION =====
     name = models.CharField(max_length=100)
     section = models.CharField(max_length=10, blank=True, null=True)
     code = models.CharField(max_length=20, unique=True, blank=True, null=True)
-    
+
     # ===== LOCATION =====
     building = models.ForeignKey(Building, on_delete=models.SET_NULL, null=True, blank=True, related_name='classes')
     floor = models.ForeignKey(Floor, on_delete=models.SET_NULL, null=True, blank=True, related_name='classes')
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True, related_name='classes')
     room_number = models.CharField(max_length=20, blank=True, null=True)
-    
+
     # ===== SCHEDULE =====
     time_slots = models.ManyToManyField(TimeSlot, blank=True, related_name='classes')
     schedule = models.CharField(max_length=100, blank=True, null=True)
     start_time = models.TimeField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     days = models.CharField(max_length=50, blank=True, null=True)
-    
+
     # ===== TERM =====
     term = models.ForeignKey(Term, on_delete=models.SET_NULL, null=True, blank=True, related_name='classes')
     term_type = models.CharField(max_length=20, choices=Term.TERM_TYPES, blank=True, null=True)
     academic_year = models.CharField(max_length=20, blank=True, null=True)
-    
+
     # ===== CAPACITY =====
     capacity = models.IntegerField(default=30)
-    
+
     # ===== RELATIONSHIPS =====
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True, related_name='classes')
-    course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True, related_name='classes')
-    
+    courses = models.ManyToManyField(
+        'courses.Course', 
+        blank=True, 
+        related_name='class_offerings'
+    )
+
     # ===== STATUS =====
     is_active = models.BooleanField(default=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         return f"{self.name} - {self.section}" if self.section else self.name
-    
+
+    def get_students(self):
+        return self.enrolled_students.filter(is_active=True)
+
     def get_student_count(self):
-        return self.students.filter(is_active=True).count()
-    
+        return self.enrolled_students.filter(is_active=True).count()
+
     def get_attendance_rate(self):
         from attendance.models import Attendance
-        attendances = Attendance.objects.filter(class_obj=self)
-        total = attendances.count()
-        if total == 0:
+        from attendance.utils import attendance_rate_percent
+
+        course_list = list(self.courses.all())
+        if not course_list:
             return 0
+
+        attendances = Attendance.objects.filter(course__in=course_list)
+        total = attendances.count()
         present = attendances.filter(status='present').count()
-        return round((present / total) * 100, 1)
-    
+        return attendance_rate_percent(present, total)
+
     def get_present_today(self):
         from attendance.models import Attendance
         from datetime import date
+        course_list = list(self.courses.all())
+        if not course_list:
+            return 0
         return Attendance.objects.filter(
-            class_obj=self, 
-            date=date.today(), 
+            course__in=course_list,
+            date=date.today(),
             status='present'
         ).count()
-    
+
     def get_full_location(self):
         if self.building and self.room:
             location = self.building.name
@@ -253,12 +264,12 @@ class Class(models.Model):
         elif self.room_number:
             return f"Room: {self.room_number}"
         return "Location TBD"
-    
+
     def get_term_display(self):
         if self.term:
             return str(self.term)
         return self.term_type or "Term TBD"
-    
+
     def get_schedule_display(self):
         if self.time_slots.exists():
             slots = self.time_slots.all()
@@ -269,7 +280,12 @@ class Class(models.Model):
                 return f"{self.days} {time_str}"
             return time_str
         return self.schedule or "Schedule TBD"
-    
+
+    def get_courses_display(self):
+        if self.courses.exists():
+            return ", ".join(c.code for c in self.courses.all())
+        return "No courses assigned"
+
     def get_capacity_status(self):
         student_count = self.get_student_count()
         if student_count >= self.capacity:
@@ -280,7 +296,7 @@ class Class(models.Model):
             return 'half_full'
         else:
             return 'available'
-    
+
     class Meta:
         verbose_name_plural = "Classes"
         ordering = ['name']

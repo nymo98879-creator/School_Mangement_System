@@ -142,6 +142,18 @@
                         </div>
                     </div>
                     <div class="mb-3">
+                        <div class="detail-label">Time Slots</div>
+                        <div class="detail-value">
+                            {% if course.time_slots.all %}
+                                {% for slot in course.time_slots.all %}
+                                    <span class="badge bg-info text-white" style="font-size: 12px; font-weight: 500; padding: 4px 10px; margin-right: 4px; display: inline-block;">{{ slot }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-muted">None</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="mb-3">
                         <div class="detail-label">Students Enrolled</div>
                         <div class="detail-value">{{ student_count }}</div>
                     </div>

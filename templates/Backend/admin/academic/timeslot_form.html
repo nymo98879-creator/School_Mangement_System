@@ -68,7 +68,7 @@
     }
 
     .form-text .help-icon {
-        color: #3498db;
+        color: #4263eb;
         margin-right: 4px;
     }
 
@@ -148,7 +148,7 @@
 
     .form-actions {
         padding-top: 20px;
-        border-top: 2px solid #f0f2f5;
+        border-top: 2px solid #f0f2f8;
         display: flex;
         gap: 15px;
         justify-content: flex-end;
@@ -247,12 +247,32 @@
 
     .preset-badge.full-day {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
     }
 
     .preset-badge.weekend {
         background: #fef9e7;
         color: #f39c12;
+    }
+
+    .errorlist {
+        color: #dc3545;
+        font-size: 13px;
+        list-style: none;
+        padding: 5px 0;
+        margin: 0;
+    }
+
+    .errorlist li {
+        padding: 2px 0;
+    }
+
+    .errorlist.nonfield {
+        margin-bottom: 10px;
+        padding: 10px;
+        background: #f8d7da;
+        border-radius: 6px;
+        border-left: 4px solid #dc3545;
     }
 
     @media (max-width: 768px) {
@@ -283,6 +303,15 @@
                 <h5 class="mb-0"><i class="fas fa-clock me-2"></i>{{ title }}</h5>
             </div>
             <div class="card-body">
+                <!-- Display non-field errors -->
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                    <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
                 <form method="POST" novalidate id="timeSlotForm">
                     {% csrf_token %}
 
@@ -292,106 +321,39 @@
                             <i class="fas fa-bolt"></i>Quick Presets
                         </h5>
                         <div class="preset-grid">
-                            <!-- Morning Session: 8:00 - 11:00 (with break 9:30-10:00) -->
+                            <!-- Morning Session -->
                             <div class="preset-card" data-days="monday,tuesday,wednesday,thursday,friday"
-                                data-start="08:00" data-end="11:00">
+                                data-start="08:00" data-end="11:00" data-slot-type="morning">
                                 <span class="preset-icon">🌅</span>
                                 <div class="preset-title">Morning Session</div>
                                 <div class="preset-time">8:00 AM - 11:00 AM</div>
                                 <div class="preset-days"><span class="preset-badge morning">Mon-Fri</span></div>
                                 <div class="preset-break">☕ Break: 9:30 - 10:00</div>
-                                <div class="preset-detail">2 sessions with break</div>
                             </div>
 
-                            <!-- Afternoon Session: 2:00 - 5:00 (with break 3:00-3:30) -->
+                            <!-- Afternoon Session -->
                             <div class="preset-card" data-days="monday,tuesday,wednesday,thursday,friday"
-                                data-start="14:00" data-end="17:00">
+                                data-start="14:00" data-end="17:00" data-slot-type="afternoon">
                                 <span class="preset-icon">☀️</span>
                                 <div class="preset-title">Afternoon Session</div>
                                 <div class="preset-time">2:00 PM - 5:00 PM</div>
                                 <div class="preset-days"><span class="preset-badge afternoon">Mon-Fri</span></div>
                                 <div class="preset-break">☕ Break: 3:00 - 3:30</div>
-                                <div class="preset-detail">2 sessions with break</div>
                             </div>
 
-                            <!-- Evening Session: 5:30 - 8:45 (with break 7:00-7:30) -->
+                            <!-- Evening Session -->
                             <div class="preset-card" data-days="monday,tuesday,wednesday,thursday,friday"
-                                data-start="17:30" data-end="20:45">
+                                data-start="17:30" data-end="20:45" data-slot-type="evening">
                                 <span class="preset-icon">🌙</span>
                                 <div class="preset-title">Evening Session</div>
                                 <div class="preset-time">5:30 PM - 8:45 PM</div>
                                 <div class="preset-days"><span class="preset-badge evening">Mon-Fri</span></div>
                                 <div class="preset-break">☕ Break: 7:00 - 7:30</div>
-                                <div class="preset-detail">2 sessions with break</div>
-                            </div>
-
-                            <!-- Full Day: 8:00 - 5:00 (with lunch break) -->
-                            <div class="preset-card" data-days="monday,tuesday,wednesday,thursday,friday"
-                                data-start="08:00" data-end="17:00">
-                                <span class="preset-icon">📚</span>
-                                <div class="preset-title">Full Day</div>
-                                <div class="preset-time">8:00 AM - 5:00 PM</div>
-                                <div class="preset-days"><span class="preset-badge full-day">Mon-Fri</span></div>
-                                <div class="preset-break">🍽️ Lunch: 12:00 - 1:00</div>
-                                <div class="preset-detail">4 sessions with breaks</div>
-                            </div>
-
-                            <!-- Saturday Morning: 8:00 - 11:00 -->
-                            <div class="preset-card" data-days="saturday" data-start="08:00" data-end="11:00">
-                                <span class="preset-icon">📅</span>
-                                <div class="preset-title">Saturday Morning</div>
-                                <div class="preset-time">8:00 AM - 11:00 AM</div>
-                                <div class="preset-days"><span class="preset-badge weekend">Saturday</span></div>
-                                <div class="preset-break">☕ Break: 9:30 - 10:00</div>
-                            </div>
-
-                            <!-- Saturday Afternoon: 2:00 - 5:00 -->
-                            <div class="preset-card" data-days="saturday" data-start="14:00" data-end="17:00">
-                                <span class="preset-icon">📅</span>
-                                <div class="preset-title">Saturday Afternoon</div>
-                                <div class="preset-time">2:00 PM - 5:00 PM</div>
-                                <div class="preset-days"><span class="preset-badge weekend">Saturday</span></div>
-                                <div class="preset-break">☕ Break: 3:00 - 3:30</div>
-                            </div>
-
-                            <!-- Sunday Morning: 8:00 - 11:00 -->
-                            <div class="preset-card" data-days="sunday" data-start="08:00" data-end="11:00">
-                                <span class="preset-icon">📅</span>
-                                <div class="preset-title">Sunday Morning</div>
-                                <div class="preset-time">8:00 AM - 11:00 AM</div>
-                                <div class="preset-days"><span class="preset-badge weekend">Sunday</span></div>
-                                <div class="preset-break">☕ Break: 9:30 - 10:00</div>
-                            </div>
-
-                            <!-- Sunday Afternoon: 2:00 - 5:00 -->
-                            <div class="preset-card" data-days="sunday" data-start="14:00" data-end="17:00">
-                                <span class="preset-icon">📅</span>
-                                <div class="preset-title">Sunday Afternoon</div>
-                                <div class="preset-time">2:00 PM - 5:00 PM</div>
-                                <div class="preset-days"><span class="preset-badge weekend">Sunday</span></div>
-                                <div class="preset-break">☕ Break: 3:00 - 3:30</div>
-                            </div>
-
-                            <!-- Saturday Full Day -->
-                            <div class="preset-card" data-days="saturday" data-start="08:00" data-end="17:00">
-                                <span class="preset-icon">📚</span>
-                                <div class="preset-title">Saturday Full Day</div>
-                                <div class="preset-time">8:00 AM - 5:00 PM</div>
-                                <div class="preset-days"><span class="preset-badge weekend">Saturday</span></div>
-                                <div class="preset-break">🍽️ Lunch: 12:00 - 1:00</div>
-                            </div>
-
-                            <!-- Sunday Full Day -->
-                            <div class="preset-card" data-days="sunday" data-start="08:00" data-end="17:00">
-                                <span class="preset-icon">📚</span>
-                                <div class="preset-title">Sunday Full Day</div>
-                                <div class="preset-time">8:00 AM - 5:00 PM</div>
-                                <div class="preset-days"><span class="preset-badge weekend">Sunday</span></div>
-                                <div class="preset-break">🍽️ Lunch: 12:00 - 1:00</div>
                             </div>
 
                             <!-- Weekend Full Day -->
-                            <div class="preset-card" data-days="saturday,sunday" data-start="08:00" data-end="17:00">
+                            <div class="preset-card" data-days="saturday,sunday" data-start="08:00" data-end="17:00"
+                                data-slot-type="weekend_full">
                                 <span class="preset-icon">🎯</span>
                                 <div class="preset-title">Weekend Full Day</div>
                                 <div class="preset-time">8:00 AM - 5:00 PM</div>
@@ -399,7 +361,7 @@
                                 <div class="preset-break">🍽️ Lunch: 12:00 - 1:00</div>
                             </div>
                         </div>
-                        <div class="form-text">
+                        <div class="form-text mt-2">
                             <i class="fas fa-info-circle help-icon"></i>
                             Click a preset to auto-fill the form
                         </div>
@@ -410,11 +372,13 @@
                         <h5 class="section-title">
                             <i class="fas fa-calendar-day"></i>Select Days <span class="required">*</span>
                         </h5>
+
+                        <!-- Days field with Django's checkbox rendering -->
                         <div class="day-checkbox-group" id="dayCheckboxGroup">
                             {% for choice in form.days.field.choices %}
                             <div class="form-check">
                                 <input class="form-check-input day-checkbox" type="checkbox" name="days"
-                                    value="{{ choice.0 }}" id="day_{{ choice.0 }}" {% if choice.0 in selected_days%}checked{% endif %}>
+                                    value="{{ choice.0 }}" id="day_{{ choice.0 }}" {% if choice.0 in selected_days %}checked{% endif %}>
                                 <label class="form-check-label" for="day_{{ choice.0 }}">
                                     <i
                                         class="fas fa-{% if choice.0 == 'monday' %}monday{% elif choice.0 == 'tuesday' %}tuesday{% elif choice.0 == 'wednesday' %}wednesday{% elif choice.0 == 'thursday' %}thursday{% elif choice.0 == 'friday' %}friday{% elif choice.0 == 'saturday' %}saturday{% else %}sunday{% endif %} me-1"></i>
@@ -423,8 +387,9 @@
                             </div>
                             {% endfor %}
                         </div>
+
                         {% if form.days.errors %}
-                        <div class="text-danger small">{{ form.days.errors }}</div>
+                        <div class="errorlist">{{ form.days.errors }}</div>
                         {% endif %}
                     </div>
 
@@ -437,20 +402,20 @@
                     <!-- ===== TIME SELECTION ===== -->
                     <div class="form-section">
                         <h5 class="section-title">
-                            <i class="fas fa-clock"></i>Time
+                            <i class="fas fa-clock"></i>Time <span class="required">*</span>
                         </h5>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">
+                                <label for="{{ form.start_time.id_for_label }}" class="form-label">
                                     Start Time <span class="required">*</span>
                                 </label>
                                 {{ form.start_time }}
                                 {% if form.start_time.errors %}
-                                <div class="text-danger small">{{ form.start_time.errors }}</div>
+                                <div class="errorlist">{{ form.start_time.errors }}</div>
                                 {% endif %}
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">
+                                <label for="{{ form.end_time.id_for_label }}" class="form-label">
                                     End Time <span class="required">*</span>
                                 </label>
                                 {{ form.end_time }}
@@ -459,7 +424,7 @@
                                     Must be after start time
                                 </div>
                                 {% if form.end_time.errors %}
-                                <div class="text-danger small">{{ form.end_time.errors }}</div>
+                                <div class="errorlist">{{ form.end_time.errors }}</div>
                                 {% endif %}
                             </div>
                         </div>
@@ -472,7 +437,7 @@
                         </h5>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">
+                                <label for="{{ form.slot_type.id_for_label }}" class="form-label">
                                     Slot Type <span class="optional">(Optional)</span>
                                 </label>
                                 {{ form.slot_type }}
@@ -481,11 +446,11 @@
                                     Categorize this time slot
                                 </div>
                                 {% if form.slot_type.errors %}
-                                <div class="text-danger small">{{ form.slot_type.errors }}</div>
+                                <div class="errorlist">{{ form.slot_type.errors }}</div>
                                 {% endif %}
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-bold">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">
                                     Name <span class="optional">(Optional)</span>
                                 </label>
                                 {{ form.name }}
@@ -494,15 +459,16 @@
                                     e.g., Morning Session
                                 </div>
                                 {% if form.name.errors %}
-                                <div class="text-danger small">{{ form.name.errors }}</div>
+                                <div class="errorlist">{{ form.name.errors }}</div>
                                 {% endif %}
                             </div>
                             <div class="col-12">
-                                <label class="form-label fw-bold">Description <span
-                                        class="optional">(Optional)</span></label>
+                                <label for="{{ form.description.id_for_label }}" class="form-label">
+                                    Description <span class="optional">(Optional)</span>
+                                </label>
                                 {{ form.description }}
                                 {% if form.description.errors %}
-                                <div class="text-danger small">{{ form.description.errors }}</div>
+                                <div class="errorlist">{{ form.description.errors }}</div>
                                 {% endif %}
                             </div>
                         </div>
@@ -531,7 +497,8 @@
                             <i class="fas fa-times me-2"></i>Cancel
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>Save Time Slot
+                            <i class="fas fa-save me-2"></i>
+                            {% if is_edit %}Update Time Slot{% else %}Save Time Slot{% endif %}
                         </button>
                     </div>
                 </form>
@@ -545,51 +512,15 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // ===== PRESET CARDS =====
-        var presetCards = document.querySelectorAll('.preset-card');
-        var dayCheckboxes = document.querySelectorAll('.day-checkbox');
-        var startTimeInput = document.querySelector('#id_start_time');
-        var endTimeInput = document.querySelector('#id_end_time');
-        var slotTypeSelect = document.querySelector('#id_slot_type');
+        const presetCards = document.querySelectorAll('.preset-card');
+        const dayCheckboxes = document.querySelectorAll('input[name="days"]');
+        const startTimeInput = document.querySelector('#id_start_time');
+        const endTimeInput = document.querySelector('#id_end_time');
+        const slotTypeSelect = document.querySelector('#id_slot_type');
+        const selectedDaysPreview = document.getElementById('selectedDaysPreview');
+        const selectedDaysList = document.getElementById('selectedDaysList');
 
-        for (var i = 0; i < presetCards.length; i++) {
-            presetCards[i].addEventListener('click', function () {
-                var days = this.dataset.days.split(',');
-                var startTime = this.dataset.start;
-                var endTime = this.dataset.end;
-
-                for (var j = 0; j < dayCheckboxes.length; j++) {
-                    var checkbox = dayCheckboxes[j];
-                    if (days.indexOf(checkbox.value) !== -1) {
-                        checkbox.checked = true;
-                        checkbox.closest('.form-check').style.borderColor = '#9b59b6';
-                        checkbox.closest('.form-check').style.background = '#f0e6ff';
-                    } else {
-                        checkbox.checked = false;
-                        checkbox.closest('.form-check').style.borderColor = '#e9ecef';
-                        checkbox.closest('.form-check').style.background = '#f8f9fa';
-                    }
-                }
-
-                if (startTimeInput) {
-                    startTimeInput.value = startTime;
-                    startTimeInput.dispatchEvent(new Event('change'));
-                }
-                if (endTimeInput) {
-                    endTimeInput.value = endTime;
-                    endTimeInput.dispatchEvent(new Event('change'));
-                }
-
-                updateSelectedDays();
-
-                this.style.borderColor = '#9b59b6';
-                this.style.background = '#f0e6ff';
-            });
-        }
-
-        // ===== DAYS SELECTION =====
-        var selectedDaysPreview = document.getElementById('selectedDaysPreview');
-        var selectedDaysList = document.getElementById('selectedDaysList');
-        var dayLabels = {
+        const dayLabels = {
             'monday': 'Monday',
             'tuesday': 'Tuesday',
             'wednesday': 'Wednesday',
@@ -599,85 +530,160 @@
             'sunday': 'Sunday'
         };
 
+        // Function to update selected days display
         function updateSelectedDays() {
-            var selected = [];
-            for (var i = 0; i < dayCheckboxes.length; i++) {
-                var checkbox = dayCheckboxes[i];
+            const selected = [];
+            dayCheckboxes.forEach(function (checkbox) {
+                const parentDiv = checkbox.closest('.form-check');
                 if (checkbox.checked) {
-                    selected.push(dayLabels[checkbox.value] || checkbox.value);
-                    checkbox.closest('.form-check').style.borderColor = '#9b59b6';
-                    checkbox.closest('.form-check').style.background = '#f0e6ff';
+                    const label = checkbox.nextElementSibling;
+                    selected.push(label ? label.textContent.trim() : checkbox.value);
+                    if (parentDiv) {
+                        parentDiv.style.borderColor = '#9b59b6';
+                        parentDiv.style.background = '#f0e6ff';
+                    }
                 } else {
-                    checkbox.closest('.form-check').style.borderColor = '#e9ecef';
-                    checkbox.closest('.form-check').style.background = '#f8f9fa';
-                }
-            }
-
-            if (selected.length > 0) {
-                selectedDaysPreview.style.display = 'block';
-                var html = '';
-                for (var j = 0; j < selected.length; j++) {
-                    html += '<span class="badge bg-primary">' + selected[j] + '</span> ';
-                }
-                selectedDaysList.innerHTML = html;
-            } else {
-                selectedDaysPreview.style.display = 'none';
-            }
-        }
-
-        for (var i = 0; i < dayCheckboxes.length; i++) {
-            dayCheckboxes[i].addEventListener('change', function () {
-                updateSelectedDays();
-                for (var j = 0; j < presetCards.length; j++) {
-                    presetCards[j].style.borderColor = '#e9ecef';
-                    presetCards[j].style.background = '#f8f9fa';
+                    if (parentDiv) {
+                        parentDiv.style.borderColor = '#e9ecef';
+                        parentDiv.style.background = '#f8f9fa';
+                    }
                 }
             });
+
+            if (selected.length > 0) {
+                if (selectedDaysPreview) {
+                    selectedDaysPreview.style.display = 'block';
+                }
+                if (selectedDaysList) {
+                    let html = '';
+                    selected.forEach(function (day) {
+                        html += '<span class="badge bg-primary">' + day + '</span> ';
+                    });
+                    selectedDaysList.innerHTML = html;
+                }
+            } else {
+                if (selectedDaysPreview) {
+                    selectedDaysPreview.style.display = 'none';
+                }
+            }
         }
 
+        // Preset card click handler
+        presetCards.forEach(function (card) {
+            card.addEventListener('click', function () {
+                const days = this.dataset.days.split(',');
+                const startTime = this.dataset.start;
+                const endTime = this.dataset.end;
+                const slotType = this.dataset.slotType;
+
+                // Uncheck all days first
+                dayCheckboxes.forEach(function (checkbox) {
+                    checkbox.checked = false;
+                });
+
+                // Check selected days
+                dayCheckboxes.forEach(function (checkbox) {
+                    if (days.indexOf(checkbox.value) !== -1) {
+                        checkbox.checked = true;
+                    }
+                });
+
+                // Set times
+                if (startTimeInput) {
+                    startTimeInput.value = startTime;
+                }
+                if (endTimeInput) {
+                    endTimeInput.value = endTime;
+                }
+
+                // Set slot type
+                if (slotTypeSelect && slotType) {
+                    for (let option of slotTypeSelect.options) {
+                        if (option.value === slotType) {
+                            option.selected = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Update display
+                updateSelectedDays();
+
+                // Highlight selected preset
+                presetCards.forEach(function (p) {
+                    p.style.borderColor = '#e9ecef';
+                    p.style.background = '#f8f9fa';
+                });
+                this.style.borderColor = '#9b59b6';
+                this.style.background = '#f0e6ff';
+            });
+        });
+
+        // Day checkbox change handler
+        dayCheckboxes.forEach(function (checkbox) {
+            checkbox.addEventListener('change', function () {
+                updateSelectedDays();
+                // Reset preset highlighting
+                presetCards.forEach(function (card) {
+                    card.style.borderColor = '#e9ecef';
+                    card.style.background = '#f8f9fa';
+                });
+            });
+        });
+
+        // Initial update
         updateSelectedDays();
 
         // ===== VALIDATION =====
-        var form = document.getElementById('timeSlotForm');
+        const form = document.getElementById('timeSlotForm');
 
         form.addEventListener('submit', function (e) {
-            var isValid = true;
-            var selectedDays = document.querySelectorAll('.day-checkbox:checked');
+            // Check if at least one day is selected
+            const selectedDays = document.querySelectorAll('input[name="days"]:checked');
             if (selectedDays.length === 0) {
                 e.preventDefault();
-                alert('Please select at least one day.');
-                isValid = false;
+                alert('⚠️ Please select at least one day.');
+                return false;
             }
 
-            var startTime = document.querySelector('#id_start_time').value;
-            var endTime = document.querySelector('#id_end_time').value;
+            // Validate time
+            const startTime = document.querySelector('#id_start_time').value;
+            const endTime = document.querySelector('#id_end_time').value;
 
-            if (startTime && endTime && startTime >= endTime) {
-                e.preventDefault();
-                alert('End time must be after start time.');
-                isValid = false;
+            if (startTime && endTime) {
+                if (startTime >= endTime) {
+                    e.preventDefault();
+                    alert('⚠️ End time must be after start time.');
+                    document.querySelector('#id_end_time').focus();
+                    return false;
+                }
             }
 
-            if (!isValid) {
-                e.preventDefault();
-            }
+            return true;
         });
 
+        // Real-time time validation
         function validateTimes() {
-            if (startTimeInput.value && endTimeInput.value) {
-                if (startTimeInput.value >= endTimeInput.value) {
-                    endTimeInput.style.borderColor = '#e74c3c';
+            const startTime = startTimeInput.value;
+            const endTime = endTimeInput.value;
+            if (startTime && endTime) {
+                if (startTime >= endTime) {
+                    endTimeInput.style.borderColor = '#dc3545';
+                    endTimeInput.style.borderWidth = '2px';
                 } else {
-                    endTimeInput.style.borderColor = '#27ae60';
+                    endTimeInput.style.borderColor = '#28a745';
+                    endTimeInput.style.borderWidth = '2px';
                 }
             }
         }
 
         if (startTimeInput) {
             startTimeInput.addEventListener('change', validateTimes);
+            startTimeInput.addEventListener('input', validateTimes);
         }
         if (endTimeInput) {
             endTimeInput.addEventListener('change', validateTimes);
+            endTimeInput.addEventListener('input', validateTimes);
         }
     });
 </script>

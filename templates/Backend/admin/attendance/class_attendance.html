@@ -1,15 +1,15 @@
 {% extends 'Backend/layouts/admin_layout.html' %}
 {% load static %}
 
-{% block title %}Class Attendance{% endblock %}
-{% block page_title %}Class Attendance{% endblock %}
+{% block title %}Course Attendance{% endblock %}
+{% block page_title %}Course Attendance{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h5><i class="fas fa-cubes me-2"></i>Class-wise Attendance</h5>
+                <h5><i class="fas fa-book me-2"></i>Course-wise Attendance</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -26,15 +26,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for class in classes %}
+                            {% for course in courses %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><strong>{{ class.name }}</strong></td>
-                                <td>{{ class.course.name|default:"N/A" }}</td>
-                                <td>{{ class.teacher.get_full_name|default:"N/A" }}</td>
-                                <td>{{ class.get_student_count }}/{{ class.max_students }}</td>
+                                <td><strong>{{ course.name }}</strong></td>
+                                <td>{{ course.level|default:"N/A" }}</td>
+                                <td>{{ course.teacher.get_full_name|default:"N/A" }}</td>
+                                <td>{{ course.student_count }}</td>
                                 <td>
-                                    {% with attendance_rate=class.attendance_rate|default:0 %}
+                                    {% with attendance_rate=course.attendance_rate|default:0 %}
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="progress flex-grow-1" style="height: 8px;">
                                             <div class="progress-bar {% if attendance_rate >= 75 %}bg-success{% elif attendance_rate >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
@@ -45,7 +45,7 @@
                                     {% endwith %}
                                 </td>
                                 <td>
-                                    <a href="{% url 'attendance:admin_class_attendance_detail' class.id %}"
+                                    <a href="{% url 'attendance:admin_course_attendance_detail' course.id %}"
                                         class="btn btn-sm btn-info text-white">
                                         <i class="fas fa-eye me-1"></i>View Details
                                     </a>
@@ -54,8 +54,8 @@
                             {% empty %}
                             <tr>
                                 <td colspan="7" class="text-center py-4">
-                                    <i class="fas fa-cubes fa-2x text-muted mb-2" style="opacity: 0.3;"></i>
-                                    <p class="text-muted">No classes found</p>
+                                    <i class="fas fa-book fa-2x text-muted mb-2" style="opacity: 0.3;"></i>
+                                    <p class="text-muted">No courses found</p>
                                 </td>
                             </tr>
                             {% endfor %}

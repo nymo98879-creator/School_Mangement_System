@@ -45,7 +45,7 @@
         font-size: 16px;
         margin-bottom: 20px;
         padding-bottom: 12px;
-        border-bottom: 2px solid #f0f2f5;
+        border-bottom: 2px solid #f0f2f8;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -876,6 +876,8 @@
                             if (academicYearInput) {
                                 academicYearInput.value = data.academic_year;
                             }
+                            // Re-filter courses whenever term (and thus academic year) changes
+                            refreshAvailableCourses();
                         })
                         .catch(error => console.error('Error loading term details:', error));
                 }
@@ -885,6 +887,77 @@
                 termSelect.dispatchEvent(new Event('change'));
             }
         }
+
+        // ===== DYNAMIC COURSE FILTERING =====
+        // When time_slots or academic_year changes, fetch only courses NOT already
+        // taken by another class at those timeslots in the same year.
+        const courseSelect = document.getElementById('id_course');
+        {% if is_edit and class %}
+        const currentClassPk = '{{ class.pk }}';
+        {% else %}
+        const currentClassPk = '';
+        {% endif %}
+        {% if is_edit and class.course %}
+        const currentCourseId = '{{ class.course.id }}';
+        const currentCourseName = '{{ class.course.code }} — {{ class.course.name }}';
+        {% else %}
+        const currentCourseId = '';
+        const currentCourseName = '';
+        {% endif %}
+
+        function getSelectedSlotIds() {
+            if (!timeSlotsSelect) return [];
+            return Array.from(timeSlotsSelect.selectedOptions).map(o => o.value).filter(Boolean);
+        }
+
+        function refreshAvailableCourses() {
+            if (!courseSelect) return;
+            const slotIds = getSelectedSlotIds().join(',');
+            const year    = academicYearInput ? academicYearInput.value.trim() : '';
+
+            // If neither slots nor year are set, show all active courses (no restriction)
+            if (!slotIds && !year) return;
+
+            const url = `/classes/api/get-available-courses/?time_slot_ids=${encodeURIComponent(slotIds)}&academic_year=${encodeURIComponent(year)}&exclude_class=${encodeURIComponent(currentClassPk)}`;
+
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(r => r.json())
+                .then(data => {
+                    const currentVal = courseSelect.value;  // preserve current selection
+                    // Rebuild the <select> options
+                    let html = '<option value="">— Select Course —</option>';
+                    data.results.forEach(c => {
+                        const selected = (String(c.id) === String(currentVal)) ? ' selected' : '';
+                        html += `<option value="${c.id}"${selected}>${c.text}</option>`;
+                    });
+
+                    // If editing and current course not in list, warn the admin but keep it
+                    const ids = data.results.map(c => String(c.id));
+                    if (currentCourseId && !ids.includes(String(currentCourseId))) {
+                        html += `<option value="${currentCourseId}" selected>⚠️ ${currentCourseName} (conflict – change timeslot or year)</option>`;
+                    }
+
+                    courseSelect.innerHTML = html;
+                    // Refresh Select2 if present
+                    if (typeof $ !== 'undefined' && $(courseSelect).data('select2')) {
+                        $(courseSelect).trigger('change.select2');
+                    }
+                })
+                .catch(err => console.error('Course filter error:', err));
+        }
+
+        // Trigger refresh whenever timeslots or academic year change
+        if (timeSlotsSelect) {
+            $(timeSlotsSelect).on('change.select2', function () {
+                updateSelectedSummary();
+                refreshAvailableCourses();
+            });
+        }
+        if (academicYearInput) {
+            academicYearInput.addEventListener('input', refreshAvailableCourses);
+        }
+        // Run once on page load to apply any existing selections
+        setTimeout(refreshAvailableCourses, 400);
 
         // ===== LOCATION DYNAMIC FILTERING =====
         const buildingSelect = document.getElementById('id_building');

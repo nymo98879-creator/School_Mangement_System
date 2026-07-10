@@ -44,7 +44,7 @@
     }
 
     .student-avatar.blue {
-        background: linear-gradient(135deg, #3498db, #2980b9);
+        background: linear-gradient(135deg, #4263eb, #3b5bdb);
     }
 
     .student-avatar.green {
@@ -125,10 +125,10 @@
     }
 
     .attendance-btn.active-excused {
-        background: #3498db;
-        border-color: #3498db;
+        background: #4263eb;
+        border-color: #4263eb;
         color: white;
-        box-shadow: 0 3px 15px rgba(52, 152, 219, 0.4);
+        box-shadow: 0 3px 15px rgba(66, 99, 235, 0.4);
         animation: popIn 0.3s ease;
     }
 
@@ -170,8 +170,8 @@
 
     .remarks-container .remarks-input:focus {
         outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.15);
+        border-color: #4263eb;
+        box-shadow: 0 0 0 0.2rem rgba(66, 99, 235, 0.15);
         background: white;
     }
 
@@ -181,7 +181,7 @@
     }
 
     .remarks-container .remarks-input.has-remark {
-        border-color: #3498db;
+        border-color: #4263eb;
         background: #ebf5fb;
     }
 
@@ -220,7 +220,7 @@
     .legend-dot.present { background: #27ae60; }
     .legend-dot.late { background: #f39c12; }
     .legend-dot.absent { background: #e74c3c; }
-    .legend-dot.excused { background: #3498db; }
+    .legend-dot.excused { background: #4263eb; }
 
     /* ===== SUMMARY STATS ===== */
     .summary-stats {
@@ -258,7 +258,7 @@
     .summary-stats .stat-item.present .stat-number { color: #27ae60; }
     .summary-stats .stat-item.late .stat-number { color: #f39c12; }
     .summary-stats .stat-item.absent .stat-number { color: #e74c3c; }
-    .summary-stats .stat-item.excused .stat-number { color: #3498db; }
+    .summary-stats .stat-item.excused .stat-number { color: #4263eb; }
     .summary-stats .stat-item.total .stat-number { color: #2c3e50; }
     .summary-stats .stat-item.rate .stat-number { color: #8e44ad; }
 
@@ -325,12 +325,12 @@
 
     .student-row .status-label.excused {
         background: #e8f0fe;
-        color: #3498db;
-        border: 1px solid #3498db;
+        color: #4263eb;
+        border: 1px solid #4263eb;
     }
 
     .student-row .status-label.not-marked {
-        background: #f0f2f5;
+        background: #f0f2f8;
         color: #7f8c8d;
         border: 1px solid #e9ecef;
     }
@@ -523,7 +523,7 @@
 <div class="attendance-form">
     <div class="attendance-header">
         <h4><i class="fas fa-calendar-check me-2"></i>Take Attendance</h4>
-        <small>{{ class.name }} - {{ class.schedule }}</small>
+        <small>{{ class.name }} - {{ class.get_schedule_display }}</small>
     </div>
 
     <form method="POST" id="attendanceForm">

@@ -47,7 +47,7 @@
 
     .status-badge.completed {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
     }
 
     .empty-state {
@@ -109,7 +109,7 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="stats-card" style="border-left-color: #3498db;">
+        <div class="stats-card" style="border-left-color: #4263eb;">
             <div class="d-flex justify-content-between">
                 <div>
                     <div class="number">{{ total_students|default:0 }}</div>
@@ -154,7 +154,7 @@
 
             <div class="mb-2">
                 <div class="text-muted small">
-                    <i class="fas fa-clock me-1"></i> {{ class.schedule }}
+                    <i class="fas fa-clock me-1"></i> {{ class.get_schedule_display }}
                 </div>
                 <div class="text-muted small">
                     <i class="fas fa-users me-1"></i>

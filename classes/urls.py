@@ -98,10 +98,15 @@ urlpatterns = [
     path('<int:pk>/add-student/', views.class_add_student, name='class_add_student'),
     path('<int:class_pk>/remove-student/<int:student_pk>/', views.class_remove_student, name='class_remove_student'),
     
-    # ===== ATTENDANCE URLs =====
-      path('save-attendance/<int:class_id>/', views.save_attendance, name='save_attendance'),
-    path('remark/save/<int:class_pk>/<int:student_pk>/', views.save_remark, name='save_remark'),
+     # ===== NEW COURSE ATTENDANCE URLs =====
+    path('class-courses/<int:class_id>/', views.class_courses_view, name='class_courses_view'),
+    path('class/<int:pk>/assign-courses/', views.class_assign_courses, name='class_assign_courses'),
+    path('teacher/course-attendance/', views.teacher_course_attendance_view, name='teacher_course_attendance'),
+    path('teacher/course-attendance/<int:course_id>/', views.teacher_course_attendance_detail, name='teacher_course_attendance_detail'),
     
+    # ===== ATTENDANCE SAVE URLs =====
+    path('save-attendance/<int:class_id>/', views.save_attendance, name='save_attendance'),
+    path('remark/save/<int:class_pk>/<int:student_pk>/', views.save_remark, name='save_remark'),
     # ===== BUILDING URLs =====
     path('buildings/', views.building_list, name='building_list'),
     path('buildings/add/', views.building_add, name='building_add'),
@@ -143,4 +148,8 @@ urlpatterns = [
     path('api/get-rooms/<int:floor_id>/', views.get_rooms, name='get_rooms'),
     path('api/get-building-rooms/<int:building_id>/', views.get_building_rooms, name='get_building_rooms'),
     path('api/get-term-details/<int:term_id>/', views.get_term_details, name='get_term_details'),
+    path('api/get-available-courses/', views.get_available_courses, name='get_available_courses'),
+    
+    path('teacher/course-attendance/', views.teacher_course_attendance_view, name='teacher_course_attendance'),
+    path('teacher/course-attendance/<int:course_id>/', views.teacher_course_attendance_detail, name='teacher_course_attendance_detail'),
 ]

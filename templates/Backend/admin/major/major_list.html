@@ -4,163 +4,7 @@
 {% block title %}Major Management{% endblock %}
 {% block page_title %}Major Management{% endblock %}
 
-{% block extra_css %}
-<style>
-    .stats-card {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
-        border-left: 4px solid #9b59b6;
-        transition: all 0.3s ease;
-    }
-
-    .stats-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .stats-card .stats-number {
-        font-size: 32px;
-        font-weight: 700;
-        color: #2c3e50;
-    }
-
-    .stats-card .stats-label {
-        color: #7f8c8d;
-        font-size: 14px;
-    }
-
-    .degree-badge {
-        padding: 3px 10px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 600;
-    }
-
-    .degree-badge.bachelor {
-        background: #d5f5e3;
-        color: #27ae60;
-    }
-
-    .degree-badge.master {
-        background: #e8f0fe;
-        color: #3498db;
-    }
-
-    .degree-badge.phd {
-        background: #fdebd0;
-        color: #f39c12;
-    }
-
-    .degree-badge.diploma {
-        background: #f5e6f5;
-        color: #9b59b6;
-    }
-
-    .status-badge {
-        padding: 3px 12px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .status-badge.active {
-        background: #d5f5e3;
-        color: #27ae60;
-    }
-
-    .status-badge.inactive {
-        background: #fadbd8;
-        color: #e74c3c;
-    }
-
-    .search-filters {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-    }
-
-    .search-filters .search-input {
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 10px 16px;
-        font-size: 14px;
-        transition: all 0.2s;
-        background: #fafbfc;
-        width: 100%;
-    }
-
-    .search-filters .search-input:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        background: white;
-        outline: none;
-    }
-
-    .search-filters .form-select {
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 10px 16px;
-        font-size: 14px;
-        background: #fafbfc;
-        transition: all 0.2s;
-        width: 100%;
-    }
-
-    .search-filters .form-select:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        outline: none;
-    }
-
-    .table-action-btn {
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 12px;
-        transition: all 0.3s;
-        width: 32px;
-        height: 32px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .table-action-btn:hover {
-        transform: translateY(-2px);
-    }
-
-    .no-results {
-        text-align: center;
-        padding: 60px 20px;
-        display: none;
-    }
-
-    .no-results i {
-        font-size: 56px;
-        color: #e2e8f0;
-        margin-bottom: 16px;
-    }
-
-    .no-results h5 {
-        color: #1a1a2e;
-        font-weight: 600;
-        margin-bottom: 8px;
-    }
-
-    .no-results p {
-        color: #6c757d;
-        font-size: 14px;
-        margin-bottom: 16px;
-    }
-
-    .no-results.show {
-        display: block;
-    }
-</style>
-{% endblock %}
+{% block extra_css %}{% endblock %}
 
 {% block content %}
 <!-- Stats -->
@@ -184,7 +28,7 @@
         </div>
     </div>
     <div class="col-md-3">
-        <div class="stats-card" style="border-left-color:#3498db;">
+        <div class="stats-card" style="border-left-color:#4263eb;">
             <div class="stats-number" id="visibleCountCard">{{ majors|length|default:0 }}</div>
             <div class="stats-label">Showing</div>
         </div>
@@ -275,8 +119,7 @@
                         <td>{{ forloop.counter }}</td>
                         <td><span class="badge bg-secondary">{{ major.code }}</span></td>
                         <td>{{ major.name }}</td>
-                        <td><span class="degree-badge {{ major.degree_type }}">{{ major.get_degree_type_display
-                                }}</span></td>
+                        <td><span class="degree-badge {{ major.degree_type }}">{{ major.get_degree_type_display }}</span></td>
                         <td>{{ major.department.name }}</td>
                         <td>{{ major.duration }} years</td>
                         <td>{{ major.total_credits }}</td>

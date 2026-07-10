@@ -8,257 +8,240 @@
 <style>
     /* ===== MODERN STATS CARDS ===== */
     .stats-card {
-        background: white;
-        border-radius: 16px;
-        padding: 22px 25px;
-        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(226, 232, 240, 0.8);
         position: relative;
         overflow: hidden;
-        border: none;
-        border-bottom: 4px solid #27ae60;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
     }
-
+    .stats-card::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: #10b981;
+        opacity: 0.8;
+    }
     .stats-card:hover {
         transform: translateY(-6px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
     }
-
     .stats-card .stats-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 14px;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
+        font-size: 20px;
         color: white;
-        margin-bottom: 12px;
+        margin-bottom: 16px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
     }
-
-    .stats-card .stats-icon.green {
-        background: linear-gradient(135deg, #27ae60, #2ecc71);
-    }
-
-    .stats-card .stats-icon.blue {
-        background: linear-gradient(135deg, #3498db, #5dade2);
-    }
-
-    .stats-card .stats-icon.orange {
-        background: linear-gradient(135deg, #f39c12, #f7dc6f);
-    }
-
-    .stats-card .stats-icon.purple {
-        background: linear-gradient(135deg, #9b59b6, #af7ac5);
-    }
+    
+    .stats-card .stats-icon.green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    .stats-card .stats-icon.blue { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+    .stats-card .stats-icon.orange { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); }
+    .stats-card .stats-icon.purple { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); }
 
     .stats-card .stats-number {
         font-size: 32px;
         font-weight: 800;
-        color: #2c3e50;
+        color: #0f172a;
+        letter-spacing: -0.5px;
         line-height: 1.2;
     }
-
     .stats-card .stats-label {
-        color: #95a5a6;
+        color: #64748b;
         font-size: 13px;
-        font-weight: 500;
-        margin-top: 2px;
-    }
-
-    .stats-card .stats-trend {
-        font-size: 12px;
         font-weight: 600;
         margin-top: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .stats-card .stats-trend {
+        font-size: 11.5px;
+        font-weight: 700;
+        margin-top: 14px;
         display: inline-block;
-        padding: 3px 14px;
+        padding: 3px 12px;
         border-radius: 20px;
-        background: #ecf0f1;
     }
-
     .stats-card .stats-trend.up {
-        color: #27ae60;
-        background: #d5f5e3;
+        color: #10b981;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.15);
     }
-
     .stats-card .stats-trend.down {
-        color: #e74c3c;
-        background: #fadbd8;
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.15);
     }
-
     .stats-card .stats-trend.neutral {
-        color: #f39c12;
-        background: #fdebd0;
+        color: #f59e0b;
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.15);
     }
 
     /* ===== WELCOME BANNER ===== */
     .welcome-banner {
         background: linear-gradient(135deg, #1a472a 0%, #2d7d46 50%, #1a472a 100%);
-        border-radius: 16px;
-        padding: 30px 35px;
+        border-radius: 20px;
+        padding: 35px 40px;
         color: white;
-        margin-bottom: 25px;
+        margin-bottom: 30px;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 10px 30px rgba(13, 40, 24, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.1);
     }
-
     .welcome-banner::before {
         content: '';
         position: absolute;
-        top: -50%;
-        right: -10%;
-        width: 300px;
-        height: 300px;
-        background: rgba(255, 255, 255, 0.05);
+        top: -50px;
+        right: -50px;
+        width: 250px;
+        height: 250px;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(0,0,0,0) 70%);
         border-radius: 50%;
+        filter: blur(20px);
     }
-
     .welcome-banner::after {
         content: '';
         position: absolute;
-        bottom: -30%;
-        left: 20%;
+        bottom: -80px;
+        right: 100px;
         width: 200px;
         height: 200px;
-        background: rgba(255, 255, 255, 0.03);
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
         border-radius: 50%;
+        filter: blur(20px);
     }
-
     .welcome-banner .welcome-content {
         position: relative;
         z-index: 1;
     }
-
     .welcome-banner h4 {
-        font-weight: 700;
+        font-weight: 800;
         font-size: 24px;
-        margin-bottom: 5px;
-    }
-
-    .welcome-banner h4 i {
-        color: #f1c40f;
-        margin-right: 10px;
-    }
-
-    .welcome-banner p {
-        opacity: 0.8;
-        margin-bottom: 0;
-        font-size: 14px;
-    }
-
-    .welcome-banner .welcome-stats {
-        display: flex;
-        gap: 30px;
-        margin-top: 15px;
-        flex-wrap: wrap;
-    }
-
-    .welcome-banner .welcome-stats .stat-item {
+        margin-bottom: 10px;
+        letter-spacing: -0.5px;
         display: flex;
         align-items: center;
         gap: 10px;
-        background: rgba(255, 255, 255, 0.1);
-        padding: 8px 18px;
-        border-radius: 30px;
-        backdrop-filter: blur(10px);
     }
-
-    .welcome-banner .welcome-stats .stat-item i {
-        font-size: 18px;
-        color: #f1c40f;
+    .welcome-banner h4 i {
+        color: #10b981;
+        text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
     }
-
-    .welcome-banner .welcome-stats .stat-item span {
-        font-size: 13px;
+    .welcome-banner p {
+        color: #94a3b8;
+        font-size: 14.5px;
         font-weight: 500;
+        margin: 0;
+    }
+    .welcome-banner .welcome-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 15px;
+    }
+    .welcome-banner .welcome-stats .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        background: rgba(255,255,255,0.04);
+        padding: 6px 14px;
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+    .welcome-banner .welcome-stats .stat-item i {
+        color: #10b981;
     }
 
     /* ===== SEARCH & FILTER ===== */
     .search-filters {
         background: white;
-        border-radius: 16px;
-        padding: 20px 25px;
-        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
-        margin-bottom: 25px;
+        border-radius: 20px;
+        padding: 24px 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        margin-bottom: 30px;
     }
-
-    .search-filters .search-input {
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
+    .search-filters label {
+        color: #475569;
+        font-weight: 700;
+        font-size: 13px;
+        margin-bottom: 8px;
+        display: block;
+    }
+    .search-filters .form-control, .search-filters .form-select {
+        border-radius: 12px;
         padding: 10px 16px;
-        font-size: 14px;
-        transition: all 0.2s;
-        background: #fafbfc;
-        width: 100%;
+        border: 1px solid #cbd5e1;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: #0f172a;
+        background: #f8fafc;
+        transition: all 0.3s;
+    }
+    .search-filters .form-control:focus, .search-filters .form-select:focus {
+        border-color: #10b981;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+    .search-filters .btn-primary {
+        background: #0f172a;
+        border: none;
+        color: white;
+        padding: 11px 20px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 13.5px;
+        transition: all 0.3s;
+    }
+    .search-filters .btn-primary:hover {
+        background: #1e293b;
+        transform: translateY(-2px);
     }
 
-    .search-filters .search-input:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        background: white;
-        outline: none;
-    }
-
-    .search-filters .form-select {
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 10px 16px;
-        font-size: 14px;
-        background: #fafbfc;
-        transition: all 0.2s;
-        width: 100%;
-    }
-
-    .search-filters .form-select:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        outline: none;
-    }
-
-    /* ===== CLASS CARD GRID ===== */
+    /* ===== CLASS CARDS GRID ===== */
     .class-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
         gap: 25px;
-        margin-top: 20px;
+        margin-bottom: 30px;
     }
-
     .class-card {
         background: white;
         border-radius: 16px;
         box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
         overflow: hidden;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border-top: 4px solid #27ae60;
+        border-top: 4px solid #10b981;
         display: flex;
         flex-direction: column;
+        height: 100%;
         position: relative;
     }
-
-    .class-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(180deg, rgba(39, 174, 96, 0.02) 0%, transparent 100%);
-        pointer-events: none;
-    }
-
     .class-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+        border-color: rgba(16, 185, 129, 0.25);
     }
-
     .class-card .card-header {
-        padding: 18px 22px 12px;
-        border-bottom: 1px solid #f0f2f5;
+        padding: 18px 22px;
+        border-bottom: 1px solid #f0f2f8;
         background: #fafbfc;
-        position: relative;
-        z-index: 1;
     }
-
     .class-card .card-header .class-title {
         font-weight: 700;
         color: #2c3e50;
@@ -266,68 +249,60 @@
         margin: 0;
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         gap: 10px;
+        width: 100%;
     }
-
     .class-card .card-header .class-title i {
-        color: #27ae60;
+        color: #10b981;
         font-size: 20px;
     }
-
-    .class-card .card-header .class-title .class-code {
-        font-size: 11px;
-        color: #7f8c8d;
-        font-weight: 400;
-        background: #ecf0f1;
+    .class-card .card-header .class-code {
+        font-size: 10.5px;
+        font-weight: 700;
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
         padding: 2px 10px;
-        border-radius: 10px;
+        border-radius: 20px;
+        border: 1px solid rgba(16, 185, 129, 0.15);
         margin-left: auto;
     }
-
     .class-card .card-body {
-        padding: 18px 22px;
+        padding: 24px;
         flex: 1;
-        position: relative;
-        z-index: 1;
     }
-
     .class-card .card-body .class-info {
-        color: #7f8c8d;
-        font-size: 14px;
-        padding: 5px 0;
         display: flex;
         align-items: center;
         gap: 10px;
-        border-bottom: 1px dashed #f0f2f5;
+        font-size: 13.5px;
+        color: #475569;
+        margin-bottom: 12px;
     }
-
-    .class-card .card-body .class-info:last-child {
-        border-bottom: none;
-    }
-
     .class-card .card-body .class-info i {
-        width: 20px;
-        color: #27ae60;
+        width: 18px;
+        color: #64748b;
         font-size: 14px;
         text-align: center;
     }
-
-    .class-card .card-body .class-info .badge-status {
-        padding: 3px 14px;
+    
+    /* ===== STATUS BADGES ===== */
+    .badge-status {
+        padding: 3px 12px;
         border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
+        font-size: 11.5px;
+        font-weight: 700;
         display: inline-block;
     }
-
-    .class-card .card-body .class-info .badge-status.active {
-        background: #d5f5e3;
-        color: #27ae60;
+    .badge-status.active {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.15);
     }
-
-    .class-card .card-body .class-info .badge-status.inactive {
-        background: #fadbd8;
-        color: #e74c3c;
+    .badge-status.inactive {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.15);
     }
 
     /* ===== STUDENT COUNT ===== */
@@ -335,109 +310,88 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 4px 14px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .student-count.full {
-        background: #fadbd8;
-        color: #e74c3c;
-    }
-
-    .student-count.near-full {
-        background: #fdebd0;
-        color: #f39c12;
-    }
-
-    .student-count.available {
-        background: #d5f5e3;
-        color: #27ae60;
-    }
-
-    .student-count i {
+        padding: 4px 12px;
+        border-radius: 12px;
         font-size: 12px;
+        font-weight: 700;
+    }
+    .student-count.full {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+    }
+    .student-count.near-full {
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+    }
+    .student-count.available {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
     }
 
     /* ===== PROGRESS BAR ===== */
     .progress-wrapper {
-        margin-top: 10px;
+        margin-top: 15px;
         margin-bottom: 5px;
     }
-
     .progress-custom {
         height: 6px;
-        background: #ecf0f1;
+        background: #e2e8f0;
         border-radius: 10px;
         overflow: hidden;
         position: relative;
     }
-
     .progress-custom .progress-bar-custom {
         height: 100%;
         border-radius: 10px;
         transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
     }
-
-    .progress-custom .progress-bar-custom.green {
-        background: linear-gradient(90deg, #27ae60, #2ecc71);
-    }
-
-    .progress-custom .progress-bar-custom.orange {
-        background: linear-gradient(90deg, #f39c12, #f7dc6f);
-    }
-
-    .progress-custom .progress-bar-custom.red {
-        background: linear-gradient(90deg, #e74c3c, #ec7063);
-    }
+    .progress-custom .progress-bar-custom.green { background: #10b981; }
+    .progress-custom .progress-bar-custom.orange { background: #f59e0b; }
+    .progress-custom .progress-bar-custom.red { background: #ef4444; }
 
     /* ===== CARD FOOTER ===== */
     .class-card .card-footer {
-        padding: 14px 22px;
-        border-top: 1px solid #f0f2f5;
-        background: #fafbfc;
+        padding: 16px 24px;
+        background: #f8fafc;
+        border-top: 1px solid #f1f5f9;
         display: flex;
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
-        position: relative;
-        z-index: 1;
     }
-
     .class-card .card-footer .btn-action {
-        padding: 8px 18px;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 600;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: none;
-        text-decoration: none;
+        padding: 8px 14px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 700;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         color: white;
         flex: 1;
-        min-width: 80px;
-        gap: 6px;
+        gap: 5px;
+        min-width: 75px;
+        transition: all 0.3s;
+        border: none;
+        text-decoration: none;
     }
-
     .class-card .card-footer .btn-action:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         color: white;
     }
-
     .class-card .card-footer .btn-action.btn-primary {
-        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     }
-
     .class-card .card-footer .btn-action.btn-info {
-        background: linear-gradient(135deg, #3498db, #5dade2);
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     }
-
     .class-card .card-footer .btn-action.btn-success {
-        background: linear-gradient(135deg, #2c3e50, #34495e);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    }
+    .class-card .card-footer .btn-action.btn-warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
     }
 
     /* ===== SECTION HEADER ===== */
@@ -449,27 +403,24 @@
         gap: 15px;
         margin-bottom: 5px;
     }
-
     .section-header h5 {
-        font-weight: 700;
-        color: #2c3e50;
-        margin: 0;
-        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        font-size: 18px;
+        letter-spacing: -0.3px;
     }
-
     .section-header h5 i {
-        color: #27ae60;
+        color: #10b981;
         margin-right: 10px;
     }
-
     .section-header .badge-count {
-        background: linear-gradient(135deg, #27ae60, #2ecc71);
-        color: white;
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.2);
         padding: 4px 18px;
         border-radius: 20px;
         font-size: 13px;
         font-weight: 600;
-        box-shadow: 0 2px 10px rgba(39, 174, 96, 0.3);
     }
 
     /* ===== EMPTY STATE ===== */
@@ -478,21 +429,18 @@
         padding: 80px 20px;
         grid-column: 1 / -1;
     }
-
     .empty-state i {
         font-size: 70px;
-        color: #27ae60;
+        color: #10b981;
         opacity: 0.2;
         margin-bottom: 20px;
     }
-
     .empty-state h5 {
-        color: #2c3e50;
-        font-weight: 600;
+        color: #0f172a;
+        font-weight: 700;
     }
-
     .empty-state p {
-        color: #7f8c8d;
+        color: #64748b;
     }
 
     .no-results {
@@ -501,25 +449,21 @@
         display: none;
         grid-column: 1 / -1;
     }
-
     .no-results i {
         font-size: 56px;
-        color: #e2e8f0;
+        color: #cbd5e1;
         margin-bottom: 16px;
     }
-
     .no-results h5 {
-        color: #1a1a2e;
-        font-weight: 600;
+        color: #0f172a;
+        font-weight: 700;
         margin-bottom: 8px;
     }
-
     .no-results p {
-        color: #6c757d;
+        color: #64748b;
         font-size: 14px;
         margin-bottom: 16px;
     }
-
     .no-results.show {
         display: block;
     }
@@ -530,63 +474,50 @@
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         }
     }
-
     @media (max-width: 768px) {
         .stats-card .stats-number {
             font-size: 24px;
         }
-
         .class-grid {
             grid-template-columns: 1fr 1fr;
         }
-
         .search-filters {
             padding: 15px 20px;
         }
     }
-
     @media (max-width: 576px) {
         .stats-card .stats-number {
             font-size: 20px;
         }
-
         .stats-card .stats-icon {
             width: 40px;
             height: 40px;
             font-size: 18px;
         }
-
         .class-grid {
             grid-template-columns: 1fr;
         }
-
         .class-card .card-footer {
             flex-direction: column;
         }
-
         .class-card .card-footer .btn-action {
             flex: none;
             width: 100%;
         }
-
         .section-header {
             flex-direction: column;
             align-items: flex-start;
         }
-
         .welcome-banner {
             padding: 20px;
         }
-
         .welcome-banner h4 {
             font-size: 18px;
         }
-
         .welcome-banner .welcome-stats {
             flex-direction: column;
             gap: 8px;
         }
-
         .welcome-banner .welcome-stats .stat-item {
             justify-content: center;
         }
@@ -600,117 +531,81 @@
         border-radius: 50%;
         margin-right: 6px;
     }
-
     .status-pulse.active {
-        background: #27ae60;
+        background: #10b981;
         animation: pulse 2s infinite;
     }
-
     .status-pulse.inactive {
-        background: #e74c3c;
+        background: #ef4444;
     }
 
     @keyframes pulse {
         0% {
-            box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.4);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
         }
-
         70% {
-            box-shadow: 0 0 0 10px rgba(39, 174, 96, 0);
+            box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
         }
+    }
+    
+    .quick-actions {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
 
-        100% {
-            box-shadow: 0 0 0 0 rgba(39, 174, 96, 0);
-        }
+    .quick-actions .action-btn {
+        padding: 10px 25px;
+        border-radius: 12px;
+        border: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .quick-actions .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .quick-actions .action-btn.primary {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: white;
+    }
+
+    .quick-actions .action-btn.info {
+        background: linear-gradient(135deg, #4263eb, #5dade2);
+        color: white;
+    }
+
+    .quick-actions .action-btn.warning {
+        background: linear-gradient(135deg, #f39c12, #f7dc6f);
+        color: #2c3e50;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 
-<!-- ===== WELCOME BANNER ===== -->
-<div class="welcome-banner">
-    <div class="welcome-content">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h4>
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    Welcome back, {{ teacher.get_full_name|default:teacher.user.username }}!
-                </h4>
-                <p>Here's an overview of your classes and today's attendance.</p>
-                <div class="welcome-stats">
-                    <div class="stat-item">
-                        <i class="fas fa-calendar-day"></i>
-                        <span>{{ today|date:"l, F d, Y" }}</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-clock"></i>
-                        <span>{{ current_time|time:"h:i A"|default:"Current Time" }}</span>
-                    </div>
-                    <div class="stat-item">
-                        <i class="fas fa-cubes"></i>
-                        <span id="totalClassCount">{{ classes|length }} Class{{ classes|length|pluralize }}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 text-end d-none d-md-block">
-                <i class="fas fa-graduation-cap" style="font-size: 60px; opacity: 0.2; color: white;"></i>
-            </div>
-        </div>
+<!-- ===== PAGE HEADER ===== -->
+<div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+    <div>
+        <h4 class="fw-bold text-slate-800 mb-1" style="font-size: 24px; color: #1e293b;">
+            <i class="fas fa-cubes text-emerald me-2" style="color: #10b981;"></i>My Classes
+        </h4>
+        <p class="text-muted mb-0">Browse and manage your assigned classes and student directories.</p>
     </div>
+    <span class="badge px-3 py-2 rounded-pill fw-bold" id="visibleClassCount" style="font-size: 0.95rem; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
+        {{ classes|length }} Class{{ classes|length|pluralize }}
+    </span>
 </div>
+<hr class="mt-2 mb-4">
 
-<!-- ===== STATS CARDS ===== -->
-<div class="row g-4 mb-4">
-    <div class="col-md-3 col-sm-6">
-        <div class="stats-card">
-            <div class="stats-icon green">
-                <i class="fas fa-cubes"></i>
-            </div>
-            <div class="stats-number" id="totalClasses">{{ classes|length|default:0 }}</div>
-            <div class="stats-label">My Classes</div>
-            <span class="stats-trend up">
-                <i class="fas fa-arrow-up me-1"></i> Active
-            </span>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stats-card" style="border-bottom-color: #3498db;">
-            <div class="stats-icon blue">
-                <i class="fas fa-users"></i>
-            </div>
-            <div class="stats-number" id="totalStudents">{{ total_students|default:0 }}</div>
-            <div class="stats-label">Total Students</div>
-            <span class="stats-trend up">
-                <i class="fas fa-arrow-up me-1"></i> Enrolled
-            </span>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stats-card" style="border-bottom-color: #f39c12;">
-            <div class="stats-icon orange">
-                <i class="fas fa-calendar-check"></i>
-            </div>
-            <div class="stats-number" id="todayAttendance">{{ today_attendance|default:0 }}</div>
-            <div class="stats-label">Today's Attendance</div>
-            <span class="stats-trend neutral">
-                <i class="fas fa-minus me-1"></i> Recorded
-            </span>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stats-card" style="border-bottom-color: #9b59b6;">
-            <div class="stats-icon purple">
-                <i class="fas fa-percentage"></i>
-            </div>
-            <div class="stats-number" id="attendanceRate">{{ attendance_rate|default:"0%" }}</div>
-            <div class="stats-label">Attendance Rate</div>
-            <span class="stats-trend up">
-                <i class="fas fa-arrow-up me-1"></i> {{ attendance_rate|default:"0%" }}
-            </span>
-        </div>
-    </div>
-</div>
 
 <!-- ===== SEARCH & FILTER ===== -->
 <div class="search-filters">
@@ -765,20 +660,25 @@
         data-code="{{ class.code|lower|default:'' }}"
         data-status="{% if class.is_active %}active{% else %}inactive{% endif %}" data-students="{{ student_count }}">
         <!-- Card Header -->
-        <div class="card-header">
-            <div class="class-title">
-                <i class="fas fa-cube"></i>
-                <span class="class-name-text">{{ class.name }}</span>
-                <span class="class-code">{{ class.code|default:"" }}</span>
+        <a href="{% url 'classes:class_courses_view' class.id %}" style="text-decoration: none;">
+            <div class="card-header">
+                <div class="class-title">
+                    <i class="fas fa-cube"></i>
+                    <span class="class-name-text" style="color: #0f172a;">{{ class.name }}</span>
+                    <span class="class-code">{{ class.code|default:"" }}</span>
+                </div>
             </div>
-        </div>
+        </a>
 
         <!-- Card Body -->
         <div class="card-body">
+            <!-- Type Class / Section -->
             <div class="class-info">
-                <i class="fas fa-book"></i>
-                <span>{{ class.course.name|default:"No Course" }}</span>
+                <i class="fas fa-tag"></i>
+                <span>Class Type: {{ class.term_type|title|default:"Regular" }} {% if class.section %}(Section {{ class.section }}){% endif %}</span>
             </div>
+            
+            <!-- Location (Building, Floor, Room) -->
             <div class="class-info">
                 <i class="fas fa-map-marker-alt"></i>
                 <span>
@@ -787,80 +687,17 @@
                     {% if class.floor %} - Floor {{ class.floor.floor_number }}{% endif %}
                     {% if class.room %} - Room {{ class.room.room_number }}{% endif %}
                     {% else %}
-                    Not Assigned
+                    Location Not Assigned
                     {% endif %}
                 </span>
-            </div>
-            <div class="class-info">
-                <i class="fas fa-clock"></i>
-                <span>
-                    {% if class.time_slots.all %}
-                    {% for slot in class.time_slots.all|slice:":2" %}
-                    {{ slot.get_days_display }} {{ slot.start_time|time:"h:i A" }}-{{ slot.end_time|time:"h:i A" }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                    {% if class.time_slots.all.count > 2 %}
-                    +{{ class.time_slots.all.count|add:"-2" }} more
-                    {% endif %}
-                    {% else %}
-                    Schedule TBD
-                    {% endif %}
-                </span>
-            </div>
-            <div class="class-info">
-                <i class="fas fa-users"></i>
-                <span class="student-count 
-                    {% if student_count >= capacity %}full
-                    {% elif student_count >= capacity|add:" -5" %}near-full {% else %}available{% endif %}">
-                    <i class="fas fa-user"></i>
-                    <span class="student-count-text">{{ student_count }}</span>/{{ capacity }}
-                    {% if student_count >= capacity %}
-                    <i class="fas fa-exclamation-circle ms-1"></i>
-                    {% endif %}
-                </span>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="progress-wrapper">
-                <div class="d-flex justify-content-between">
-                    <span class="small text-muted">Capacity</span>
-                    <span class="small fw-bold">{{ student_count }}/{{ capacity }}</span>
-                </div>
-                <div class="progress-custom">
-                    <div class="progress-bar-custom 
-                        {% if student_count >= capacity %}red
-                        {% elif student_count >= capacity|add:" -5" %}orange {% else %}green{% endif %}"
-                        style="width: {% widthratio student_count capacity 100 %}%;">
-                    </div>
-                </div>
-            </div>
-
-            <div class="class-info mt-2">
-                <span class="status-pulse {% if class.is_active %}active{% else %}inactive{% endif %}"></span>
-                <span class="badge-status {% if class.is_active %}active{% else %}inactive{% endif %}">
-                    {% if class.is_active %}Active{% else %}Inactive{% endif %}
-                </span>
-                {% if class.term %}
-                <span class="ms-3 text-muted small">
-                    <i class="fas fa-calendar-alt me-1"></i>
-                    {{ class.term.name }}
-                </span>
-                {% endif %}
             </div>
         </div>
 
         <!-- Card Footer -->
-        <div class="card-footer">
+        <div class="card-footer" style="padding: 1.25rem;">
             {% if class.id %}
-            <a href="{% url 'attendance:teacher_take_attendance' class.id %}" class="btn-action btn-primary"
-                title="Take Attendance">
-                <i class="fas fa-calendar-check"></i> Take Attendance
-            </a>
-            <a href="{% url 'attendance:teacher_attendance_history' class.id %}" class="btn-action btn-info"
-                title="View History">
-                <i class="fas fa-history"></i> History
-            </a>
-            <a href="{% url 'classes:class_detail' class.id %}" class="btn-action btn-success" title="View Class">
-                <i class="fas fa-eye"></i> View
+            <a href="{% url 'classes:class_courses_view' class.id %}" class="btn btn-primary w-100 rounded-pill py-2 text-center text-white" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="View All Courses">
+                <i class="fas fa-book-open me-2"></i> View Courses
             </a>
             {% else %}
             <span class="text-muted small">No actions available</span>
@@ -988,10 +825,22 @@
             });
 
             // Update counts
-            document.getElementById('visibleClassCount').textContent = `${visibleCount} Class${visibleCount !== 1 ? 'es' : ''}`;
-            document.getElementById('totalClassCount').textContent = `${visibleCount} Class${visibleCount !== 1 ? 'es' : ''}`;
-            document.getElementById('totalClasses').textContent = visibleCount;
-            document.getElementById('totalStudents').textContent = totalStudents;
+            const visibleClassCountEl = document.getElementById('visibleClassCount');
+            if (visibleClassCountEl) {
+                visibleClassCountEl.textContent = `${visibleCount} Class${visibleCount !== 1 ? 'es' : ''}`;
+            }
+            const totalClassCountEl = document.getElementById('totalClassCount');
+            if (totalClassCountEl) {
+                totalClassCountEl.textContent = `${visibleCount} Class${visibleCount !== 1 ? 'es' : ''}`;
+            }
+            const totalClassesEl = document.getElementById('totalClasses');
+            if (totalClassesEl) {
+                totalClassesEl.textContent = visibleCount;
+            }
+            const totalStudentsEl = document.getElementById('totalStudents');
+            if (totalStudentsEl) {
+                totalStudentsEl.textContent = totalStudents;
+            }
 
             // Show/hide no results message
             const noResults = document.getElementById('noResults');

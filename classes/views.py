@@ -7,7 +7,7 @@ from datetime import date
 from django.http import JsonResponse
 import json
 
-from accounts.decorators import admin_required
+from accounts.decorators import admin_required, teacher_required, teacher_or_admin_required
 from .models import Building, Floor, Room, Term, TimeSlot, Class
 from .forms import (
     BuildingForm, BuildingSearchForm,
@@ -21,7 +21,8 @@ from teachers.models import Teacher
 from students.models import Student
 from courses.models import Course
 from attendance.models import Attendance
-
+from attendance.utils import attendance_rate_percent
+from .schedule_conflicts import build_slot_entries, slot_entries_from_time_slots
 
 # ==================== BUILDING VIEWS ====================
 @login_required
@@ -302,6 +303,36 @@ def room_toggle_status(request, pk):
 def term_list(request):
     terms = Term.objects.all()
     
+    # Get filter parameters
+    search = request.GET.get('search', '')
+    term_type = request.GET.get('term_type', '')
+    academic_year = request.GET.get('academic_year', '')
+    status = request.GET.get('status', '')
+    
+    # Apply filters
+    if search:
+        terms = terms.filter(
+            Q(name__icontains=search) | 
+            Q(academic_year__icontains=search)
+        )
+    
+    if term_type:
+        terms = terms.filter(term_type=term_type)
+    
+    if academic_year:
+        terms = terms.filter(academic_year=academic_year)
+    
+    if status:
+        if status == 'current':
+            terms = terms.filter(is_current=True)
+        elif status == 'active':
+            terms = terms.filter(is_active=True, is_current=False)
+        elif status == 'inactive':
+            terms = terms.filter(is_active=False)
+    
+    # Get all unique academic years for the filter dropdown
+    academic_years = Term.objects.values_list('academic_year', flat=True).distinct().order_by('-academic_year')
+    
     paginator = Paginator(terms, 10)
     page = request.GET.get('page')
     terms_page = paginator.get_page(page)
@@ -312,6 +343,11 @@ def term_list(request):
         'active': Term.objects.filter(is_active=True).count(),
         'inactive': Term.objects.filter(is_active=False).count(),
         'current': Term.objects.filter(is_current=True).count(),
+        'academic_years': academic_years,
+        'search': search,
+        'term_type': term_type,
+        'academic_year': academic_year,
+        'status': status,
     }
     return render(request, 'Backend/admin/academic/term_list.html', context)
 
@@ -325,10 +361,16 @@ def term_add(request):
             term = form.save()
             messages.success(request, f'✅ Term {term.name} added successfully!')
             return redirect('classes:term_list')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = TermForm()
     
-    return render(request, 'Backend/admin/academic/term_form.html', {'form': form, 'title': 'Add Term'})
+    return render(request, 'Backend/admin/academic/term_form.html', {
+        'form': form, 
+        'title': 'Add Term',
+        'is_edit': False
+    })
 
 
 @login_required
@@ -341,10 +383,17 @@ def term_edit(request, pk):
             term = form.save()
             messages.success(request, f'✅ Term {term.name} updated successfully!')
             return redirect('classes:term_list')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = TermForm(instance=term)
     
-    return render(request, 'Backend/admin/academic/term_form.html', {'form': form, 'term': term, 'title': 'Edit Term', 'is_edit': True})
+    return render(request, 'Backend/admin/academic/term_form.html', {
+        'form': form, 
+        'term': term, 
+        'title': 'Edit Term',
+        'is_edit': True
+    })
 
 
 @login_required
@@ -404,45 +453,41 @@ def timeslot_list(request):
 @admin_required
 def timeslot_add(request):
     if request.method == 'POST':
-        selected_days = request.POST.getlist('days')
-        slot_type = request.POST.get('slot_type')
-        
-        if not selected_days:
-            messages.error(request, 'Please select at least one day.')
-            return render(request, 'Backend/admin/academic/timeslot_form.html', {
-                'form': TimeSlotForm(),
-                'title': 'Add Time Slot',
-                'selected_days': []
-            })
-        
-        days_str = ','.join(selected_days)
-        start_time = request.POST.get('start_time')
-        end_time = request.POST.get('end_time')
-        name = request.POST.get('name')
-        description = request.POST.get('description')
-        is_active = request.POST.get('is_active') == 'on'
-        
-        try:
-            time_slot = TimeSlot.objects.create(
+        form = TimeSlotForm(request.POST)
+        if form.is_valid():
+            # Convert days list to comma-separated string
+            days_list = form.cleaned_data.get('days')
+            days_str = ','.join(days_list)
+            
+            time_slot = TimeSlot(
                 days=days_str,
-                start_time=start_time,
-                end_time=end_time,
-                slot_type=slot_type or 'custom',
-                name=name,
-                description=description,
-                is_active=is_active
+                start_time=form.cleaned_data.get('start_time'),
+                end_time=form.cleaned_data.get('end_time'),
+                slot_type=form.cleaned_data.get('slot_type') or 'custom',
+                name=form.cleaned_data.get('name'),
+                description=form.cleaned_data.get('description'),
+                is_active=form.cleaned_data.get('is_active')
             )
+            time_slot.save()
+            
             messages.success(request, f'✅ Time slot added successfully for {time_slot.get_days_display()}!')
             return redirect('classes:timeslot_list')
-        except Exception as e:
-            messages.error(request, f'Error creating time slot: {str(e)}')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+            return render(request, 'Backend/admin/academic/timeslot_form.html', {
+                'form': form,
+                'title': 'Add Time Slot',
+                'selected_days': request.POST.getlist('days'),
+                'is_edit': False
+            })
     else:
         form = TimeSlotForm()
     
     return render(request, 'Backend/admin/academic/timeslot_form.html', {
         'form': form,
         'title': 'Add Time Slot',
-        'selected_days': []
+        'selected_days': [],
+        'is_edit': False
     })
 
 
@@ -450,42 +495,51 @@ def timeslot_add(request):
 @admin_required
 def timeslot_edit(request, pk):
     slot = get_object_or_404(TimeSlot, pk=pk)
-    selected_days = slot.get_days_list()
     
     if request.method == 'POST':
-        selected_days = request.POST.getlist('days')
-        slot_type = request.POST.get('slot_type')
-        
-        if not selected_days:
-            messages.error(request, 'Please select at least one day.')
+        form = TimeSlotForm(request.POST)
+        if form.is_valid():
+            # Convert days list to comma-separated string
+            days_list = form.cleaned_data.get('days')
+            slot.days = ','.join(days_list)
+            slot.start_time = form.cleaned_data.get('start_time')
+            slot.end_time = form.cleaned_data.get('end_time')
+            slot.slot_type = form.cleaned_data.get('slot_type') or 'custom'
+            slot.name = form.cleaned_data.get('name')
+            slot.description = form.cleaned_data.get('description')
+            slot.is_active = form.cleaned_data.get('is_active')
+            slot.save()
+            
+            messages.success(request, f'✅ Time slot updated successfully for {slot.get_days_display()}!')
+            return redirect('classes:timeslot_list')
+        else:
+            messages.error(request, 'Please correct the errors below.')
             return render(request, 'Backend/admin/academic/timeslot_form.html', {
-                'form': TimeSlotForm(instance=slot),
+                'form': form,
                 'timeslot': slot,
                 'title': 'Edit Time Slot',
                 'is_edit': True,
-                'selected_days': selected_days
+                'selected_days': request.POST.getlist('days')
             })
-        
-        days_str = ','.join(selected_days)
-        slot.days = days_str
-        slot.start_time = request.POST.get('start_time')
-        slot.end_time = request.POST.get('end_time')
-        slot.slot_type = slot_type or 'custom'
-        slot.name = request.POST.get('name')
-        slot.description = request.POST.get('description')
-        slot.is_active = request.POST.get('is_active') == 'on'
-        slot.save()
-        
-        messages.success(request, f'✅ Time slot updated successfully for {slot.get_days_display()}!')
-        return redirect('classes:timeslot_list')
+    else:
+        # Pre-populate the form with existing data
+        initial_data = {
+            'days': slot.get_days_list(),
+            'start_time': slot.start_time,
+            'end_time': slot.end_time,
+            'slot_type': slot.slot_type,
+            'name': slot.name,
+            'description': slot.description,
+            'is_active': slot.is_active
+        }
+        form = TimeSlotForm(initial=initial_data)
     
-    form = TimeSlotForm(instance=slot)
     return render(request, 'Backend/admin/academic/timeslot_form.html', {
         'form': form,
         'timeslot': slot,
         'title': 'Edit Time Slot',
         'is_edit': True,
-        'selected_days': selected_days
+        'selected_days': slot.get_days_list()
     })
 
 
@@ -562,12 +616,12 @@ def class_list(request):
         'active_classes': active_classes,
         'inactive_classes': inactive_classes,
         'total_students': total_students,
-        'teachers': teachers,      # Add this
-        'buildings': buildings,    # Add this
+        'teachers': teachers,
+        'buildings': buildings,
     }
     
-    
     return render(request, 'Backend/admin/class/class_list.html', context)
+
 
 # ==================== CLASS CREATE & EDIT VIEWS ====================
 @login_required
@@ -589,7 +643,6 @@ def class_create(request):
         'form': form,
         'title': 'Add New Class',
         'is_edit': False,
-        # Pass data for dropdowns - CRITICAL FOR FIX
         'buildings': Building.objects.filter(is_active=True),
         'floors': Floor.objects.filter(is_active=True),
         'rooms': Room.objects.filter(is_active=True),
@@ -623,7 +676,6 @@ def class_edit(request, pk):
         'title': 'Edit Class',
         'class': class_obj,
         'is_edit': True,
-        # Pass data for dropdowns - CRITICAL FOR FIX
         'buildings': Building.objects.filter(is_active=True),
         'floors': Floor.objects.filter(is_active=True),
         'rooms': Room.objects.filter(is_active=True),
@@ -639,20 +691,54 @@ def class_edit(request, pk):
 @admin_required
 def class_detail(request, pk):
     class_obj = get_object_or_404(Class, pk=pk)
-    students = Student.objects.filter(class_enrolled=class_obj, is_active=True)
+    students = class_obj.enrolled_students.filter(is_active=True)
     
     today = date.today()
+    course_list = list(class_obj.courses.all())
+
     for student in students:
-        att = Attendance.objects.filter(student=student, class_obj=class_obj, date=today).first()
+        att = None
+        if course_list:
+            att = Attendance.objects.filter(
+                student=student, course__in=course_list, date=today
+            ).first()
         student.attendance_status = att.status if att else None
-    
+
     total_students = students.count()
-    present_count = Attendance.objects.filter(class_obj=class_obj, date=today, status='present').count()
-    absent_count = Attendance.objects.filter(class_obj=class_obj, date=today, status='absent').count()
-    late_count = Attendance.objects.filter(class_obj=class_obj, date=today, status='late').count()
-    excused_count = Attendance.objects.filter(class_obj=class_obj, date=today, status='excused').count()
+
+    if course_list:
+        student_ids = students.values_list('id', flat=True)
+        present_count = Attendance.objects.filter(
+            course__in=course_list,
+            date=today,
+            status='present',
+            student_id__in=student_ids
+        ).values('student_id').distinct().count()
+        absent_count = Attendance.objects.filter(
+            course__in=course_list,
+            date=today,
+            status='absent',
+            student_id__in=student_ids
+        ).values('student_id').distinct().count()
+        late_count = Attendance.objects.filter(
+            course__in=course_list,
+            date=today,
+            status='late',
+            student_id__in=student_ids
+        ).values('student_id').distinct().count()
+        excused_count = Attendance.objects.filter(
+            course__in=course_list,
+            date=today,
+            status='excused',
+            student_id__in=student_ids
+        ).values('student_id').distinct().count()
+    else:
+        present_count = 0
+        absent_count = 0
+        late_count = 0
+        excused_count = 0
     
-    present_percentage = round((present_count / total_students) * 100, 1) if total_students > 0 else 0
+    present_percentage = attendance_rate_percent(present_count, total_students)
     
     context = {
         'class': class_obj,
@@ -696,6 +782,7 @@ def class_toggle_status(request, pk):
 @admin_required
 def class_add_student(request, pk):
     class_obj = get_object_or_404(Class, pk=pk)
+    
     if request.method == 'POST':
         student_ids = request.POST.getlist('student_ids')
         if not student_ids:
@@ -703,23 +790,32 @@ def class_add_student(request, pk):
             return redirect('classes:class_add_student', pk=class_obj.pk)
         
         added_count = 0
+        already_enrolled = 0
+        
         for student_id in student_ids:
             try:
-                student = Student.objects.get(id=student_id)
-                if not student.class_enrolled or student.class_enrolled != class_obj:
-                    student.class_enrolled = class_obj
-                    student.save()
+                student = Student.objects.get(id=student_id, is_active=True)
+                if student.classes_enrolled.filter(id=class_obj.id).exists():
+                    already_enrolled += 1
+                else:
+                    student.classes_enrolled.add(class_obj)
                     added_count += 1
             except Student.DoesNotExist:
                 continue
         
         if added_count > 0:
             messages.success(request, f'{added_count} student(s) added to "{class_obj.name}" successfully!')
-        else:
+        if already_enrolled > 0:
+            messages.warning(request, f'{already_enrolled} student(s) were already enrolled in this class.')
+        if added_count == 0 and already_enrolled == 0:
             messages.warning(request, 'No students were added.')
+        
         return redirect('classes:class_detail', pk=class_obj.pk)
     
-    available_students = Student.objects.filter(is_active=True).exclude(class_enrolled=class_obj)
+    available_students = Student.objects.filter(is_active=True).exclude(
+        classes_enrolled__id=class_obj.id
+    )
+    
     context = {
         'class': class_obj,
         'available_students': available_students,
@@ -734,8 +830,7 @@ def class_remove_student(request, class_pk, student_pk):
     student = get_object_or_404(Student, pk=student_pk)
     
     if request.method == 'POST':
-        student.class_enrolled = None
-        student.save()
+        student.classes_enrolled.remove(class_obj)
         messages.success(request, f'Student "{student.get_full_name()}" removed from "{class_obj.name}" successfully!')
         return redirect('classes:class_detail', pk=class_obj.pk)
     
@@ -781,6 +876,47 @@ def get_term_details(request, term_id):
     })
 
 
+@login_required
+@admin_required
+def get_available_courses(request):
+    """
+    AJAX endpoint — returns courses that are NOT already used by another
+    active class at the same time_slot(s) within the same academic_year.
+    """
+    from courses.models import Course as CourseModel
+
+    time_slot_ids_raw = request.GET.get('time_slot_ids', '')
+    academic_year     = request.GET.get('academic_year', '').strip()
+    exclude_class_pk  = request.GET.get('exclude_class', None)
+
+    selected_slot_ids = []
+    for part in time_slot_ids_raw.split(','):
+        part = part.strip()
+        if part.isdigit():
+            selected_slot_ids.append(int(part))
+
+    available = CourseModel.objects.filter(is_active=True)
+
+    if selected_slot_ids and academic_year:
+        selected_slots = TimeSlot.objects.filter(id__in=selected_slot_ids)
+        slot_entries = build_slot_entries(time_slots=selected_slots)
+        exclude_pk = int(exclude_class_pk) if exclude_class_pk and str(exclude_class_pk).isdigit() else None
+
+        conflicting_course_ids = []
+        for course in available:
+            if find_course_schedule_conflict(course, academic_year, slot_entries, exclude_pk=exclude_pk):
+                conflicting_course_ids.append(course.id)
+
+        if conflicting_course_ids:
+            available = available.exclude(id__in=conflicting_course_ids)
+
+    data = [
+        {'id': c.id, 'text': f"{c.code} — {c.name}"}
+        for c in available.order_by('code')
+    ]
+    return JsonResponse({'results': data})
+
+
 # ==================== ATTENDANCE VIEWS ====================
 @login_required
 @admin_required
@@ -796,18 +932,20 @@ def save_attendance(request, class_id):
         })
     
     try:
-        # Get the class
         class_obj = get_object_or_404(Class, id=class_id)
         
-        # Get or create a teacher for the admin
+        course = class_obj.courses.first()
+        if not course:
+            return JsonResponse({
+                'success': False,
+                'message': 'This class is not associated with any course.'
+            })
+        
         try:
-            # Try to get teacher associated with the user
             teacher = Teacher.objects.get(user=request.user)
         except Teacher.DoesNotExist:
-            # If user is admin but not a teacher, create a system teacher or use existing
             teacher = Teacher.objects.first()
             if not teacher:
-                # Create a system admin teacher
                 from django.contrib.auth.models import User
                 system_user, created = User.objects.get_or_create(
                     username='system_admin',
@@ -826,7 +964,6 @@ def save_attendance(request, class_id):
                     is_active=True
                 )
         
-        # Parse JSON data
         try:
             data = json.loads(request.body)
         except json.JSONDecodeError as e:
@@ -838,7 +975,6 @@ def save_attendance(request, class_id):
         attendance_data = data.get('attendance', {})
         attendance_date_str = data.get('date', str(date.today()))
         
-        # Parse date
         try:
             attendance_date = date.fromisoformat(attendance_date_str)
         except ValueError:
@@ -848,8 +984,7 @@ def save_attendance(request, class_id):
         errors = []
         success_students = []
         
-        # Get all students in this class for validation
-        class_students = Student.objects.filter(class_enrolled=class_obj, is_active=True)
+        class_students = class_obj.enrolled_students.filter(is_active=True)
         class_student_ids = list(class_students.values_list('id', flat=True))
         
         if not class_student_ids:
@@ -864,35 +999,35 @@ def save_attendance(request, class_id):
             try:
                 student_id = int(student_id_str)
                 
-                # Try to find the student
                 try:
                     student = Student.objects.get(id=student_id, is_active=True)
                 except Student.DoesNotExist:
                     errors.append(f'Student with ID {student_id} not found or inactive')
                     continue
                 
-                # Check if student is in this class
-                if student.class_enrolled != class_obj:
+                if not student.classes_enrolled.filter(id=class_obj.id).exists():
                     errors.append(f'Student {student.get_full_name()} is not enrolled in this class')
                     continue
                 
-                status = info.get('status')
-                remark = info.get('remark', '')
+                if isinstance(info, dict):
+                    status = info.get('status')
+                    remark = info.get('remark', '')
+                else:
+                    status = info
+                    remark = ''
                 
                 if not status:
                     errors.append(f'No status provided for student {student.get_full_name()}')
                     continue
                 
-                # Check if status is valid
                 valid_statuses = ['present', 'absent', 'late', 'excused']
                 if status not in valid_statuses:
                     errors.append(f'Invalid status "{status}" for student {student.get_full_name()}')
                     continue
                 
-                # Check if attendance already exists for this student, class, and date
                 attendance, created = Attendance.objects.get_or_create(
                     student=student,
-                    class_obj=class_obj,
+                    course=course,
                     date=attendance_date,
                     defaults={
                         'status': status,
@@ -901,7 +1036,6 @@ def save_attendance(request, class_id):
                     }
                 )
                 
-                # If attendance already exists, update it
                 if not created:
                     attendance.status = status
                     if remark:
@@ -917,7 +1051,6 @@ def save_attendance(request, class_id):
             except Exception as e:
                 errors.append(f'Error for student {student_id_str}: {str(e)}')
         
-        # Prepare response
         if errors:
             return JsonResponse({
                 'success': True if saved_count > 0 else False,
@@ -958,7 +1091,88 @@ def save_remark(request, class_pk, student_pk):
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
     
     try:
-        # Get or create a teacher for the admin
+        teacher = Teacher.objects.get(user=request.user)
+    except Teacher.DoesNotExist:
+        teacher = Teacher.objects.first()
+        if not teacher:
+            from django.contrib.auth.models import User
+            system_user, created = User.objects.get_or_create(
+                username='system_admin',
+                defaults={
+                    'first_name': 'System',
+                    'last_name': 'Admin',
+                    'is_staff': True,
+                    'is_superuser': True
+                }
+            )
+            teacher = Teacher.objects.create(
+                user=system_user,
+                teacher_id='SYS001',
+                first_name='System',
+                last_name='Admin',
+                is_active=True
+            )
+    
+    try:
+        data = json.loads(request.body)
+        remark = data.get('remark', '')
+        attendance_date_str = data.get('date', str(date.today()))
+        
+        try:
+            attendance_date = date.fromisoformat(attendance_date_str)
+        except ValueError:
+            attendance_date = date.today()
+        
+        class_obj = get_object_or_404(Class, pk=class_pk)
+        student = get_object_or_404(Student, pk=student_pk)
+        
+        course = class_obj.courses.first()
+        if not course:
+            return JsonResponse({'success': False, 'error': 'Class has no associated course'})
+        
+        attendance = Attendance.objects.filter(
+            student=student,
+            course=course,
+            date=attendance_date
+        ).first()
+        
+        if attendance:
+            attendance.remarks = remark
+            attendance.marked_by = teacher
+            attendance.save()
+        else:
+            Attendance.objects.create(
+                student=student,
+                course=course,
+                date=attendance_date,
+                status='present',
+                remarks=remark,
+                marked_by=teacher
+            )
+        
+        return JsonResponse({'success': True, 'remark': remark})
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+# ==================== COURSE ATTENDANCE VIEWS ====================
+@login_required
+@admin_required
+def save_course_attendance(request, course_id):
+    """
+    Save attendance for a course.
+    Each student is marked ONCE per course per day.
+    """
+    if request.method != 'POST':
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid request method. Use POST.'
+        })
+    
+    try:
+        course = get_object_or_404(Course, id=course_id)
+        
         try:
             teacher = Teacher.objects.get(user=request.user)
         except Teacher.DoesNotExist:
@@ -982,23 +1196,192 @@ def save_remark(request, class_pk, student_pk):
                     is_active=True
                 )
         
-        data = json.loads(request.body)
-        remark = data.get('remark', '')
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError as e:
+            return JsonResponse({
+                'success': False,
+                'message': f'Invalid JSON data: {str(e)}'
+            })
+        
+        attendance_data = data.get('attendance', {})
         attendance_date_str = data.get('date', str(date.today()))
         
-        # Parse date
         try:
             attendance_date = date.fromisoformat(attendance_date_str)
         except ValueError:
             attendance_date = date.today()
         
-        class_obj = get_object_or_404(Class, pk=class_pk)
+        saved_count = 0
+        errors = []
+        success_students = []
+        
+        # Get all students enrolled in this COURSE
+        course_year = course.level[0] if course.level and len(course.level) > 0 else None
+        if course_year:
+            course_students = Student.objects.filter(
+                Q(courses__id=course.id) | Q(classes_enrolled__courses=course),
+                year=course_year,
+                is_active=True
+            ).distinct()
+        else:
+            course_students = Student.objects.filter(
+                Q(courses__id=course.id) | Q(classes_enrolled__courses=course),
+                is_active=True
+            ).distinct()
+        
+        if not course_students.exists():
+            return JsonResponse({
+                'success': False,
+                'message': 'No students found in this course.',
+                'saved_count': 0,
+                'errors': ['No students enrolled in this course.']
+            })
+        
+        for student_id_str, info in attendance_data.items():
+            try:
+                student_id = int(student_id_str)
+                
+                try:
+                    student = Student.objects.get(id=student_id, is_active=True)
+                except Student.DoesNotExist:
+                    errors.append(f'Student with ID {student_id} not found or inactive')
+                    continue
+                
+                if not student.courses.filter(id=course.id).exists():
+                    errors.append(f'Student {student.get_full_name()} is not enrolled in this course')
+                    continue
+                
+                if isinstance(info, dict):
+                    status = info.get('status')
+                    remark = info.get('remark', '')
+                    time_in = info.get('time_in')
+                    time_out = info.get('time_out')
+                else:
+                    status = info
+                    remark = ''
+                    time_in = None
+                    time_out = None
+                
+                if not status:
+                    errors.append(f'No status provided for student {student.get_full_name()}')
+                    continue
+                
+                valid_statuses = ['present', 'absent', 'late', 'excused']
+                if status not in valid_statuses:
+                    errors.append(f'Invalid status "{status}" for student {student.get_full_name()}')
+                    continue
+                
+                attendance, created = Attendance.objects.get_or_create(
+                    student=student,
+                    course=course,
+                    date=attendance_date,
+                    defaults={
+                        'status': status,
+                        'remarks': remark,
+                        'marked_by': teacher,
+                        'time_in': time_in,
+                        'time_out': time_out
+                    }
+                )
+                
+                if not created:
+                    attendance.status = status
+                    if remark:
+                        attendance.remarks = remark
+                    if time_in:
+                        attendance.time_in = time_in
+                    if time_out:
+                        attendance.time_out = time_out
+                    attendance.marked_by = teacher
+                    attendance.save()
+                
+                saved_count += 1
+                success_students.append(student.get_full_name())
+                
+            except ValueError as e:
+                errors.append(f'Invalid student ID {student_id_str}: {str(e)}')
+            except Exception as e:
+                errors.append(f'Error for student {student_id_str}: {str(e)}')
+        
+        if errors:
+            return JsonResponse({
+                'success': True if saved_count > 0 else False,
+                'message': f'Attendance saved for {saved_count} student(s) with {len(errors)} warning(s).',
+                'saved_count': saved_count,
+                'errors': errors,
+                'success_students': success_students,
+                'date': attendance_date_str
+            })
+        else:
+            return JsonResponse({
+                'success': True,
+                'message': f'Attendance saved successfully for {saved_count} student(s)!',
+                'saved_count': saved_count,
+                'success_students': success_students,
+                'date': attendance_date_str
+            })
+        
+    except Course.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'message': 'Course not found.'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Error saving attendance: {str(e)}'
+        })
+
+
+@login_required
+@admin_required
+def save_course_remark(request, course_pk, student_pk):
+    """
+    Save a remark for a student's attendance in a course.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    
+    try:
+        teacher = Teacher.objects.get(user=request.user)
+    except Teacher.DoesNotExist:
+        teacher = Teacher.objects.first()
+        if not teacher:
+            from django.contrib.auth.models import User
+            system_user, created = User.objects.get_or_create(
+                username='system_admin',
+                defaults={
+                    'first_name': 'System',
+                    'last_name': 'Admin',
+                    'is_staff': True,
+                    'is_superuser': True
+                }
+            )
+            teacher = Teacher.objects.create(
+                user=system_user,
+                teacher_id='SYS001',
+                first_name='System',
+                last_name='Admin',
+                is_active=True
+            )
+    
+    try:
+        data = json.loads(request.body)
+        remark = data.get('remark', '')
+        attendance_date_str = data.get('date', str(date.today()))
+        
+        try:
+            attendance_date = date.fromisoformat(attendance_date_str)
+        except ValueError:
+            attendance_date = date.today()
+        
+        course = get_object_or_404(Course, pk=course_pk)
         student = get_object_or_404(Student, pk=student_pk)
         
-        # Check if attendance exists for today
         attendance = Attendance.objects.filter(
             student=student,
-            class_obj=class_obj,
+            course=course,
             date=attendance_date
         ).first()
         
@@ -1007,10 +1390,9 @@ def save_remark(request, class_pk, student_pk):
             attendance.marked_by = teacher
             attendance.save()
         else:
-            # Create attendance with remark if it doesn't exist
             Attendance.objects.create(
                 student=student,
-                class_obj=class_obj,
+                course=course,
                 date=attendance_date,
                 status='present',
                 remarks=remark,
@@ -1021,3 +1403,241 @@ def save_remark(request, class_pk, student_pk):
         
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+
+
+# ==================== TEACHER CLASS VIEWS ====================
+@login_required
+@teacher_required
+def class_courses_view(request, class_id):
+    """View all courses assigned to a specific class"""
+    try:
+        teacher = Teacher.objects.get(user=request.user)
+        class_obj = get_object_or_404(Class, teacher=teacher, id=class_id)
+
+        # Get courses for this class using M2M
+        courses = class_obj.courses.filter(is_active=True)
+
+        # Students enrolled in THIS class
+        students = class_obj.enrolled_students.filter(is_active=True)
+        student_ids = list(students.values_list('id', flat=True))
+        student_count_this_class = len(student_ids)
+
+        # Per-course stats scoped to THIS class's students
+        today = date.today()
+        for course in courses:
+            course.attendance_taken = Attendance.objects.filter(
+                course=course,
+                date=today,
+                student_id__in=student_ids,
+            ).exists()
+
+            present_today_count = Attendance.objects.filter(
+                course=course,
+                date=today,
+                status='present',
+                student_id__in=student_ids,
+            ).values('student_id').distinct().count()
+
+            course.student_count = student_count_this_class
+            course.present_today = min(present_today_count, course.student_count)
+
+        context = {
+            'class': class_obj,
+            'courses': courses,
+            'students': students,
+            'total_students': student_count_this_class,
+            'today': today,
+            'teacher': teacher,
+        }
+        return render(request, 'Backend/teacher/class/class_courses.html', context)
+
+    except Teacher.DoesNotExist:
+        messages.error(request, 'Teacher profile not found.')
+        return redirect('dashboard')
+    except Class.DoesNotExist:
+        messages.error(request, 'Class not found.')
+        return redirect('accounts:teacher_class_view')
+
+
+@login_required
+@teacher_required
+def teacher_course_attendance_view(request):
+    """Teachers can take attendance for their courses"""
+    try:
+        teacher = Teacher.objects.get(user=request.user)
+        classes = Class.objects.filter(teacher=teacher, is_active=True).distinct()
+        courses = Course.objects.filter(class_offerings__in=classes, is_active=True).distinct()
+        
+        if not courses.exists():
+            messages.info(request, 'You have no courses assigned to your classes. Please contact admin.')
+        
+        today = date.today()
+        
+        course_data = []
+        for course in courses:
+            course_year = course.level[0] if course.level and len(course.level) > 0 else None
+            if course_year:
+                students = Student.objects.filter(
+                    Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                    year=course_year,
+                    is_active=True
+                ).distinct()
+            else:
+                students = Student.objects.filter(
+                    Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                    is_active=True
+                ).distinct()
+            
+            attendance_taken = Attendance.objects.filter(
+                course=course,
+                date=today
+            ).exists()
+            student_count = students.count()
+            present_today_count = Attendance.objects.filter(
+                course=course,
+                date=today,
+                status='present'
+            ).values('student_id').distinct().count()
+            
+            course_data.append({
+                'course': course,
+                'student_count': student_count,
+                'attendance_taken': attendance_taken,
+                'present_today': min(present_today_count, student_count),
+            })
+        
+        context = {
+            'courses': course_data,
+            'teacher': teacher,
+            'today': today,
+        }
+        return render(request, 'Backend/teacher/attendance/course_attendance.html', context)
+        
+    except Teacher.DoesNotExist:
+        messages.error(request, 'Teacher profile not found.')
+        return redirect('dashboard')
+
+
+@login_required
+@teacher_required
+def teacher_course_attendance_detail(request, course_id):
+    """Take attendance for a specific course"""
+    try:
+        teacher = Teacher.objects.get(user=request.user)
+        course = get_object_or_404(Course, id=course_id, is_active=True)
+        
+        # Check permissions: user must be course teacher, or class teacher of a class that has this course
+        if request.user.role != 'admin':
+            if course.teacher != teacher and not Class.objects.filter(courses=course, teacher=teacher).exists():
+                messages.error(request, 'You do not have permission to manage attendance for this course.')
+                return redirect('attendance:teacher_attendance')
+        
+        course_year = course.level[0] if course.level and len(course.level) > 0 else None
+        if course_year:
+            students = Student.objects.filter(
+                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                year=course_year,
+                is_active=True
+            ).distinct()
+        else:
+            students = Student.objects.filter(
+                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                is_active=True
+            ).distinct()
+        
+        today = date.today()
+        
+        # Attach attendance data directly to each student
+        for student in students:
+            att = Attendance.objects.filter(
+                student=student,
+                course=course,
+                date=today
+            ).first()
+            if att:
+                student.attendance_status = att.status
+                student.attendance_remarks = att.remarks
+                student.attendance_time_in = att.time_in
+                student.attendance_time_out = att.time_out
+            else:
+                student.attendance_status = None
+                student.attendance_remarks = ''
+                student.attendance_time_in = None
+                student.attendance_time_out = None
+        
+        if request.method == 'POST':
+            saved_count = 0
+            for student in students:
+                status = request.POST.get(f'student_{student.id}')
+                if status:
+                    try:
+                        attendance, created = Attendance.objects.get_or_create(
+                            student=student,
+                            course=course,
+                            date=today,
+                            defaults={
+                                'status': status,
+                                'remarks': request.POST.get(f'remarks_{student.id}', ''),
+                                'marked_by': teacher,
+                                'time_in': request.POST.get(f'time_in_{student.id}', None),
+                                'time_out': request.POST.get(f'time_out_{student.id}', None)
+                            }
+                        )
+                        if not created:
+                            attendance.status = status
+                            attendance.remarks = request.POST.get(f'remarks_{student.id}', '')
+                            attendance.time_in = request.POST.get(f'time_in_{student.id}', None)
+                            attendance.time_out = request.POST.get(f'time_out_{student.id}', None)
+                            attendance.marked_by = teacher
+                            attendance.save()
+                        saved_count += 1
+                    except Exception:
+                        pass
+            
+            messages.success(request, f'Attendance saved for {saved_count} students in {course.name}!')
+            return redirect('classes:teacher_course_attendance_detail', course_id=course_id)
+        
+        context = {
+            'course': course,
+            'students': students,
+            'today': today,
+            'total_students': students.count(),
+            'teacher': teacher,
+            'attendance_taken': Attendance.objects.filter(course=course, date=today).exists(),
+        }
+        return render(request, 'Backend/teacher/attendance/take_course_attendance.html', context)
+        
+    except Teacher.DoesNotExist:
+        messages.error(request, 'Teacher profile not found.')
+        return redirect('dashboard')
+    except Course.DoesNotExist:
+        messages.error(request, 'Course not found or inactive.')
+        return redirect('classes:teacher_course_attendance')
+    
+@login_required
+@admin_required
+def class_assign_courses(request, pk):
+    """Assign courses to a class"""
+    class_obj = get_object_or_404(Class, pk=pk)
+    
+    if request.method == 'POST':
+        course_ids = request.POST.getlist('courses')
+        if course_ids:
+            class_obj.courses.set(course_ids)
+            messages.success(request, f'✅ {len(course_ids)} courses assigned to {class_obj.name}!')
+        else:
+            class_obj.courses.clear()
+            messages.warning(request, f'All courses removed from {class_obj.name}!')
+        return redirect('classes:class_edit', pk=class_obj.pk)
+    
+    # Get all courses and assigned courses
+    all_courses = Course.objects.filter(is_active=True)
+    assigned_courses = class_obj.courses.all()
+    assigned_ids = list(assigned_courses.values_list('id', flat=True))
+    
+    context = {
+        'class': class_obj,
+        'all_courses': all_courses,
+        'assigned_ids': assigned_ids,
+    }
+    return render(request, 'Backend/admin/class/assign_courses.html', context)

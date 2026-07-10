@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'requestsystem',
     'students',
     'teachers',
+    'core',
    
 ]
 

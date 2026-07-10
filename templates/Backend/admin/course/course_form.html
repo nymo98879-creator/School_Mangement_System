@@ -31,7 +31,7 @@
     }
 
     .form-section .section-title i {
-        color: #3498db;
+        color: #4263eb;
         margin-right: 10px;
         font-size: 18px;
     }
@@ -47,7 +47,7 @@
     }
 
     .form-section .section-title .badge-auto {
-        background: #3498db;
+        background: #4263eb;
         color: white;
         font-size: 10px;
         padding: 2px 8px;
@@ -77,8 +77,8 @@
     }
 
     .form-control:focus {
-        border-color: #3498db;
-        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        border-color: #4263eb;
+        box-shadow: 0 0 0 0.2rem rgba(66, 99, 235, 0.25);
         outline: none;
     }
 
@@ -130,7 +130,7 @@
 
     .btn-submit:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 5px 20px rgba(66, 99, 235, 0.3);
     }
 
     .btn-cancel {
@@ -146,7 +146,7 @@
 
     .form-actions {
         padding-top: 20px;
-        border-top: 2px solid #f0f2f5;
+        border-top: 2px solid #f0f2f8;
         display: flex;
         gap: 15px;
         justify-content: flex-end;
@@ -154,7 +154,7 @@
     }
 
     .help-text-icon {
-        color: #3498db;
+        color: #4263eb;
         margin-right: 5px;
     }
 
@@ -209,7 +209,7 @@
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         border-radius: 12px;
         padding: 20px;
-        border-left: 4px solid #3498db;
+        border-left: 4px solid #4263eb;
     }
 
     .auto-id-card .id-number {
@@ -227,7 +227,7 @@
 
     .auto-id-card .id-icon {
         font-size: 32px;
-        color: #3498db;
+        color: #4263eb;
     }
 
     .preview-item {
@@ -257,7 +257,7 @@
     }
 
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        background: #3498db;
+        background: #4263eb;
         color: white;
         border: none;
         border-radius: 4px;
@@ -275,7 +275,7 @@
 
     .code-auto-generated {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
         padding: 2px 10px;
         border-radius: 4px;
         font-size: 11px;
@@ -312,6 +312,13 @@
             <div class="card-body">
                 <form method="POST" novalidate id="courseForm">
                     {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
 
                     <!-- ===== AUTO-GENERATED IDs ===== -->
                     <div class="form-section">
@@ -481,7 +488,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="{{ form.level.id_for_label }}" class="form-label">
-                                    Level <span class="required">*</span>
+                                    Year <span class="required">*</span>
                                 </label>
                                 {{ form.level }}
                                 {% if form.level.errors %}
@@ -493,7 +500,7 @@
                                 {% endif %}
                                 <div class="form-text">
                                     <i class="fas fa-info-circle help-text-icon"></i>
-                                    Academic level of the course
+                                    Academic year of the course
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -542,7 +549,7 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="{{ form.major.id_for_label }}" class="form-label">
-                                    Major
+                                    Major <span class="required">*</span>
                                 </label>
                                 {{ form.major }}
                                 {% if form.major.errors %}
@@ -575,6 +582,44 @@
                                 </div>
                             </div>
                             <div class="col-12">
+                                <label for="{{ form.time_slots.id_for_label }}" class="form-label">
+                                    Time Slots
+                                </label>
+                                {{ form.time_slots }}
+                                {% if form.time_slots.errors %}
+                                <div class="errorlist">
+                                    {% for error in form.time_slots.errors %}
+                                    <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle help-text-icon"></i>
+                                    Hold Ctrl/Cmd to select multiple time slots for this course
+                                </div>
+                            </div>
+
+                            <!-- ===== CLASSES FIELD ===== -->
+                            <div class="col-12">
+                                <label for="{{ form.classes.id_for_label }}" class="form-label">
+                                    Assign to Classes
+                                </label>
+                                {{ form.classes }}
+                                {% if form.classes.errors %}
+                                <div class="errorlist">
+                                    {% for error in form.classes.errors %}
+                                    <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle help-text-icon"></i>
+                                    Hold Ctrl/Cmd to assign this course to one or more classes
+                                </div>
+                            </div>
+                            <!-- ===== END CLASSES FIELD ===== -->
+
+                            <div class="col-12">
                                 <label for="{{ form.prerequisites.id_for_label }}" class="form-label">
                                     Prerequisites
                                 </label>
@@ -604,16 +649,6 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="preview-item mb-2">
-                                    <div class="preview-label">Course ID</div>
-                                    <div class="preview-value" id="previewId">
-                                        {% if is_edit and course.course_id %}
-                                        {{ course.course_id }}
-                                        {% else %}
-                                        <span class="text-muted">Auto-generated</span>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <div class="preview-item mb-2">
                                     <div class="preview-label">Course Code</div>
                                     <div class="preview-value" id="previewCode">-</div>
                                 </div>
@@ -625,11 +660,15 @@
                                     <div class="preview-label">Credits</div>
                                     <div class="preview-value" id="previewCredits">-</div>
                                 </div>
+                                <div class="preview-item mb-2">
+                                    <div class="preview-label">Year</div>
+                                    <div class="preview-value" id="previewLevel">-</div>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="preview-item mb-2">
-                                    <div class="preview-label">Level</div>
-                                    <div class="preview-value" id="previewLevel">-</div>
+                                    <div class="preview-label">Time Slots</div>
+                                    <div class="preview-value" id="previewTimeSlots">-</div>
                                 </div>
                                 <div class="preview-item mb-2">
                                     <div class="preview-label">Duration</div>
@@ -646,6 +685,10 @@
                                 <div class="preview-item mb-2">
                                     <div class="preview-label">Teacher</div>
                                     <div class="preview-value" id="previewTeacher">-</div>
+                                </div>
+                                <div class="preview-item mb-2">
+                                    <div class="preview-label">Classes</div>
+                                    <div class="preview-value" id="previewClasses">-</div>
                                 </div>
                                 <div class="preview-item mb-2">
                                     <div class="preview-label">Status</div>
@@ -727,7 +770,6 @@
             function generateCode() {
                 const name = nameField.value.trim();
                 if (name) {
-                    // Take first letters of each word
                     const words = name.split(' ');
                     let code = '';
                     for (let word of words) {
@@ -735,19 +777,13 @@
                             code += word[0].toUpperCase();
                         }
                     }
-                    // Limit to 3 characters
                     if (code.length > 3) {
                         code = code.substring(0, 3);
                     }
                     if (code.length < 3) {
                         code = code.padEnd(3, 'X');
                     }
-
-                    // Check existing codes to get next number
-                    // This will be handled by the backend
                     codeField.value = code + '-101';
-
-                    // Update preview
                     updatePreview();
                 }
             }
@@ -793,6 +829,7 @@
         const previewTeacher = document.getElementById('previewTeacher');
         const previewDescription = document.getElementById('previewDescription');
         const previewStatus = document.getElementById('previewStatus');
+        const previewClasses = document.getElementById('previewClasses');
 
         const creditsField = document.getElementById('{{ form.credits.id_for_label }}');
         const levelField = document.getElementById('{{ form.level.id_for_label }}');
@@ -802,6 +839,9 @@
         const teacherField = document.getElementById('{{ form.teacher.id_for_label }}');
         const descField = document.getElementById('{{ form.description.id_for_label }}');
         const statusCheckbox = document.getElementById('{{ form.is_active.id_for_label }}');
+        const timeSlotsField = document.getElementById('{{ form.time_slots.id_for_label }}');
+        const previewTimeSlots = document.getElementById('previewTimeSlots');
+        const classesField = document.getElementById('{{ form.classes.id_for_label }}');
 
         function updatePreview() {
             previewCode.textContent = codeField ? codeField.value || '-' : '-';
@@ -811,6 +851,11 @@
             if (levelField) {
                 const selectedOption = levelField.options[levelField.selectedIndex];
                 previewLevel.textContent = selectedOption && selectedOption.text ? selectedOption.text : '-';
+            }
+
+            if (timeSlotsField && previewTimeSlots) {
+                const selectedSlots = Array.from(timeSlotsField.selectedOptions).map(option => option.text);
+                previewTimeSlots.textContent = selectedSlots.length > 0 ? selectedSlots.join(', ') : '-';
             }
 
             previewDuration.textContent = durationField ? durationField.value || '-' : '-';
@@ -826,9 +871,14 @@
                 previewTeacher.textContent = selectedOption && selectedOption.text ? selectedOption.text : '-';
             }
 
+            // Update Classes preview
+            if (classesField && previewClasses) {
+                const selectedClasses = Array.from(classesField.selectedOptions).map(option => option.text);
+                previewClasses.textContent = selectedClasses.length > 0 ? selectedClasses.join(', ') : '-';
+            }
+
             previewDescription.textContent = descField ? descField.value || '-' : '-';
 
-            // Update status preview
             if (statusCheckbox) {
                 if (statusCheckbox.checked) {
                     previewStatus.innerHTML = '<span class="badge bg-success">Active</span>';
@@ -847,6 +897,8 @@
         if (feeField) feeField.addEventListener('input', updatePreview);
         if (majorField) majorField.addEventListener('change', updatePreview);
         if (teacherField) teacherField.addEventListener('change', updatePreview);
+        if (timeSlotsField) timeSlotsField.addEventListener('change', updatePreview);
+        if (classesField) classesField.addEventListener('change', updatePreview);
         if (descField) descField.addEventListener('input', updatePreview);
         if (statusCheckbox) statusCheckbox.addEventListener('change', updatePreview);
 

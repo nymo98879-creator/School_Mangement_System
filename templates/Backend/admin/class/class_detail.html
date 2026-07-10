@@ -13,7 +13,7 @@
         padding: 25px 30px;
         box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
         margin-bottom: 25px;
-        border-left: 5px solid #3498db;
+        border-left: 5px solid #4263eb;
     }
 
     .class-header .class-title {
@@ -24,7 +24,7 @@
     }
 
     .class-header .class-title i {
-        color: #3498db;
+        color: #4263eb;
         margin-right: 12px;
     }
 
@@ -44,13 +44,13 @@
     }
 
     .class-header .class-meta .meta-item i {
-        color: #3498db;
+        color: #4263eb;
         width: 18px;
     }
 
     .class-header .class-meta .meta-item .badge-teacher {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
         padding: 2px 12px;
         border-radius: 12px;
         font-weight: 600;
@@ -75,7 +75,7 @@
 
     .class-header .class-meta .meta-item .badge-status.completed {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
     }
 
     /* ===== OVERVIEW CARDS ===== */
@@ -146,11 +146,11 @@
     }
 
     .overview-card.excused {
-        border-top-color: #3498db;
+        border-top-color: #4263eb;
     }
 
     .overview-card.excused .card-percentage {
-        color: #3498db;
+        color: #4263eb;
     }
 
     /* ===== STUDENT TABLE ===== */
@@ -181,7 +181,7 @@
     }
 
     .student-table-card .card-header-custom h5 i {
-        color: #3498db;
+        color: #4263eb;
         margin-right: 8px;
     }
 
@@ -249,8 +249,8 @@
     }
 
     .attendance-btn.active-excused {
-        background: #3498db;
-        border-color: #3498db;
+        background: #4263eb;
+        border-color: #4263eb;
         color: white;
     }
 
@@ -293,11 +293,11 @@
 
     .status-badge.excused {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
     }
 
     .status-badge.not-marked {
-        background: #f0f2f5;
+        background: #f0f2f8;
         color: #7f8c8d;
     }
 
@@ -316,7 +316,7 @@
     }
 
     .student-avatar-sm.blue {
-        background: linear-gradient(135deg, #3498db, #2980b9);
+        background: linear-gradient(135deg, #4263eb, #3b5bdb);
     }
 
     .student-avatar-sm.green {
@@ -350,8 +350,8 @@
     .remark-input:focus {
         outline: none;
         background: #fff;
-        border-color: #3498db;
-        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        border-color: #4263eb;
+        box-shadow: 0 0 0 2px rgba(66, 99, 235, 0.1);
         width: 130px;
     }
 
@@ -383,7 +383,7 @@
     .table-attendance tbody td {
         padding: 10px 15px;
         vertical-align: middle;
-        border-bottom: 1px solid #f0f2f5;
+        border-bottom: 1px solid #f0f2f8;
     }
 
     .table-attendance tbody tr:hover {
@@ -436,7 +436,7 @@
     }
 
     .action-btn-sm.view {
-        background: #3498db;
+        background: #4263eb;
     }
 
     .action-btn-sm.remove {
@@ -605,7 +605,7 @@
         </span>
         <span class="meta-item">
             <i class="fas fa-clock"></i>
-            {{ class.schedule }}
+            {{ class.get_schedule_display }}
         </span>
         <span class="meta-item">
             <i class="fas fa-calendar-alt"></i>

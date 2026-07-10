@@ -1,0 +1,74 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Assign Courses to {{ class.name }}{% endblock %}
+{% block page_title %}Assign Courses to {{ class.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-book me-2"></i>
+                    Assign Courses to {{ class.name }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Select Courses</label>
+                        <select name="courses" class="form-control" multiple style="height: 200px;">
+                            {% for course in all_courses %}
+                            <option value="{{ course.id }}" {% if course.id in assigned_ids %}selected{% endif %}>
+                                {{ course.code }} - {{ course.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">
+                            Hold Ctrl/Cmd to select multiple courses
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i> Save Assignments
+                        </button>
+                        <a href="{% url 'classes:class_edit' class.id %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Back
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Current Assignments -->
+        <div class="card mt-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Currently Assigned Courses ({{ assigned_ids|length }})
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if assigned_ids %}
+                <ul class="list-group">
+                    {% for course in class.courses.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            <strong>{{ course.code }}</strong> - {{ course.name }}
+                        </span>
+                        <span class="badge bg-info">{{ course.credits }} Credits</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted text-center">No courses assigned to this class yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

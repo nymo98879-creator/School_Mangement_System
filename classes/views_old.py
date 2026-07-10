@@ -21,6 +21,7 @@ from teachers.models import Teacher
 from students.models import Student
 from courses.models import Course
 from attendance.models import Attendance
+from attendance.utils import attendance_rate_percent
 
 
 # ==================== BUILDING VIEWS ====================
@@ -673,7 +674,7 @@ def class_detail(request, pk):
     late_count = Attendance.objects.filter(class_obj=class_obj, date=today, status='late').count()
     excused_count = Attendance.objects.filter(class_obj=class_obj, date=today, status='excused').count()
     
-    present_percentage = round((present_count / total_students) * 100, 1) if total_students > 0 else 0
+    present_percentage = attendance_rate_percent(present_count, total_students)
     
     context = {
         'class': class_obj,

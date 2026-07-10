@@ -14,7 +14,7 @@
         box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         border: none;
-        border-bottom: 4px solid #3498db;
+        border-bottom: 4px solid #4263eb;
     }
 
     .stats-card:hover {
@@ -35,7 +35,7 @@
     }
 
     .stats-card .stats-icon.blue {
-        background: linear-gradient(135deg, #3498db, #5dade2);
+        background: linear-gradient(135deg, #4263eb, #5dade2);
     }
 
     .stats-card .stats-icon.green {
@@ -133,8 +133,8 @@
 
     .search-filters .filter-group .form-group .form-control:focus,
     .search-filters .filter-group .form-group .form-select:focus {
-        border-color: #3498db;
-        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.15);
+        border-color: #4263eb;
+        box-shadow: 0 0 0 0.2rem rgba(66, 99, 235, 0.15);
         outline: none;
     }
 
@@ -142,7 +142,7 @@
         padding: 8px 30px;
         border-radius: 10px;
         font-weight: 600;
-        background: linear-gradient(135deg, #3498db, #5dade2);
+        background: linear-gradient(135deg, #4263eb, #5dade2);
         border: none;
         color: white;
         transition: all 0.3s;
@@ -154,7 +154,7 @@
 
     .search-filters .filter-group .btn-search:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 8px 25px rgba(66, 99, 235, 0.3);
     }
 
     .search-filters .filter-group .btn-reset {
@@ -187,7 +187,7 @@
 
     .table-container .table-header {
         padding: 18px 25px;
-        border-bottom: 1px solid #f0f2f5;
+        border-bottom: 1px solid #f0f2f8;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -209,7 +209,7 @@
     }
 
     .table-container .table-header .header-left h5 i {
-        color: #3498db;
+        color: #4263eb;
         margin-right: 10px;
     }
 
@@ -221,7 +221,7 @@
 
     .table-container .table-header .header-right .badge-count {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
         padding: 4px 16px;
         border-radius: 20px;
         font-size: 13px;
@@ -259,7 +259,7 @@
     }
 
     .table-scroll::-webkit-scrollbar-track {
-        background: #f0f2f5;
+        background: #f0f2f8;
         border-radius: 10px;
     }
 
@@ -297,7 +297,7 @@
         padding: 14px 18px;
         vertical-align: middle;
         border: none;
-        border-bottom: 1px solid #f0f2f5;
+        border-bottom: 1px solid #f0f2f8;
         font-size: 14px;
         color: #2c3e50;
     }
@@ -371,7 +371,7 @@
 
     .status-badge.excused {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
     }
 
     .status-badge.holiday {
@@ -395,7 +395,7 @@
     }
 
     .student-avatar.blue {
-        background: linear-gradient(135deg, #3498db, #2980b9);
+        background: linear-gradient(135deg, #4263eb, #3b5bdb);
     }
 
     .student-avatar.green {
@@ -434,7 +434,7 @@
 
     .empty-state i {
         font-size: 60px;
-        color: #3498db;
+        color: #4263eb;
         opacity: 0.2;
         margin-bottom: 20px;
     }
@@ -451,7 +451,7 @@
     /* ===== PAGINATION ===== */
     .pagination-wrapper {
         padding: 18px 25px;
-        border-top: 1px solid #f0f2f5;
+        border-top: 1px solid #f0f2f8;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -484,14 +484,14 @@
     }
 
     .pagination-wrapper .pagination .page-link:hover {
-        background: #f0f2f5;
+        background: #f0f2f8;
         border-color: #bdc3c7;
         transform: translateY(-1px);
     }
 
     .pagination-wrapper .pagination .page-item.active .page-link {
-        background: linear-gradient(135deg, #3498db, #5dade2);
-        border-color: #3498db;
+        background: linear-gradient(135deg, #4263eb, #5dade2);
+        border-color: #4263eb;
         color: white;
     }
 
@@ -671,8 +671,8 @@
 <div class="search-filters">
     <div class="filter-group">
         <div class="form-group">
-            <label for="searchInput"><i class="fas fa-search me-1" style="color: #3498db;"></i> Search</label>
-            <input type="text" class="form-control" id="searchInput" placeholder="Search by student or class..."
+            <label for="searchInput"><i class="fas fa-search me-1" style="color: #4263eb;"></i> Search</label>
+            <input type="text" class="form-control" id="searchInput" placeholder="Search by student or course..."
                 value="{{ search|default:'' }}">
         </div>
         <div class="form-group">
@@ -728,7 +728,7 @@
                 <tr>
                     <th style="width: 50px;">#</th>
                     <th style="min-width: 200px;">Student</th>
-                    <th style="min-width: 150px;">Class</th>
+                    <th style="min-width: 150px;">Course</th>
                     <th style="width: 130px;">Date</th>
                     <th style="width: 130px;">Status</th>
                     <th style="min-width: 150px;">Marked By</th>
@@ -739,7 +739,7 @@
                 {% for attendance in attendances %}
                 <tr class="attendance-row" data-student="{{ attendance.student.get_full_name|lower }}"
                     data-student-id="{{ attendance.student.student_id|lower }}"
-                    data-class="{{ attendance.class_obj.name|lower|default:'n/a' }}"
+                    data-course="{{ attendance.course.name|lower|default:'n/a' }}"
                     data-status="{{ attendance.status }}" data-date="{{ attendance.date|date:'Y-m-d' }}">
                     <td>{{ forloop.counter }}</td>
                     <td>
@@ -755,9 +755,9 @@
                         </div>
                     </td>
                     <td>
-                        <span class="fw-medium">{{ attendance.class_obj.name|default:"N/A" }}</span>
+                        <span class="fw-medium">{{ attendance.course.name|default:"N/A" }}</span>
                         <br>
-                        <small class="text-muted">{{ attendance.class_obj.code|default:"" }}</small>
+                        <small class="text-muted">{{ attendance.course.level|default:"" }}</small>
                     </td>
                     <td>
                         <span class="fw-medium">{{ attendance.date|date:"M d, Y" }}</span>
@@ -772,7 +772,7 @@
                     <td>
                         <div class="d-flex align-items-center gap-2">
                             <div class="avatar-sm"
-                                style="width: 28px; height: 28px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; color: #3498db; font-weight: 600; font-size: 12px;">
+                                style="width: 28px; height: 28px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; color: #4263eb; font-weight: 600; font-size: 12px;">
                                 {{ attendance.marked_by.get_full_name|first|upper|default:"S" }}
                             </div>
                             <span>{{ attendance.marked_by.get_full_name|default:"System" }}</span>
@@ -869,7 +869,7 @@
 <div class="modal fade" id="viewAttendanceModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header" style="background: linear-gradient(135deg, #3498db, #5dade2); color: white;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #4263eb, #5dade2); color: white;">
                 <h5 class="modal-title">
                     <i class="fas fa-clipboard-check me-2"></i>Attendance Details
                 </h5>
@@ -913,7 +913,7 @@
             rows.forEach(function (row) {
                 const student = row.dataset.student || '';
                 const studentId = row.dataset.studentId || '';
-                const className = row.dataset.class || '';
+                const courseName = row.dataset.course || '';
                 const status = row.dataset.status || '';
                 const date = row.dataset.date || '';
 
@@ -923,7 +923,7 @@
                 if (searchTerm) {
                     const match = student.includes(searchTerm) ||
                         studentId.includes(searchTerm) ||
-                        className.includes(searchTerm);
+                        courseName.includes(searchTerm);
                     if (!match) show = false;
                 }
 
@@ -961,11 +961,11 @@
             // Update percentages
             const total = visibleCount || 1;
             document.querySelector('.stats-card:nth-child(2) .stats-trend').innerHTML =
-                `<i class="fas fa-arrow-up me-1"></i> ${Math.round((presentCount / total) * 100)}%`;
+                `<i class="fas fa-arrow-up me-1"></i> ${Math.min(Math.round((presentCount / total) * 100), 100)}%`;
             document.querySelector('.stats-card:nth-child(3) .stats-trend').innerHTML =
-                `<i class="fas fa-arrow-down me-1"></i> ${Math.round((absentCount / total) * 100)}%`;
+                `<i class="fas fa-arrow-down me-1"></i> ${Math.min(Math.round((absentCount / total) * 100), 100)}%`;
             document.querySelector('.stats-card:nth-child(4) .stats-trend').innerHTML =
-                `<i class="fas fa-minus me-1"></i> ${Math.round((lateCount / total) * 100)}%`;
+                `<i class="fas fa-minus me-1"></i> ${Math.min(Math.round((lateCount / total) * 100), 100)}%`;
 
             // Show/hide no results message
             const noResults = document.getElementById('noResults');

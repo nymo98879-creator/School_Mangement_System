@@ -50,12 +50,15 @@ class TimeSlotAdmin(admin.ModelAdmin):
     get_duration.short_description = 'Duration'
 
 
+from .forms import ClassForm
+
 @admin.register(Class)
 class ClassAdmin(admin.ModelAdmin):
-    list_display = ['name', 'section', 'code', 'teacher', 'course', 'capacity', 'is_active']
-    list_filter = ['is_active', 'teacher', 'course', 'term']
+    form = ClassForm
+    list_display = ['name', 'section', 'code', 'teacher', 'get_courses_display', 'capacity', 'is_active']
+    list_filter = ['is_active', 'teacher', 'term']
     search_fields = ['name', 'section', 'code', 'teacher__first_name', 'teacher__last_name']
-    filter_horizontal = ['time_slots']
+    filter_horizontal = ['time_slots', 'courses']  # Added 'courses' to filter_horizontal
     readonly_fields = ['created_at', 'updated_at']
     fieldsets = (
         ('Basic Information', {
@@ -71,7 +74,7 @@ class ClassAdmin(admin.ModelAdmin):
             'fields': ('term', 'term_type', 'academic_year', 'start_date', 'end_date')
         }),
         ('Capacity & Relationships', {
-            'fields': ('capacity', 'teacher', 'course')
+            'fields': ('capacity', 'teacher', 'courses')  # Changed from 'course' to 'courses'
         }),
         ('Status', {
             'fields': ('is_active',)
@@ -81,3 +84,10 @@ class ClassAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+    
+    def get_courses_display(self, obj):
+        """Display all courses assigned to this class"""
+        if obj.courses.exists():
+            return ", ".join(c.code for c in obj.courses.all())
+        return "No courses assigned"
+    get_courses_display.short_description = 'Courses'

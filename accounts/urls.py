@@ -10,7 +10,7 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
-    
+    path('settings/', views.settings_view, name='settings'),
     # Admin URLs - Full Access
     path('admin/students/', views.admin_student_list, name='admin_student_list'),
     path('admin/teachers/', views.admin_teacher_list, name='admin_teacher_list'),

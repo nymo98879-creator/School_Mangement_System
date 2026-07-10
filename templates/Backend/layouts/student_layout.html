@@ -17,7 +17,7 @@
 
         body {
             min-height: 100vh;
-            background: #f0f2f5;
+            background: #f0f2f8;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
@@ -27,7 +27,7 @@
             top: 0;
             left: 0;
             width: 280px;
-            background: linear-gradient(180deg, #1a2332 0%, #2c3e50 50%, #3498db 100%);
+            background: linear-gradient(180deg, #1a2332 0%, #2c3e50 50%, #4263eb 100%);
             color: white;
             padding: 0;
             transition: all 0.3s ease;
@@ -216,7 +216,7 @@
         }
 
         .top-nav .left-section .menu-toggle:hover {
-            background: #f0f2f5;
+            background: #f0f2f8;
         }
 
         .top-nav .page-title {
@@ -227,7 +227,7 @@
         }
 
         .top-nav .page-title span {
-            color: #3498db;
+            color: #4263eb;
         }
 
         .top-nav .right-section {
@@ -249,7 +249,7 @@
         }
 
         .top-nav .right-section .notification-btn:hover {
-            background: #f0f2f5;
+            background: #f0f2f8;
             color: #2c3e50;
         }
 
@@ -280,14 +280,14 @@
         }
 
         .top-nav .right-section .user-dropdown .user-info-display:hover {
-            background: #f0f2f5;
+            background: #f0f2f8;
         }
 
         .top-nav .right-section .user-dropdown .user-info-display .user-avatar {
             width: 38px;
             height: 38px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: linear-gradient(135deg, #4263eb 0%, #3b5bdb 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -361,7 +361,7 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #f0f2f5;
+            background: #f0f2f8;
         }
 
         ::-webkit-scrollbar-thumb {
@@ -397,8 +397,15 @@
             </div>
         </div>
 
+
         <ul class="sidebar-menu">
             <li class="menu-header">Main Navigation</li>
+            <!-- ===== SETTINGS TAB ===== -->
+            <li>
+                <a href="{% url 'accounts:settings' %}" class="menu-link {% if 'settings' in request.path %}active{% endif %}">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
             <li>
                 <a href="{% url 'accounts:dashboard' %}"
                     class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
@@ -422,7 +429,7 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <h4 class="page-title">
-                    <i class="fas fa-user-graduate me-2" style="color: #3498db;"></i>
+                    <i class="fas fa-user-graduate me-2" style="color: #4263eb;"></i>
                     {% block page_title %}Student Dashboard{% endblock %}
                 </h4>
             </div>
@@ -446,7 +453,7 @@
                         style="border-radius: 12px; padding: 8px 0; min-width: 200px;">
                         <li>
                             <a class="dropdown-item" href="#">
-                                <i class="fas fa-user-circle me-2" style="color: #3498db;"></i>Profile
+                                <i class="fas fa-user-circle me-2" style="color: #4263eb;"></i>Profile
                             </a>
                         </li>
                         <li>

@@ -45,7 +45,15 @@ class Student(models.Model):
     semester = models.IntegerField(default=1, help_text="Current semester (1-8)")
     graduation_year = models.IntegerField(null=True, blank=True)
     
-    class_enrolled = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True, blank=True, related_name='students')
+    # CHANGE THIS: Replace ForeignKey with ManyToManyField
+    # REMOVE: class_enrolled = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True, blank=True, related_name='students')
+    # ADD THIS:
+    classes_enrolled = models.ManyToManyField(
+        Class, 
+        blank=True, 
+        related_name='enrolled_students'
+    )
+    
     courses = models.ManyToManyField(Course, blank=True, related_name='students')
     
     is_active = models.BooleanField(default=True)
@@ -71,6 +79,23 @@ class Student(models.Model):
     def is_enrolled_in_course(self, course_id):
         return self.courses.filter(id=course_id).exists()
     
+    # ===== NEW METHODS FOR MULTIPLE CLASSES =====
+    def get_classes_enrolled(self):
+        """Get all classes the student is enrolled in"""
+        return self.classes_enrolled.filter(is_active=True)
+    
+    def get_classes_count(self):
+        """Get number of classes the student is enrolled in"""
+        return self.classes_enrolled.filter(is_active=True).count()
+    
+    def is_enrolled_in_class(self, class_obj):
+        """Check if student is enrolled in a specific class"""
+        return self.classes_enrolled.filter(id=class_obj.id).exists()
+    
+    def get_class_names(self):
+        """Get names of all classes student is enrolled in"""
+        return ", ".join([c.name for c in self.classes_enrolled.filter(is_active=True)])
+    
     def generate_qr_code(self):
         if not self.student_id:
             return
@@ -81,6 +106,7 @@ class Student(models.Model):
             'email': self.email,
             'major': self.major.name if self.major else None,
             'year': self.year,
+            'classes': [{'id': c.id, 'name': c.name} for c in self.classes_enrolled.all()],
             'courses': [{'id': c.id, 'name': c.name} for c in self.courses.all()],
             'type': 'student_registration'
         }

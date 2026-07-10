@@ -1,0 +1,509 @@
+{% extends 'Backend/layouts/teacher_layout.html' %}
+{% load static %}
+
+{% block title %}Class Courses - {{ class.name }}{% endblock %}
+{% block page_title %}{{ class.name }} - Courses{% endblock %}
+
+{% block extra_css %}
+<style>
+    .class-header {
+        background: white;
+        border-radius: 16px;
+        padding: 25px 30px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+        margin-bottom: 25px;
+        border-left: 5px solid #27ae60;
+    }
+
+    .class-header .class-title {
+        font-size: 26px;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .class-header .class-title i {
+        color: #27ae60;
+        margin-right: 12px;
+    }
+
+    .class-header .class-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        color: #7f8c8d;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+
+    .class-header .class-meta .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .class-header .class-meta .meta-item i {
+        color: #27ae60;
+        width: 18px;
+    }
+
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin-top: 20px;
+    }
+
+    .course-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-top: 4px solid #4263eb;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .course-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+    }
+
+    .course-card .card-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid #f0f2f8;
+        background: #fafbfc;
+    }
+
+    .course-card .card-header .course-title {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 18px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .course-card .card-header .course-title i {
+        color: #4263eb;
+        font-size: 20px;
+    }
+
+    .course-card .card-header .course-code {
+        font-size: 11px;
+        color: #7f8c8d;
+        font-weight: 400;
+        background: #ecf0f1;
+        padding: 2px 10px;
+        border-radius: 10px;
+        margin-left: auto;
+    }
+
+    .course-card .card-body {
+        padding: 18px 22px;
+        flex: 1;
+    }
+
+    .course-card .card-body .course-info {
+        color: #7f8c8d;
+        font-size: 14px;
+        padding: 5px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px dashed #f0f2f8;
+    }
+
+    .course-card .card-body .course-info:last-child {
+        border-bottom: none;
+    }
+
+    .course-card .card-body .course-info i {
+        width: 20px;
+        color: #4263eb;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .course-card .card-body .badge-status {
+        padding: 3px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .badge-status.taken {
+        background: #d5f5e3;
+        color: #27ae60;
+    }
+
+    .badge-status.not-taken {
+        background: #fdebd0;
+        color: #f39c12;
+    }
+
+    .course-card .card-footer {
+        padding: 14px 22px;
+        border-top: 1px solid #f0f2f8;
+        background: #fafbfc;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .course-card .card-footer .btn-action {
+        padding: 8px 18px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.3s;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex: 1;
+        min-width: 80px;
+        gap: 6px;
+    }
+
+    .course-card .card-footer .btn-action:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        color: white;
+    }
+
+    .course-card .card-footer .btn-action.btn-primary {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+    }
+
+    .course-card .card-footer .btn-action.btn-info {
+        background: linear-gradient(135deg, #4263eb, #5dade2);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        grid-column: 1 / -1;
+    }
+
+    .empty-state i {
+        font-size: 70px;
+        color: #4263eb;
+        opacity: 0.2;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h5 {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .empty-state p {
+        color: #7f8c8d;
+    }
+
+    .progress {
+        height: 8px;
+        border-radius: 10px;
+        background: #ecf0f1;
+    }
+
+    .progress .progress-bar {
+        border-radius: 10px;
+        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 5px;
+    }
+
+    .section-header h5 {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .section-header h5 i {
+        color: #4263eb;
+        margin-right: 10px;
+    }
+
+    .badge-count {
+        background: linear-gradient(135deg, #4263eb, #5dade2);
+        color: white;
+        padding: 4px 18px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 2px 10px rgba(66, 99, 235, 0.3);
+    }
+
+    .back-btn {
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+        border: none;
+        background: #6c757d;
+        color: white;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .course-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .course-card .card-footer {
+            flex-direction: column;
+        }
+
+        .course-card .card-footer .btn-action {
+            flex: none;
+            width: 100%;
+        }
+
+        .class-header .class-title {
+            font-size: 20px;
+        }
+
+        .class-header .class-meta {
+            gap: 10px;
+            font-size: 12px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .course-card .card-header .course-title {
+            font-size: 15px;
+        }
+
+        .course-card .card-body .course-info {
+            font-size: 12px;
+        }
+
+        .section-header h5 {
+            font-size: 16px;
+        }
+
+        .badge-count {
+            font-size: 11px;
+            padding: 3px 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Class Header -->
+    <div class="class-header">
+        <div class="class-title">
+            <i class="fas fa-chalkboard"></i>
+            {{ class.name }}
+        </div>
+        <div class="class-meta">
+            <span class="meta-item">
+                <i class="fas fa-chalkboard-teacher"></i>
+                {{ teacher.get_full_name }}
+            </span>
+            <span class="meta-item">
+                <i class="fas fa-users"></i>
+                {{ total_students }} Student{{ total_students|pluralize }}
+            </span>
+            <span class="meta-item">
+                <i class="fas fa-door-open"></i>
+                {% if class.building %}
+                {{ class.building.name }}
+                {% if class.floor %} - Floor {{ class.floor.floor_number }}{% endif %}
+                {% if class.room %} - Room {{ class.room.room_number }}{% endif %}
+                {% else %}
+                No Building Assigned
+                {% endif %}
+            </span>
+            <span class="meta-item">
+                <i class="fas fa-clock"></i>
+                {{ class.get_schedule_display }}
+            </span>
+            <span class="meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                {{ today|date:"l, F d, Y" }}
+            </span>
+            <span class="meta-item">
+                <i class="fas fa-book"></i>
+                {{ courses|length }} Course{{ courses|length|pluralize }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Section Header -->
+    <div class="section-header">
+        <h5>
+            <i class="fas fa-book"></i>
+            Courses in this Class
+        </h5>
+        <span class="badge-count">
+            {{ courses|length }} Course{{ courses|length|pluralize }}
+        </span>
+    </div>
+    <hr>
+
+    <!-- Course Cards Grid -->
+    <div class="course-grid">
+        {% if courses %}
+        {% for course in courses %}
+        <div class="course-card">
+            <div class="card-header">
+                <div class="course-title">
+                    <i class="fas fa-book"></i>
+                    {{ course.name }}
+                    <span class="course-code">{{ course.code }}</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="course-info">
+                    <i class="fas fa-user-tie"></i>
+                    <span>{{ course.teacher.get_full_name|default:"No Teacher" }}</span>
+                </div>
+                <div class="course-info">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Year: {% if course.level %}{{ course.level|slice:":1" }}{% else %}1{% endif %}</span>
+                </div>
+                <div class="course-info">
+                    <i class="far fa-clock"></i>
+                    <span>Time: {% if course.time_slots.exists %}{{ course.get_schedule_display }}{% else %}{{ class.get_schedule_display }}{% endif %}</span>
+                </div>
+                <div class="course-info">
+                    <i class="fas fa-users"></i>
+                    <span>{{ course.student_count }} Student{{ course.student_count|pluralize }}</span>
+                </div>
+                <div class="course-info">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>
+                        {% if course.attendance_taken %}
+                        <span class="badge-status taken">
+                            <i class="fas fa-check-circle"></i> Attendance Taken Today
+                        </span>
+                        {% else %}
+                        <span class="badge-status not-taken">
+                            <i class="fas fa-clock"></i> Not Taken Today
+                        </span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="course-info">
+                    <i class="fas fa-percentage"></i>
+                    <span>
+                        Present Today: <strong>{{ course.present_today }}</strong> / {{ course.student_count }}
+                        {% if course.student_count > 0 %}
+                        ({% widthratio course.present_today course.student_count 100 %}%)
+                        {% else %}
+                        (0%)
+                        {% endif %}
+                    </span>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-3">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="text-muted">Attendance Rate</span>
+                        <span class="fw-bold">
+                            {% if course.student_count > 0 %}
+                            {% widthratio course.present_today course.student_count 100 %}%
+                            {% else %}
+                            0%
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar 
+                            {% if course.student_count > 0 and course.present_today > 0 %}
+                                {% widthratio course.present_today course.student_count 100 as rate %}
+                                {% if rate >= 80 %}bg-success
+                                {% elif rate >= 50 %}bg-warning
+                                {% else %}bg-danger{% endif %}
+                            {% else %}
+                                bg-secondary
+                            {% endif %}"
+                            style="width: {% if course.student_count > 0 %}{% widthratio course.present_today course.student_count 100 %}{% else %}0{% endif %}%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'classes:teacher_course_attendance_detail' course.id %}" class="btn-action btn-primary">
+                    <i class="fas fa-clipboard-check"></i> Take Attendance
+                </a>
+                <a href="{% url 'attendance:teacher_attendance_history' class.id %}" class="btn-action btn-info">
+                    <i class="fas fa-history"></i> History
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-book"></i>
+            <h5>No Courses in this Class</h5>
+            <p>No courses are currently assigned to this class.</p>
+            <p class="text-muted small">Contact admin to assign courses to this class.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a href="{% url 'attendance:teacher_attendance' %}" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Classes
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Animate course cards
+        const cards = document.querySelectorAll('.course-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 + (index * 100));
+        });
+
+        // Animate progress bars
+        const progressBars = document.querySelectorAll('.progress-bar');
+        progressBars.forEach((bar, index) => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.transition = 'width 1s cubic-bezier(0.4, 0, 0.2, 1)';
+                bar.style.width = width;
+            }, 300 + (index * 150));
+        });
+    });
+</script>
+{% endblock %}

@@ -1,7 +1,9 @@
+# attendance/models.py
 from django.db import models
 from students.models import Student
-from classes.models import Class
+from courses.models import Course
 from teachers.models import Teacher
+from datetime import date
 
 class Attendance(models.Model):
     STATUS_CHOICES = [
@@ -12,8 +14,8 @@ class Attendance(models.Model):
     ]
     
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='attendances')
-    class_obj = models.ForeignKey(Class, on_delete=models.CASCADE, related_name='attendances', null=True, blank=True)
-    date = models.DateField(auto_now_add=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='attendances')  # Use course
+    date = models.DateField(default=date.today)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='present')
     time_in = models.TimeField(null=True, blank=True)
     time_out = models.TimeField(null=True, blank=True)
@@ -23,8 +25,8 @@ class Attendance(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        unique_together = ['student', 'class_obj', 'date']
+        unique_together = ['student', 'course', 'date']  # Use course
         ordering = ['-date']
     
     def __str__(self):
-        return f"{self.student} - {self.class_obj} - {self.date} - {self.get_status_display()}"
+        return f"{self.student} - {self.course} - {self.date} - {self.get_status_display()}"

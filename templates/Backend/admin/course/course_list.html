@@ -4,273 +4,7 @@
 {% block title %}Course Management{% endblock %}
 {% block page_title %}Course Management{% endblock %}
 
-{% block extra_css %}
-<style>
-    /* ===== STATS CARDS ===== */
-    .stats-card {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        border: none;
-        border-left: 4px solid #3498db;
-    }
-
-    .stats-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 10px 30px rgba(52, 152, 219, 0.15);
-    }
-
-    .stats-card .stats-icon {
-        width: 55px;
-        height: 55px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        color: white;
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
-
-    .stats-card .stats-icon.blue {
-        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-    }
-
-    .stats-card .stats-icon.green {
-        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-    }
-
-    .stats-card .stats-icon.red {
-        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-    }
-
-    .stats-card .stats-icon.orange {
-        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-    }
-
-    .stats-card .stats-icon.purple {
-        background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
-    }
-
-    .stats-card .stats-number {
-        font-size: 32px;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-top: 5px;
-    }
-
-    .stats-card .stats-label {
-        color: #7f8c8d;
-        font-size: 14px;
-        font-weight: 500;
-        margin-top: 2px;
-    }
-
-    .stats-card .stats-trend {
-        font-size: 13px;
-        font-weight: 600;
-        margin-top: 8px;
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-    }
-
-    .stats-card .stats-trend.up {
-        color: #27ae60;
-        background: #d5f5e3;
-    }
-
-    .stats-card .stats-trend.down {
-        color: #e74c3c;
-        background: #fadbd8;
-    }
-
-    .stats-card .stats-trend.neutral {
-        color: #f39c12;
-        background: #fdebd0;
-    }
-
-    .course-id-badge {
-        background: #e8f0fe;
-        color: #3498db;
-        padding: 4px 12px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-size: 13px;
-        display: inline-block;
-        min-width: 60px;
-        text-align: center;
-        font-family: 'Courier New', monospace;
-    }
-
-    .status-badge {
-        padding: 3px 12px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 600;
-        display: inline-block;
-    }
-
-    .status-badge.active {
-        background: #d5f5e3;
-        color: #27ae60;
-    }
-
-    .status-badge.inactive {
-        background: #fadbd8;
-        color: #e74c3c;
-    }
-
-    .table-action-btn {
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 12px;
-        transition: all 0.3s;
-        margin: 0 2px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-    }
-
-    .table-action-btn:hover {
-        transform: translateY(-2px);
-    }
-
-    .search-filters {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-    }
-
-    .search-filters .search-input {
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 10px 16px;
-        font-size: 14px;
-        transition: all 0.2s;
-        background: #fafbfc;
-        width: 100%;
-    }
-
-    .search-filters .search-input:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        background: white;
-        outline: none;
-    }
-
-    .search-filters .form-select {
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 10px 16px;
-        font-size: 14px;
-        background: #fafbfc;
-        transition: all 0.2s;
-        width: 100%;
-    }
-
-    .search-filters .form-select:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        outline: none;
-    }
-
-    .credit-badge {
-        background: #fdebd0;
-        color: #f39c12;
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .badge-teacher {
-        background: #d5f5e3;
-        color: #27ae60;
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 12px;
-        display: inline-block;
-    }
-
-    .level-badge {
-        background: #e8daef;
-        color: #8e44ad;
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .no-results {
-        text-align: center;
-        padding: 60px 20px;
-        display: none;
-    }
-
-    .no-results i {
-        font-size: 56px;
-        color: #e2e8f0;
-        margin-bottom: 16px;
-    }
-
-    .no-results h5 {
-        color: #1a1a2e;
-        font-weight: 600;
-        margin-bottom: 8px;
-    }
-
-    .no-results p {
-        color: #6c757d;
-        font-size: 14px;
-        margin-bottom: 16px;
-    }
-
-    .no-results.show {
-        display: block;
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 768px) {
-        .stats-card .stats-number {
-            font-size: 24px;
-        }
-
-        .stats-card .stats-icon {
-            width: 45px;
-            height: 45px;
-            font-size: 20px;
-            top: 15px;
-            right: 15px;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .stats-card .stats-number {
-            font-size: 20px;
-        }
-
-        .stats-card .stats-icon {
-            width: 38px;
-            height: 38px;
-            font-size: 16px;
-            top: 12px;
-            right: 12px;
-        }
-    }
-</style>
-{% endblock %}
+{% block extra_css %}{% endblock %}
 
 {% block content %}
 
@@ -394,17 +128,17 @@
 <div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover mb-0">
+            <table class="table table-hover mb-0 w-100">
                 <thead class="table-light">
                     <tr>
                         <th style="width: 50px;">#</th>
                         <th>Course</th>
-                        <th>Code</th>
                         <th>Level</th>
                         <th>Teacher</th>
+                        <th>Major</th>
+                        <th>Classes</th>
                         <th>Credits</th>
                         <th>Duration</th>
-                        <th>Fee</th>
                         <th>Status</th>
                         <th style="width: 140px;">Actions</th>
                     </tr>
@@ -422,9 +156,6 @@
                             </div>
                         </td>
                         <td>
-                            <span class="course-id-badge">{{ course.code }}</span>
-                        </td>
-                        <td>
                             <span class="level-badge">{{ course.get_level_display }}</span>
                         </td>
                         <td>
@@ -437,10 +168,30 @@
                             {% endif %}
                         </td>
                         <td>
+                            {% if course.major %}
+                            <span class="major-badge" title="{{ course.major.department.name }}">
+                                <i class="fas fa-graduation-cap me-1"></i>{{ course.major.code }}
+                            </span>
+                            <div><small class="text-muted" style="font-size:11px;">{{ course.major.name }}</small></div>
+                            {% else %}
+                            <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if course.classes.exists %}
+                            {% for class in course.classes.all %}
+                            <span class="badge bg-info text-white mb-1 d-inline-block" style="font-size: 11px;">
+                                <i class="fas fa-users me-1"></i>{{ class.name }}
+                            </span>
+                            {% endfor %}
+                            {% else %}
+                            <span class="text-muted">Not Assigned</span>
+                            {% endif %}
+                        </td>
+                        <td>
                             <span class="credit-badge">{{ course.credits }}</span>
                         </td>
                         <td>{{ course.duration }}</td>
-                        <td>${{ course.fee|floatformat:2 }}</td>
                         <td>
                             <span class="status-badge {% if course.is_active %}active{% else %}inactive{% endif %}">
                                 {% if course.is_active %}Active{% else %}Inactive{% endif %}

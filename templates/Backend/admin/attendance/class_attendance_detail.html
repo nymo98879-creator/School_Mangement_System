@@ -1,8 +1,8 @@
 {% extends 'Backend/layouts/admin_layout.html' %}
 {% load static %}
 
-{% block title %}Class Attendance Details{% endblock %}
-{% block page_title %}Class Attendance Details - {{ class.name }}{% endblock %}
+{% block title %}Course Attendance Details{% endblock %}
+{% block page_title %}Course Attendance Details - {{ course.name }}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -12,7 +12,7 @@
         padding: 20px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         transition: all 0.3s;
-        border-left: 4px solid #3498db;
+        border-left: 4px solid #4263eb;
     }
 
     .stats-card:hover {
@@ -77,7 +77,7 @@
 
     .status-badge.excused {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
     }
 
     .student-avatar {
@@ -94,7 +94,7 @@
     }
 
     .student-avatar.blue {
-        background: linear-gradient(135deg, #3498db, #2980b9);
+        background: linear-gradient(135deg, #4263eb, #3b5bdb);
     }
 
     .student-avatar.green {
@@ -132,7 +132,7 @@
 
     .class-info-card .info-item {
         padding: 8px 0;
-        border-bottom: 1px solid #f0f2f5;
+        border-bottom: 1px solid #f0f2f8;
     }
 
     .class-info-card .info-item:last-child {
@@ -164,20 +164,20 @@
     <div class="row">
         <div class="col-md-3">
             <div class="info-item">
-                <div class="info-label">Class Name</div>
-                <div class="info-value">{{ class.name }}</div>
+                <div class="info-label">Course Name</div>
+                <div class="info-value">{{ course.name }}</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="info-item">
-                <div class="info-label">Course</div>
-                <div class="info-value">{{ class.course.name|default:"N/A" }}</div>
+                <div class="info-label">Course Level</div>
+                <div class="info-value">{{ course.level|default:"N/A" }}</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="info-item">
                 <div class="info-label">Teacher</div>
-                <div class="info-value">{{ class.teacher.get_full_name|default:"N/A" }}</div>
+                <div class="info-value">{{ course.teacher.get_full_name|default:"N/A" }}</div>
             </div>
         </div>
         <div class="col-md-3">
@@ -344,8 +344,8 @@
 </div>
 
 <div class="mt-3">
-    <a href="{% url 'attendance:admin_class_attendance' %}" class="btn btn-secondary">
-        <i class="fas fa-arrow-left me-2"></i>Back to Class Attendance
+    <a href="{% url 'attendance:admin_course_attendance' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Back to Course Attendance
     </a>
 </div>
 

@@ -44,7 +44,7 @@
     }
 
     .student-avatar.blue {
-        background: linear-gradient(135deg, #3498db, #2980b9);
+        background: linear-gradient(135deg, #4263eb, #3b5bdb);
     }
 
     .student-avatar.green {
@@ -121,10 +121,10 @@
     }
 
     .attendance-btn.active-excused {
-        background: #3498db;
-        border-color: #3498db;
+        background: #4263eb;
+        border-color: #4263eb;
         color: white;
-        box-shadow: 0 3px 15px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 3px 15px rgba(66, 99, 235, 0.3);
     }
 
     /* Inactive state */
@@ -167,7 +167,7 @@
     .remarks-container .remarks-input {
         width: 100%;
         padding: 6px 12px;
-        border: 2px solid #3498db;
+        border: 2px solid #4263eb;
         border-radius: 6px;
         font-size: 13px;
         background: #f0f7ff;
@@ -176,8 +176,8 @@
 
     .remarks-container .remarks-input:focus {
         outline: none;
-        border-color: #2980b9;
-        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        border-color: #3b5bdb;
+        box-shadow: 0 0 0 0.2rem rgba(66, 99, 235, 0.25);
         background: white;
     }
 
@@ -188,7 +188,7 @@
 
     .remarks-container .remarks-label {
         font-size: 11px;
-        color: #3498db;
+        color: #4263eb;
         font-weight: 600;
         margin-bottom: 3px;
         display: block;
@@ -234,7 +234,7 @@
     }
 
     .legend-dot.excused {
-        background: #3498db;
+        background: #4263eb;
     }
 
     /* ===== SUMMARY STATS ===== */
@@ -274,7 +274,7 @@
     }
 
     .summary-stats .stat-item.excused .stat-number {
-        color: #3498db;
+        color: #4263eb;
     }
 
     .btn-submit {
@@ -335,7 +335,7 @@
 
     .student-row .status-label.excused {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
     }
 
     .student-row .status-label.excused-with-remark {
@@ -344,12 +344,12 @@
     }
 
     .student-row .status-label.not-marked {
-        background: #f0f2f5;
+        background: #f0f2f8;
         color: #7f8c8d;
     }
 
     .has-remark {
-        border-left: 3px solid #3498db;
+        border-left: 3px solid #4263eb;
     }
 
     @media (max-width: 768px) {
@@ -407,7 +407,7 @@
 <div class="attendance-form">
     <div class="attendance-header">
         <h4><i class="fas fa-calendar-check me-2"></i>Take Attendance</h4>
-        <small>{{ class.name }} - {{ class.schedule }}</small>
+        <small>{{ class.name }} - {{ class.get_schedule_display }}</small>
     </div>
 
     <form method="POST" id="attendanceForm">

@@ -230,7 +230,7 @@
 
     .class-table tbody td {
         padding: 16px 18px;
-        border-bottom: 1px solid #f0f2f5;
+        border-bottom: 1px solid #f0f2f8;
         vertical-align: middle;
         font-size: 14px;
         color: #1a1a2e;
@@ -990,8 +990,7 @@
                         {% with student_count=class.get_student_count %}
                         <span class="student-count 
                             {% if student_count >= class.capacity %}full
-                            {% elif student_count >= class.capacity|add:" -5" %}near-full {% else
-                            %}available{%endif%}">
+                            {% elif student_count >= class.capacity|add:" -5" %}near-full {% else %}available{%endif%}">
                             <i class="fas fa-user"></i>
                             {{ student_count }}/{{ class.capacity|default:30 }}
                             {% if student_count >= class.capacity %}
@@ -1008,10 +1007,10 @@
                     </td>
                     <td>
                         <div class="action-group">
-                            <a href="{% url 'classes:class_detail' class.pk %}" class="action-btn view"
+                            <!-- <a href="{% url 'classes:class_detail' class.pk %}" class="action-btn view"
                                 data-bs-toggle="tooltip" title="View Details">
                                 <i class="fas fa-eye"></i>
-                            </a>
+                            </a> -->
                             <a href="{% url 'classes:class_edit' class.pk %}" class="action-btn edit"
                                 data-bs-toggle="tooltip" title="Edit Class">
                                 <i class="fas fa-edit"></i>

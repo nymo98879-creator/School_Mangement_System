@@ -12,7 +12,7 @@
         padding: 20px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         transition: all 0.3s;
-        border-left: 4px solid #3498db;
+        border-left: 4px solid #4263eb;
     }
 
     .stats-card:hover {
@@ -77,7 +77,7 @@
 
     .status-badge.excused {
         background: #e8f0fe;
-        color: #3498db;
+        color: #4263eb;
     }
 
     .search-filters {
@@ -102,8 +102,8 @@
     }
 
     .search-filters .form-control:focus {
-        border-color: #3498db;
-        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        border-color: #4263eb;
+        box-shadow: 0 0 0 0.2rem rgba(66, 99, 235, 0.25);
     }
 
     .student-avatar {
@@ -120,7 +120,7 @@
     }
 
     .student-avatar.blue {
-        background: linear-gradient(135deg, #3498db, #2980b9);
+        background: linear-gradient(135deg, #4263eb, #3b5bdb);
     }
 
     .student-avatar.green {
@@ -194,12 +194,12 @@
 <div class="search-filters">
     <form method="GET" class="row g-3">
         <div class="col-md-3">
-            <label class="form-label">Class</label>
-            <select name="class_obj" class="form-control">
-                <option value="">All Classes</option>
-                {% for class in classes %}
-                <option value="{{ class.id }}" {% if request.GET.class_obj == class.id|stringformat:"s" %}selected{% endif %}>
-                    {{ class.name }}
+            <label class="form-label">Course</label>
+            <select name="course" class="form-control">
+                <option value="">All Courses</option>
+                {% for course in courses %}
+                <option value="{{ course.id }}" {% if request.GET.course == course.id|stringformat:"s" %}selected{% endif %}>
+                    {{ course.name }}
                 </option>
                 {% endfor %}
             </select>
@@ -280,7 +280,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td>{{ attendance.class_obj.name|default:"N/A" }}</td>
+                        <td>{{ attendance.course.name|default:"N/A" }}</td>
                         <td>{{ attendance.date|date:"M d, Y" }}</td>
                         <td>
                             <span class="status-badge {{ attendance.status }}">
@@ -320,4 +320,4 @@
         */
     });
 </script>
-{% endblock %} -->
+{% endblock %} 
