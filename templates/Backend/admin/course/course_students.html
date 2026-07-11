@@ -1,0 +1,80 @@
+{% extends 'Backend/layouts/admin_layout.html' %}
+{% load static %}
+
+{% block title %}Students - {{ course.name }}{% endblock %}
+{% block page_title %}Students Enrolled in {{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <h5 class="mb-1">{{ course.code }} — {{ course.name }}</h5>
+                <p class="text-muted mb-0">
+                    Status:
+                    <span class="badge {% if course.is_active %}bg-success{% else %}bg-danger {% endif %}">
+                        {% if course.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{% url 'courses:course_detail' course.pk %}" class="btn btn-secondary">
+                    <i class="fas fa-info-circle me-1"></i>Course Details
+                </a>
+                <a href="{% url 'courses:course_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Courses
+                </a>
+            </div>
+        </div>
+
+        {% if students %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Student ID</th>
+                        <th>Email</th>
+                        <th>Year</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="student-avatar-sm {% cycle 'blue' 'green' 'orange' 'purple' 'red' %}">
+                                    {{ student.first_name|first|upper }}
+                                </div>
+                                <span class="fw-bold">{{ student.get_full_name }}</span>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-secondary">{{ student.student_id }}</span></td>
+                        <td>{{ student.email }}</td>
+                        <td>{{ student.year }}</td>
+                        <td>
+                            <span class="badge {% if student.is_active %}bg-success{% else %}bg-danger {% endif %}">
+                                {% if student.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-user-graduate"></i>
+            <h6 class="text-muted">No Students Enrolled</h6>
+            <p class="text-muted">This course has no students enrolled yet.</p>
+            <a href="{% url 'courses:course_add_student' course.pk %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-user-plus me-1"></i>Add Students
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

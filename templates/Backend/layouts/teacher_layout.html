@@ -485,6 +485,99 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+
+        /* --- Shared Components --- */
+        .page-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+
+        .student-avatar-sm {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .student-avatar-sm.blue   { background: linear-gradient(135deg, #4263eb, #3b5bdb); }
+        .student-avatar-sm.green  { background: linear-gradient(135deg, #27ae60, #1e8449); }
+        .student-avatar-sm.orange { background: linear-gradient(135deg, #f39c12, #d68910); }
+        .student-avatar-sm.purple { background: linear-gradient(135deg, #9b59b6, #7d3c98); }
+        .student-avatar-sm.red    { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .student-avatar-sm.teal   { background: linear-gradient(135deg, #1abc9c, #16a085); }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .empty-state i {
+            font-size: 56px;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+        .empty-state h6 {
+            color: #475569;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        .empty-state p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .table-action-btn {
+            border-radius: 8px;
+            font-size: 13px;
+            transition: all 0.2s;
+            margin: 0 2px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: none;
+            cursor: pointer;
+        }
+        .table-action-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .table-action-btn.view   { background: #e8f4fd; color: #4263eb; }
+        .table-action-btn.edit   { background: #fef9e7; color: #f39c12; }
+        .table-action-btn.toggle { background: #eafaf1; color: #27ae60; }
+        .table-action-btn.delete { background: #fef0f0; color: #e74c3c; }
+        .table-action-btn.view:hover   { background: #4263eb; color: white; }
+        .table-action-btn.edit:hover   { background: #f39c12; color: white; }
+        .table-action-btn.toggle:hover { background: #27ae60; color: white; }
+        .table-action-btn.delete:hover { background: #e74c3c; color: white; }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+        .status-badge::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .status-badge.active   { background: #eafaf1; color: #27ae60; }
+        .status-badge.active::before { background: #27ae60; }
+        .status-badge.inactive { background: #fef0f0; color: #e74c3c; }
+        .status-badge.inactive::before { background: #e74c3c; }
     </style>
     {% block extra_css %}{% endblock %}
 </head>

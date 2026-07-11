@@ -152,6 +152,8 @@ class TimeSlot(models.Model):
         return f"{days_str} {self.start_time.strftime('%I:%M %p')} - {self.end_time.strftime('%I:%M %p')}"
     
     def get_days_list(self):
+        if not self.days:
+            return []
         return [day.strip() for day in self.days.split(',') if day.strip()]
     
     def get_days_display(self):
@@ -207,10 +209,12 @@ class Class(models.Model):
 
     # ===== RELATIONSHIPS =====
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True, related_name='classes')
+    
+    # SINGLE SOURCE OF TRUTH - Course to Class relationship
     courses = models.ManyToManyField(
         'courses.Course', 
         blank=True, 
-        related_name='class_offerings'
+        related_name='class_offerings'  # This is the reverse name
     )
 
     # ===== STATUS =====

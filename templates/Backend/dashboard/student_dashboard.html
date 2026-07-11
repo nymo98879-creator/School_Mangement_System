@@ -322,8 +322,7 @@
                                 </span>
                             </div>
                             <div class="class-info mb-1">
-                                <i class="fas fa-book"></i>
-                                {{ class.course.name|default:"No Course" }}
+                                <i class="fas fa-book"></i> {% if class.courses.exists %}{% for c in class.courses.all %}{{ c.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}No Course{% endif %}
                             </div>
                             <div class="class-info mb-1">
                                 <i class="fas fa-chalkboard-teacher"></i>

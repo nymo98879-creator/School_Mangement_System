@@ -601,17 +601,16 @@
 
                             <!-- ===== CLASSES FIELD ===== -->
                             <div class="col-12">
-                                <label for="{{ form.classes.id_for_label }}" class="form-label">
+                                <label class="form-label">
                                     Assign to Classes
                                 </label>
-                                {{ form.classes }}
-                                {% if form.classes.errors %}
-                                <div class="errorlist">
-                                    {% for error in form.classes.errors %}
-                                    <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
+                                <select name="classes" id="id_classes" multiple class="form-control" style="height: 120px;">
+                                    {% for class in all_classes %}
+                                    <option value="{{ class.id }}" {% if class.id|stringformat:"s" in assigned_class_ids %}selected{% endif %}>
+                                        {{ class.name }} ({{ class.get_schedule_display }})
+                                    </option>
                                     {% endfor %}
-                                </div>
-                                {% endif %}
+                                </select>
                                 <div class="form-text">
                                     <i class="fas fa-info-circle help-text-icon"></i>
                                     Hold Ctrl/Cmd to assign this course to one or more classes
@@ -841,7 +840,7 @@
         const statusCheckbox = document.getElementById('{{ form.is_active.id_for_label }}');
         const timeSlotsField = document.getElementById('{{ form.time_slots.id_for_label }}');
         const previewTimeSlots = document.getElementById('previewTimeSlots');
-        const classesField = document.getElementById('{{ form.classes.id_for_label }}');
+        const classesField = document.getElementById('id_classes');
 
         function updatePreview() {
             previewCode.textContent = codeField ? codeField.value || '-' : '-';

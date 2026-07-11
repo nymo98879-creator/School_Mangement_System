@@ -18,6 +18,7 @@
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         height: 100%;
     }
+
     .stats-card::before {
         content: '';
         position: absolute;
@@ -28,10 +29,12 @@
         background: #10b981;
         opacity: 0.8;
     }
+
     .stats-card:hover {
         transform: translateY(-6px);
         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
     }
+
     .stats-card .stats-icon {
         width: 48px;
         height: 48px;
@@ -42,13 +45,24 @@
         font-size: 20px;
         color: white;
         margin-bottom: 16px;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
     }
-    
-    .stats-card .stats-icon.green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-    .stats-card .stats-icon.blue { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-    .stats-card .stats-icon.orange { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); }
-    .stats-card .stats-icon.purple { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); }
+
+    .stats-card .stats-icon.green {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .stats-card .stats-icon.blue {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+
+    .stats-card .stats-icon.orange {
+        background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+    }
+
+    .stats-card .stats-icon.purple {
+        background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    }
 
     .stats-card .stats-number {
         font-size: 32px;
@@ -57,6 +71,7 @@
         letter-spacing: -0.5px;
         line-height: 1.2;
     }
+
     .stats-card .stats-label {
         color: #64748b;
         font-size: 13px;
@@ -65,6 +80,7 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
+
     .stats-card .stats-trend {
         font-size: 11.5px;
         font-weight: 700;
@@ -73,16 +89,19 @@
         padding: 3px 12px;
         border-radius: 20px;
     }
+
     .stats-card .stats-trend.up {
         color: #10b981;
         background: rgba(16, 185, 129, 0.1);
         border: 1px solid rgba(16, 185, 129, 0.15);
     }
+
     .stats-card .stats-trend.down {
         color: #ef4444;
         background: rgba(239, 68, 68, 0.1);
         border: 1px solid rgba(239, 68, 68, 0.15);
     }
+
     .stats-card .stats-trend.neutral {
         color: #f59e0b;
         background: rgba(245, 158, 11, 0.1);
@@ -101,6 +120,7 @@
         box-shadow: 0 10px 30px rgba(13, 40, 24, 0.15);
         border: 1px solid rgba(16, 185, 129, 0.1);
     }
+
     .welcome-banner::before {
         content: '';
         position: absolute;
@@ -108,10 +128,11 @@
         right: -50px;
         width: 250px;
         height: 250px;
-        background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(0,0,0,0) 70%);
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
         border-radius: 50%;
         filter: blur(20px);
     }
+
     .welcome-banner::after {
         content: '';
         position: absolute;
@@ -119,14 +140,16 @@
         right: 100px;
         width: 200px;
         height: 200px;
-        background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
         border-radius: 50%;
         filter: blur(20px);
     }
+
     .welcome-banner .welcome-content {
         position: relative;
         z-index: 1;
     }
+
     .welcome-banner h4 {
         font-weight: 800;
         font-size: 24px;
@@ -136,33 +159,38 @@
         align-items: center;
         gap: 10px;
     }
+
     .welcome-banner h4 i {
         color: #10b981;
         text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
     }
+
     .welcome-banner p {
         color: #94a3b8;
         font-size: 14.5px;
         font-weight: 500;
         margin: 0;
     }
+
     .welcome-banner .welcome-stats {
         display: flex;
         flex-wrap: wrap;
         gap: 20px;
         margin-top: 15px;
     }
+
     .welcome-banner .welcome-stats .stat-item {
         display: flex;
         align-items: center;
         gap: 8px;
         font-size: 13px;
         font-weight: 600;
-        background: rgba(255,255,255,0.04);
+        background: rgba(255, 255, 255, 0.04);
         padding: 6px 14px;
         border-radius: 20px;
-        border: 1px solid rgba(255,255,255,0.06);
+        border: 1px solid rgba(255, 255, 255, 0.06);
     }
+
     .welcome-banner .welcome-stats .stat-item i {
         color: #10b981;
     }
@@ -176,6 +204,7 @@
         border: 1px solid rgba(226, 232, 240, 0.8);
         margin-bottom: 30px;
     }
+
     .search-filters label {
         color: #475569;
         font-weight: 700;
@@ -183,7 +212,9 @@
         margin-bottom: 8px;
         display: block;
     }
-    .search-filters .form-control, .search-filters .form-select {
+
+    .search-filters .form-control,
+    .search-filters .form-select {
         border-radius: 12px;
         padding: 10px 16px;
         border: 1px solid #cbd5e1;
@@ -193,11 +224,14 @@
         background: #f8fafc;
         transition: all 0.3s;
     }
-    .search-filters .form-control:focus, .search-filters .form-select:focus {
+
+    .search-filters .form-control:focus,
+    .search-filters .form-select:focus {
         border-color: #10b981;
         background: #ffffff;
         box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
     }
+
     .search-filters .btn-primary {
         background: #0f172a;
         border: none;
@@ -208,6 +242,7 @@
         font-size: 13.5px;
         transition: all 0.3s;
     }
+
     .search-filters .btn-primary:hover {
         background: #1e293b;
         transform: translateY(-2px);
@@ -220,6 +255,7 @@
         gap: 25px;
         margin-bottom: 30px;
     }
+
     .class-card {
         background: white;
         border-radius: 16px;
@@ -232,16 +268,20 @@
         height: 100%;
         position: relative;
     }
+
     .class-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
         border-color: rgba(16, 185, 129, 0.25);
     }
+
     .class-card .card-header {
         padding: 18px 22px;
         border-bottom: 1px solid #f0f2f8;
         background: #fafbfc;
+        cursor: pointer;
     }
+
     .class-card .card-header .class-title {
         font-weight: 700;
         color: #2c3e50;
@@ -253,10 +293,12 @@
         gap: 10px;
         width: 100%;
     }
+
     .class-card .card-header .class-title i {
         color: #10b981;
         font-size: 20px;
     }
+
     .class-card .card-header .class-code {
         font-size: 10.5px;
         font-weight: 700;
@@ -267,10 +309,12 @@
         border: 1px solid rgba(16, 185, 129, 0.15);
         margin-left: auto;
     }
+
     .class-card .card-body {
         padding: 24px;
         flex: 1;
     }
+
     .class-card .card-body .class-info {
         display: flex;
         align-items: center;
@@ -279,13 +323,14 @@
         color: #475569;
         margin-bottom: 12px;
     }
+
     .class-card .card-body .class-info i {
         width: 18px;
         color: #64748b;
         font-size: 14px;
         text-align: center;
     }
-    
+
     /* ===== STATUS BADGES ===== */
     .badge-status {
         padding: 3px 12px;
@@ -294,11 +339,13 @@
         font-weight: 700;
         display: inline-block;
     }
+
     .badge-status.active {
         background: rgba(16, 185, 129, 0.1);
         color: #10b981;
         border: 1px solid rgba(16, 185, 129, 0.15);
     }
+
     .badge-status.inactive {
         background: rgba(239, 68, 68, 0.1);
         color: #ef4444;
@@ -315,14 +362,17 @@
         font-size: 12px;
         font-weight: 700;
     }
+
     .student-count.full {
         background: rgba(239, 68, 68, 0.1);
         color: #ef4444;
     }
+
     .student-count.near-full {
         background: rgba(245, 158, 11, 0.1);
         color: #f59e0b;
     }
+
     .student-count.available {
         background: rgba(16, 185, 129, 0.1);
         color: #10b981;
@@ -333,6 +383,7 @@
         margin-top: 15px;
         margin-bottom: 5px;
     }
+
     .progress-custom {
         height: 6px;
         background: #e2e8f0;
@@ -340,15 +391,25 @@
         overflow: hidden;
         position: relative;
     }
+
     .progress-custom .progress-bar-custom {
         height: 100%;
         border-radius: 10px;
         transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
     }
-    .progress-custom .progress-bar-custom.green { background: #10b981; }
-    .progress-custom .progress-bar-custom.orange { background: #f59e0b; }
-    .progress-custom .progress-bar-custom.red { background: #ef4444; }
+
+    .progress-custom .progress-bar-custom.green {
+        background: #10b981;
+    }
+
+    .progress-custom .progress-bar-custom.orange {
+        background: #f59e0b;
+    }
+
+    .progress-custom .progress-bar-custom.red {
+        background: #ef4444;
+    }
 
     /* ===== CARD FOOTER ===== */
     .class-card .card-footer {
@@ -359,6 +420,7 @@
         gap: 8px;
         flex-wrap: wrap;
     }
+
     .class-card .card-footer .btn-action {
         padding: 8px 14px;
         border-radius: 12px;
@@ -375,20 +437,25 @@
         border: none;
         text-decoration: none;
     }
+
     .class-card .card-footer .btn-action:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         color: white;
     }
+
     .class-card .card-footer .btn-action.btn-primary {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     }
+
     .class-card .card-footer .btn-action.btn-info {
         background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     }
+
     .class-card .card-footer .btn-action.btn-success {
         background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
     }
+
     .class-card .card-footer .btn-action.btn-warning {
         background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         color: white;
@@ -403,16 +470,19 @@
         gap: 15px;
         margin-bottom: 5px;
     }
+
     .section-header h5 {
         font-weight: 800;
         color: #0f172a;
         font-size: 18px;
         letter-spacing: -0.3px;
     }
+
     .section-header h5 i {
         color: #10b981;
         margin-right: 10px;
     }
+
     .section-header .badge-count {
         background: rgba(16, 185, 129, 0.1);
         color: #10b981;
@@ -429,16 +499,19 @@
         padding: 80px 20px;
         grid-column: 1 / -1;
     }
+
     .empty-state i {
         font-size: 70px;
         color: #10b981;
         opacity: 0.2;
         margin-bottom: 20px;
     }
+
     .empty-state h5 {
         color: #0f172a;
         font-weight: 700;
     }
+
     .empty-state p {
         color: #64748b;
     }
@@ -449,21 +522,25 @@
         display: none;
         grid-column: 1 / -1;
     }
+
     .no-results i {
         font-size: 56px;
         color: #cbd5e1;
         margin-bottom: 16px;
     }
+
     .no-results h5 {
         color: #0f172a;
         font-weight: 700;
         margin-bottom: 8px;
     }
+
     .no-results p {
         color: #64748b;
         font-size: 14px;
         margin-bottom: 16px;
     }
+
     .no-results.show {
         display: block;
     }
@@ -474,50 +551,63 @@
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         }
     }
+
     @media (max-width: 768px) {
         .stats-card .stats-number {
             font-size: 24px;
         }
+
         .class-grid {
             grid-template-columns: 1fr 1fr;
         }
+
         .search-filters {
             padding: 15px 20px;
         }
     }
+
     @media (max-width: 576px) {
         .stats-card .stats-number {
             font-size: 20px;
         }
+
         .stats-card .stats-icon {
             width: 40px;
             height: 40px;
             font-size: 18px;
         }
+
         .class-grid {
             grid-template-columns: 1fr;
         }
+
         .class-card .card-footer {
             flex-direction: column;
         }
+
         .class-card .card-footer .btn-action {
             flex: none;
             width: 100%;
         }
+
         .section-header {
             flex-direction: column;
             align-items: flex-start;
         }
+
         .welcome-banner {
             padding: 20px;
         }
+
         .welcome-banner h4 {
             font-size: 18px;
         }
+
         .welcome-banner .welcome-stats {
             flex-direction: column;
             gap: 8px;
         }
+
         .welcome-banner .welcome-stats .stat-item {
             justify-content: center;
         }
@@ -531,10 +621,12 @@
         border-radius: 50%;
         margin-right: 6px;
     }
+
     .status-pulse.active {
         background: #10b981;
         animation: pulse 2s infinite;
     }
+
     .status-pulse.inactive {
         background: #ef4444;
     }
@@ -543,11 +635,12 @@
         0% {
             box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
         }
+
         70% {
             box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
         }
     }
-    
+
     .quick-actions {
         display: flex;
         gap: 15px;
@@ -600,12 +693,12 @@
         </h4>
         <p class="text-muted mb-0">Browse and manage your assigned classes and student directories.</p>
     </div>
-    <span class="badge px-3 py-2 rounded-pill fw-bold" id="visibleClassCount" style="font-size: 0.95rem; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
+    <span class="badge px-3 py-2 rounded-pill fw-bold" id="visibleClassCount"
+        style="font-size: 0.95rem; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
         {{ classes|length }} Class{{ classes|length|pluralize }}
     </span>
 </div>
 <hr class="mt-2 mb-4">
-
 
 <!-- ===== SEARCH & FILTER ===== -->
 <div class="search-filters">
@@ -655,7 +748,7 @@
 <div class="class-grid" id="classGrid">
     {% if classes %}
     {% for class in classes %}
-    {% with student_count=class.get_student_count capacity=class.capacity|default:30 %}
+    {% with student_count=class.enrolled_students.count capacity=class.capacity|default:30 %}
     <div class="class-card" data-class-id="{{ class.id }}" data-name="{{ class.name|lower }}"
         data-code="{{ class.code|lower|default:'' }}"
         data-status="{% if class.is_active %}active{% else %}inactive{% endif %}" data-students="{{ student_count }}">
@@ -675,9 +768,10 @@
             <!-- Type Class / Section -->
             <div class="class-info">
                 <i class="fas fa-tag"></i>
-                <span>Class Type: {{ class.term_type|title|default:"Regular" }} {% if class.section %}(Section {{ class.section }}){% endif %}</span>
+                <span>Class Type: {{ class.term_type|title|default:"Regular" }} {% if class.section %}(Section {{
+                    class.section }}){% endif %}</span>
             </div>
-            
+
             <!-- Location (Building, Floor, Room) -->
             <div class="class-info">
                 <i class="fas fa-map-marker-alt"></i>
@@ -691,12 +785,31 @@
                     {% endif %}
                 </span>
             </div>
+
+            <!-- Courses Count -->
+            <div class="class-info">
+                <i class="fas fa-book"></i>
+                <span>
+                    <strong>{{ class.courses.count }}</strong> Course{{ class.courses.count|pluralize }} assigned
+                </span>
+            </div>
+
+            <!-- Students Count -->
+            <div class="class-info">
+                <i class="fas fa-users"></i>
+                <span>
+                    <strong class="student-count-display">{{ class.all_student_count|default:class.get_student_count }}</strong> Students
+                </span>
+            </div>
         </div>
 
         <!-- Card Footer -->
         <div class="card-footer" style="padding: 1.25rem;">
             {% if class.id %}
-            <a href="{% url 'classes:class_courses_view' class.id %}" class="btn btn-primary w-100 rounded-pill py-2 text-center text-white" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="View All Courses">
+            <a href="{% url 'classes:class_courses_view' class.id %}"
+                class="btn btn-primary w-100 rounded-pill py-2 text-center text-white"
+                style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; text-decoration: none;"
+                title="View All Courses">
                 <i class="fas fa-book-open me-2"></i> View Courses
             </a>
             {% else %}
@@ -710,7 +823,7 @@
     <div class="empty-state">
         <i class="fas fa-calendar-check"></i>
         <h5>No Classes Available</h5>
-        <p>You don't have any classes to take attendance for.</p>
+        <p>You don't have any classes assigned to you.</p>
         <p class="text-muted small">Contact the admin for class assignments.</p>
     </div>
     {% endif %}
@@ -782,7 +895,6 @@
             const target = parseInt(el.textContent.replace(/,/g, '').replace('%', ''));
             if (target > 0 && !isNaN(target)) {
                 if (el.id === 'attendanceRate') {
-                    // Handle percentage
                     animateCount(el, target);
                 } else {
                     animateCount(el, target);
@@ -914,6 +1026,26 @@
 
         // ===== INITIAL FILTER =====
         setTimeout(filterClasses, 500);
+
+        function refreshTeacherClassStudents() {
+            const cards = document.querySelectorAll('.class-card');
+            cards.forEach(card => {
+                const classId = card.dataset.classId;
+                if (!classId) return;
+                fetch(`/classes/ajax/class/${classId}/students/`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    const students = data.students || [];
+                    const countEl = card.querySelector('.student-count-display');
+                    if (countEl) countEl.textContent = students.length;
+                })
+                .catch(err => console.error('Failed to refresh class students:', err));
+            });
+        }
+
+        setInterval(refreshTeacherClassStudents, 60000);
     });
 </script>
 {% endblock %}

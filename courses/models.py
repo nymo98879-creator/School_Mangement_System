@@ -104,15 +104,12 @@ class Course(models.Model):
     time_slots = models.ManyToManyField(
         'classes.TimeSlot', 
         blank=True, 
-        related_name='course_time_slots'  # CHANGED
+        related_name='course_time_slots'
     )
     
-    # Many-to-Many relationship with Class
-    classes = models.ManyToManyField(
-        'classes.Class',
-        blank=True,
-        related_name='course_classes'  # CHANGED from 'course_set' to 'course_classes'
-    )
+    # REMOVED: classes = models.ManyToManyField('classes.Class', ...)
+    # This relationship is now ONLY defined in the Class model
+    # Use class_offerings reverse relation from Class model
     
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -143,8 +140,9 @@ class Course(models.Model):
     
     def get_classes_display(self):
         """Return string of all classes this course is assigned to"""
-        if self.classes.exists():
-            return ", ".join([c.name for c in self.classes.all()])
+        # Using the reverse relationship from Class model
+        if self.class_offerings.exists():
+            return ", ".join([c.name for c in self.class_offerings.all()])
         return "No classes assigned"
     
     class Meta:

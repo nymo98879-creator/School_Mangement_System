@@ -311,13 +311,13 @@ def admin_course_attendance(request):
         course_year = course.level[0] if course.level and len(course.level) > 0 else None
         if course_year:
             student_count = Student.objects.filter(
-                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                Q(courses=course) | Q(classes_enrolled__courses=course),
                 year=course_year,
                 is_active=True
             ).distinct().count()
         else:
             student_count = Student.objects.filter(
-                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                Q(courses=course) | Q(classes_enrolled__courses=course),
                 is_active=True
             ).distinct().count()
         course.student_count = student_count
@@ -347,13 +347,13 @@ def admin_course_attendance_detail(request, course_id):
     course_year = course.level[0] if course.level and len(course.level) > 0 else None
     if course_year:
         students = Student.objects.filter(
-            Q(courses__id=course.id) | Q(class_offerings__courses=course),
+            Q(courses=course) | Q(classes_enrolled__courses=course),
             year=course_year,
             is_active=True
         ).distinct()
     else:
         students = Student.objects.filter(
-            Q(courses__id=course.id) | Q(class_offerings__courses=course),
+            Q(courses=course) | Q(classes_enrolled__courses=course),
             is_active=True
         ).distinct()
     
@@ -504,7 +504,6 @@ def teacher_attendance_view(request):
         try:
             teacher = Teacher.objects.get(user=request.user)
             classes = Class.objects.filter(teacher=teacher, is_active=True).distinct()
-            # FIXED: Use M2M relationship with class_offerings
             courses = Course.objects.filter(class_offerings__in=classes, is_active=True).distinct()
         except Teacher.DoesNotExist:
             classes = Class.objects.none()
@@ -514,18 +513,10 @@ def teacher_attendance_view(request):
     
     # Calculate statistics for each course
     for course in courses:
-        course_year = course.level[0] if course.level and len(course.level) > 0 else None
-        if course_year:
-            course.student_count = Student.objects.filter(
-                Q(courses__id=course.id) | Q(class_offerings__courses=course),
-                year=course_year,
-                is_active=True
-            ).distinct().count()
-        else:
-            course.student_count = Student.objects.filter(
-                Q(courses__id=course.id) | Q(class_offerings__courses=course),
-                is_active=True
-            ).distinct().count()
+        course.student_count = Student.objects.filter(
+            Q(courses=course) | Q(classes_enrolled__courses=course),
+            is_active=True
+        ).distinct().count()
         course.attendance_taken = Attendance.objects.filter(course=course, date=today).exists()
         present_today_count = Attendance.objects.filter(
             course=course,
@@ -798,13 +789,13 @@ def teacher_course_attendance(request):
         course_year = course.level[0] if course.level and len(course.level) > 0 else None
         if course_year:
             students = Student.objects.filter(
-                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                Q(courses=course) | Q(classes_enrolled__courses=course),
                 year=course_year,
                 is_active=True
             ).distinct()
         else:
             students = Student.objects.filter(
-                Q(courses__id=course.id) | Q(class_offerings__courses=course),
+                Q(courses=course) | Q(classes_enrolled__courses=course),
                 is_active=True
             ).distinct()
         attendance_taken = Attendance.objects.filter(

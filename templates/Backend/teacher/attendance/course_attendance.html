@@ -366,6 +366,21 @@
                 bar.style.width = width;
             }, 300 + (index * 150));
         });
+
+        function refreshTeacherCourses() {
+            fetch(`/classes/ajax/get-available-courses/`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                const results = data.results || [];
+                const courseCountEl = document.querySelector('.badge-group .badge-primary');
+                if (courseCountEl) courseCountEl.textContent = results.length + ' Courses';
+            })
+            .catch(err => console.error('Failed to refresh teacher courses:', err));
+        }
+
+        setInterval(refreshTeacherCourses, 60000);
     });
 </script>
 {% endblock %}

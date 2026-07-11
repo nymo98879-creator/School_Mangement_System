@@ -6,26 +6,6 @@
 
 {% block extra_css %}
 <style>
-    /* ===== STUDENT-SPECIFIC STYLES ===== */
-    .student-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 600;
-        font-size: 16px;
-        flex-shrink: 0;
-    }
-    .student-avatar.blue   { background: linear-gradient(135deg, #4263eb, #3b5bdb); }
-    .student-avatar.green  { background: linear-gradient(135deg, #27ae60, #1e8449); }
-    .student-avatar.orange { background: linear-gradient(135deg, #f39c12, #d68910); }
-    .student-avatar.purple { background: linear-gradient(135deg, #9b59b6, #7d3c98); }
-    .student-avatar.red    { background: linear-gradient(135deg, #e74c3c, #c0392b); }
-    .student-avatar.teal   { background: linear-gradient(135deg, #1abc9c, #16a085); }
-
     .btn-qr-generate {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -60,7 +40,7 @@
         </div>
     </div>
     <div class="col-md-3 col-sm-6">
-        <div class="stats-card" style="border-left-color: #27ae60;">
+        <div class="stats-card">
             <div class="stats-icon green">
                 <i class="fas fa-user-check"></i>
             </div>
@@ -72,7 +52,7 @@
         </div>
     </div>
     <div class="col-md-3 col-sm-6">
-        <div class="stats-card" style="border-left-color: #e74c3c;">
+        <div class="stats-card">
             <div class="stats-icon red">
                 <i class="fas fa-user-times"></i>
             </div>
@@ -84,7 +64,7 @@
         </div>
     </div>
     <div class="col-md-3 col-sm-6">
-        <div class="stats-card" style="border-left-color: #f39c12;">
+        <div class="stats-card">
             <div class="stats-icon orange">
                 <i class="fas fa-users"></i>
             </div>

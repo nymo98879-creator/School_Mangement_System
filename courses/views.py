@@ -10,6 +10,8 @@ from .forms import (
     FacultyForm, DepartmentForm, MajorForm, CourseForm,
     FacultySearchForm, DepartmentSearchForm, MajorSearchForm, CourseSearchForm
 )
+from classes.models import Class
+from students.models import Student
 import csv
 from datetime import datetime
 
@@ -323,6 +325,11 @@ def course_list(request):
     }
     return render(request, 'Backend/admin/course/course_list.html', context)
 
+def _get_teacher_classes_for_course(course):
+    if course.teacher:
+        return course.class_offerings.filter(teacher=course.teacher, is_active=True)
+    return Class.objects.none()
+
 @login_required
 @admin_required
 def course_add(request):
@@ -330,6 +337,9 @@ def course_add(request):
         form = CourseForm(request.POST)
         if form.is_valid():
             course = form.save()
+            class_ids = request.POST.getlist('classes')
+            if class_ids:
+                course.class_offerings.set(class_ids)
             messages.success(request, f'✅ Course {course.code} - {course.name} added successfully!')
             return redirect('courses:course_list')
         else:
@@ -337,10 +347,13 @@ def course_add(request):
     else:
         form = CourseForm()
     
+    all_classes = Class.objects.filter(is_active=True).order_by('name')
     context = {
         'form': form,
         'title': 'Add New Course',
         'is_edit': False,
+        'all_classes': all_classes,
+        'assigned_class_ids': [],
     }
     return render(request, 'Backend/admin/course/course_form.html', context)
 
@@ -353,6 +366,8 @@ def course_edit(request, pk):
         form = CourseForm(request.POST, instance=course)
         if form.is_valid():
             course = form.save()
+            class_ids = request.POST.getlist('classes')
+            course.class_offerings.set(class_ids)
             messages.success(request, f'✅ Course {course.code} - {course.name} updated successfully!')
             return redirect('courses:course_list')
         else:
@@ -360,11 +375,15 @@ def course_edit(request, pk):
     else:
         form = CourseForm(instance=course)
     
+    all_classes = Class.objects.filter(is_active=True).order_by('name')
+    assigned_class_ids = [str(cid) for cid in course.class_offerings.values_list('id', flat=True)]
     context = {
         'form': form,
         'title': 'Edit Course',
         'course': course,
         'is_edit': True,
+        'all_classes': all_classes,
+        'assigned_class_ids': assigned_class_ids,
     }
     return render(request, 'Backend/admin/course/course_form.html', context)
 
@@ -372,12 +391,15 @@ def course_edit(request, pk):
 @admin_required
 def course_detail(request, pk):
     course = get_object_or_404(Course, pk=pk)
-    student_count = course.students.count() if hasattr(course, 'students') else 0
-    
+    students = Student.objects.filter(courses=course, is_active=True).distinct().order_by('first_name', 'last_name')
+    prerequisites = course.prerequisites.all()
+    teacher_classes = course.class_offerings.filter(is_active=True)
+
     context = {
         'course': course,
-        'student_count': student_count,
-        'prerequisites': course.prerequisites.all(),
+        'students': students,
+        'prerequisites': prerequisites,
+        'teacher_classes': teacher_classes,
     }
     return render(request, 'Backend/admin/course/course_detail.html', context)
 
@@ -407,6 +429,119 @@ def course_toggle_status(request, pk):
     status = 'activated' if course.is_active else 'deactivated'
     messages.success(request, f'Course {course.name} {status} successfully!')
     return redirect('courses:course_list')
+
+@login_required
+@admin_required
+def course_add_student(request, pk):
+    course = get_object_or_404(Course, pk=pk)
+    
+    if request.method == 'POST':
+        student_ids = request.POST.getlist('student_ids')
+        if not student_ids:
+            messages.warning(request, 'Please select at least one student.')
+            return redirect('courses:course_add_student', pk=course.pk)
+        
+        added_count = 0
+        already_enrolled = 0
+        
+        for student_id in student_ids:
+            try:
+                student = Student.objects.get(id=student_id, is_active=True)
+                if student.courses.filter(id=course.id).exists():
+                    already_enrolled += 1
+                else:
+                    student.courses.add(course)
+                    added_count += 1
+            except Student.DoesNotExist:
+                continue
+        
+        if added_count > 0:
+            messages.success(request, f'{added_count} student(s) added to course "{course.name}" successfully!')
+        if already_enrolled > 0:
+            messages.warning(request, f'{already_enrolled} student(s) were already enrolled in this course.')
+        if added_count == 0 and already_enrolled == 0:
+            messages.warning(request, 'No students were added.')
+        
+        return redirect('courses:course_detail', pk=course.pk)
+    
+    all_students = Student.objects.filter(is_active=True).order_by('first_name', 'last_name')
+    enrolled_student_ids = list(Student.objects.filter(courses=course, is_active=True).values_list('id', flat=True))
+    
+    context = {
+        'course': course,
+        'all_students': all_students,
+        'enrolled_student_ids': enrolled_student_ids,
+    }
+    return render(request, 'Backend/admin/course/add_student.html', context)
+
+
+@login_required
+@admin_required
+def course_add_student_direct(request, course_pk, student_pk):
+    course = get_object_or_404(Course, pk=course_pk)
+    student = get_object_or_404(Student, pk=student_pk, is_active=True)
+    if not student.courses.filter(pk=course.pk).exists():
+        student.courses.add(course)
+        messages.success(request, f'{student.get_full_name} added to {course.name}.')
+    else:
+        messages.info(request, f'{student.get_full_name} is already enrolled in {course.name}.')
+    return redirect('courses:course_detail', pk=course.pk)
+
+
+@login_required
+@admin_required
+def course_remove_student(request, course_pk, student_pk):
+    course = get_object_or_404(Course, pk=course_pk)
+    student = get_object_or_404(Student, pk=student_pk)
+    if student.courses.filter(pk=course.pk).exists():
+        student.courses.remove(course)
+        messages.success(request, f'{student.get_full_name} removed from {course.name}.')
+    else:
+        messages.info(request, f'{student.get_full_name} was not enrolled in {course.name}.')
+    return redirect('courses:course_detail', pk=course.pk)
+
+
+@login_required
+@admin_required
+def course_student_edit(request, course_pk, student_pk):
+    course = get_object_or_404(Course, pk=course_pk)
+    student = get_object_or_404(Student, pk=student_pk)
+    if request.method == 'POST':
+        if student.courses.filter(pk=course.pk).exists():
+            student.courses.remove(course)
+            messages.success(request, f'{student.get_full_name} removed from {course.name}.')
+        else:
+            student.courses.add(course)
+            messages.success(request, f'{student.get_full_name} added to {course.name}.')
+        return redirect('courses:course_detail', pk=course.pk)
+
+    context = {
+        'course': course,
+        'student': student,
+        'enrolled': student.courses.filter(pk=course.pk).exists(),
+    }
+    return render(request, 'Backend/admin/course/course_student_edit.html', context)
+
+
+@login_required
+@admin_required
+def course_student_delete(request, course_pk, student_pk):
+    course = get_object_or_404(Course, pk=course_pk)
+    student = get_object_or_404(Student, pk=student_pk)
+    if request.method == 'POST':
+        if student.courses.filter(pk=course.pk).exists():
+            student.courses.remove(course)
+            messages.success(request, f'{student.get_full_name} removed from {course.name}.')
+        else:
+            messages.info(request, f'{student.get_full_name} was not enrolled in {course.name}.')
+        return redirect('courses:course_detail', pk=course.pk)
+
+    context = {
+        'course': course,
+        'student': student,
+    }
+    return render(request, 'Backend/admin/course/course_student_delete.html', context)
+
 
 @login_required
 @admin_required

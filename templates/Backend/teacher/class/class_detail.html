@@ -511,7 +511,7 @@
     </div>
     <div class="class-meta">
         <span class="meta-item">
-            <i class="fas fa-book"></i> {{ class.course.name|default:"No Course" }}
+            <i class="fas fa-book"></i> {% if class.courses.exists %}{% for c in class.courses.all %}{{ c.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}No Course{% endif %}
         </span>
         <span class="meta-item">
             <i class="fas fa-chalkboard-teacher"></i> {{ class.teacher.get_full_name|default:"No Teacher" }}

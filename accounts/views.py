@@ -1069,17 +1069,28 @@ def teacher_class_view(request):
             # Get courses for this class
             class_courses = class_obj.courses.all()
             
-            # Count present students across all courses in this class
+            # Get students from these courses as well
+            course_student_ids = []
+            for course in class_courses:
+                course_students = Student.objects.filter(courses=course, is_active=True)
+                course_student_ids.extend(course_students.values_list('id', flat=True))
+            
+            # Combine class students with course students
+            all_student_ids = set(class_obj.students.values_list('id', flat=True)) | set(course_student_ids)
+            class_obj.all_students = Student.objects.filter(id__in=all_student_ids, is_active=True).distinct()
+            class_obj.all_student_count = class_obj.all_students.count()
+            
+            # Count present students across all students in this class/courses
             present_count = 0
             for course in class_courses:
                 present_count += Attendance.objects.filter(
                     course=course, 
                     date=today, 
                     status='present',
-                    student_id__in=class_obj.students.values_list('id', flat=True)
+                    student_id__in=all_student_ids
                 ).values('student_id').distinct().count()
             
-            class_obj.present_today = min(present_count, class_obj.student_count)
+            class_obj.present_today = min(present_count, class_obj.all_student_count)
             class_obj.course_list = class_courses
             
         # Calculate today's attendance count across courses

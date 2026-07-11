@@ -1,7 +1,7 @@
-{% extends 'Backend/layouts/admin_layout.html' %}
+{% extends 'Backend/layouts/teacher_layout.html' %}
 {% load static %}
 
-{% block title %}Course Attendance{% endblock %}
+{% block title %}My Courses - Attendance{% endblock %}
 {% block page_title %}Course Attendance{% endblock %}
 
 {% block content %}
@@ -9,59 +9,93 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h5><i class="fas fa-book me-2"></i>Course-wise Attendance</h5>
+                <h5><i class="fas fa-book me-2"></i>My Courses</h5>
+                <span class="badge bg-primary float-end">{{ total_courses }} Courses</span>
             </div>
             <div class="card-body">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                {% if courses %}
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead class="table-light">
                             <tr>
                                 <th>#</th>
                                 <th>Course Name</th>
+                                <th>Code</th>
                                 <th>Level</th>
-                                <th>Teacher</th>
                                 <th>Students</th>
-                                <th>Attendance Rate</th>
+                                <th>Present Today</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for course in courses %}
+                            {% for course_data in courses %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td><strong>{{ course.name }}</strong></td>
-                                <td>{{ course.level|default:"N/A" }}</td>
-                                <td>{{ course.teacher.get_full_name|default:"N/A" }}</td>
-                                <td>{{ course.student_count }}</td>
                                 <td>
-                                    {% with attendance_rate=course.attendance_rate|default:0 %}
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="progress flex-grow-1" style="height: 8px;">
-                                            <div class="progress-bar {% if attendance_rate >= 75 %}bg-success{% elif attendance_rate >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
-                                            </div>
-                                        </div>
-                                        <span>{{ attendance_rate }}%</span>
-                                    </div>
-                                    {% endwith %}
+                                    <strong>{{ course_data.course.name }}</strong>
+                                    {% if course_data.is_class_course %}
+                                    <span class="badge bg-info ms-1">From Class</span>
+                                    {% else %}
+                                    <span class="badge bg-warning ms-1">Direct</span>
+                                    {% endif %}
+                                </td>
+                                <td><span class="badge bg-secondary">{{ course_data.course.code }}</span></td>
+                                <td>{{ course_data.course.level|default:"N/A" }}</td>
+                                <td>{{ course_data.student_count }}</td>
+                                <td>
+                                    <span
+                                        class="badge {% if course_data.present_today > 0 %}bg-success{% else %}bg-secondary{% endif %}">
+                                        {{ course_data.present_today }}
+                                    </span>
                                 </td>
                                 <td>
-                                    <a href="{% url 'attendance:admin_course_attendance_detail' course.id %}"
-                                        class="btn btn-sm btn-info text-white">
-                                        <i class="fas fa-eye me-1"></i>View Details
+                                    {% if course_data.attendance_taken %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle"></i> Taken Today
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-clock"></i> Not Taken
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'classes:teacher_course_attendance_detail' course_data.course.id %}"
+                                        class="btn btn-sm btn-primary">
+                                        <i class="fas fa-clipboard-check me-1"></i>
+                                        {% if course_data.attendance_taken %}Update{% else %}Take{% endif %} Attendance
                                     </a>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="7" class="text-center py-4">
-                                    <i class="fas fa-book fa-2x text-muted mb-2" style="opacity: 0.3;"></i>
-                                    <p class="text-muted">No courses found</p>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-book fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
+                    <h6 class="text-muted">No Courses Assigned</h6>
+                    <p class="text-muted small">You don't have any courses assigned to you yet.</p>
+                    <p class="text-muted small">Courses can be assigned through class assignments or directly.</p>
+                    {% if not has_classes %}
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle"></i>
+                        You don't have any classes assigned either.
+                        Please contact the administrator to assign you to classes.
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

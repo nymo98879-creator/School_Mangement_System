@@ -1,182 +1,389 @@
 {% extends 'Backend/layouts/admin_layout.html' %}
 {% load static %}
 
-{% block title %}Course Details{% endblock %}
-{% block page_title %}Course Details{% endblock %}
+{% block title %}{{ course.name }}{% endblock %}
+{% block page_title %}{{ course.name }}{% endblock %}
 
 {% block extra_css %}
 <style>
-    .detail-card {
+    .course-header {
         background: white;
-        border-radius: 12px;
-        padding: 25px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 16px;
+        padding: 25px 30px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        margin-bottom: 25px;
+        border-left: 5px solid #4263eb;
+        border: 1px solid rgba(0,0,0,0.04);
     }
 
-    .detail-card .detail-label {
+    .course-header .course-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a2332;
+        margin-bottom: 8px;
+    }
+
+    .course-header .course-title i {
+        color: #4263eb;
+        margin-right: 12px;
+    }
+
+    .course-header .course-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        color: #8a94a6;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .course-header .course-meta .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .course-header .course-meta .meta-item i {
+        color: #4263eb;
+        width: 18px;
+    }
+
+    .card-header-custom {
+        padding: 18px 25px;
+        border-bottom: 1px solid #f0f4f8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: #f8fafc;
+    }
+
+    .card-header-custom h5 {
+        margin: 0;
+        font-weight: 700;
+        color: #1a2332;
+        font-size: 17px;
+    }
+
+    .card-header-custom h5 i {
+        color: #4263eb;
+        margin-right: 8px;
+    }
+
+    .card-body-custom {
+        padding: 20px 25px;
+    }
+
+    .info-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .info-item {
+        padding: 10px 0;
+    }
+
+    .info-item .info-label {
         font-weight: 600;
-        color: #7f8c8d;
-        font-size: 13px;
+        color: #8a94a6;
+        font-size: 12px;
         text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 4px;
+    }
+
+    .info-item .info-value {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a2332;
+        word-break: break-word;
+    }
+
+    .badge-info-class {
+        background: #eef4ff;
+        color: #4263eb;
+        padding: 2px 12px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 12px;
+        display: inline-block;
+        min-width: 56px;
+        text-align: center;
+        font-family: 'Courier New', monospace;
+        white-space: nowrap;
         letter-spacing: 0.5px;
     }
 
-    .detail-card .detail-value {
-        font-size: 18px;
-        font-weight: 600;
-        color: #2c3e50;
+    .search-box {
+        margin-bottom: 20px;
+        max-width: 400px;
     }
 
-    .badge-status {
-        padding: 5px 15px;
-        border-radius: 20px;
-        font-weight: 600;
+    .search-box .input-group {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .search-box .input-group .form-control {
+        border: 1.5px solid #e8ecf0;
+        border-right: none;
+        padding: 10px 16px;
         font-size: 14px;
+        border-radius: 10px 0 0 10px;
+        background: #f8fafc;
     }
 
-    .badge-status.active {
-        background: #d5f5e3;
-        color: #27ae60;
+    .search-box .input-group .form-control:focus {
+        border-color: #4263eb;
+        box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.12);
+        background: white;
     }
 
-    .badge-status.inactive {
-        background: #fadbd8;
-        color: #e74c3c;
+    .search-box .input-group .btn {
+        border-radius: 0 10px 10px 0;
+        padding: 10px 16px;
+        background: #4263eb;
+        color: white;
+        border: 1.5px solid #4263eb;
+    }
+
+    @media (max-width: 768px) {
+        .course-header {
+            padding: 18px;
+        }
+
+        .course-header .course-title {
+            font-size: 22px;
+        }
+
+        .course-header .course-meta {
+            gap: 12px;
+            font-size: 13px;
+        }
+
+        .info-grid-2 {
+            grid-template-columns: 1fr;
+        }
+
+        .card-header-custom {
+            flex-direction: column;
+            align-items: flex-start;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-8 mx-auto">
-        <!-- Course Header -->
-        <div class="detail-card">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <h4 class="mb-1">{{ course.name }}</h4>
-                    <div>
-                        <span class="badge bg-primary">{{ course.code }}</span>
-                        <span class="badge bg-secondary">{{ course.course_id }}</span>
-                        <span class="badge {% if course.is_active %}bg-success{% else %}bg-danger{% endif %}">
-                            {% if course.is_active %}Active{% else %}Inactive{% endif %}
-                        </span>
-                    </div>
-                </div>
-                <div>
-                    <a href="{% url 'courses:course_edit' course.pk %}" class="btn btn-warning btn-sm">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                    <a href="{% url 'courses:course_list' %}" class="btn btn-secondary btn-sm">
-                        <i class="fas fa-arrow-left"></i> Back
-                    </a>
-                </div>
-            </div>
-        </div>
 
-        <!-- Course Details -->
-        <div class="row">
-            <div class="col-md-6">
-                <div class="detail-card">
-                    <h6 class="mb-3"><i class="fas fa-info-circle me-2"></i>Course Information</h6>
-                    <div class="mb-3">
-                        <div class="detail-label">Course Name</div>
-                        <div class="detail-value">{{ course.name }}</div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="detail-label">Course Code</div>
-                        <div class="detail-value">{{ course.code }}</div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="detail-label">Course ID</div>
-                        <div class="detail-value">{{ course.course_id }}</div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="detail-label">Description</div>
-                        <div class="detail-value">{{ course.description }}</div>
-                    </div>
-                </div>
-            </div>
+<!-- ===== COURSE HEADER ===== -->
+<div class="course-header">
+    <div class="course-title">
+        <i class="fas fa-book"></i>{{ course.name }}
+    </div>
+    <div class="course-meta">
+        <span class="meta-item">
+            <i class="fas fa-hashtag"></i>
+            <span class="badge-teacher">{{ course.code }}</span>
+        </span>
+        <span class="meta-item">
+            <i class="fas fa-fingerprint"></i>
+            {{ course.course_id }}
+        </span>
+        <span class="meta-item">
+            <i class="fas fa-circle"
+                style="color: {% if course.is_active %}#27ae60{% else %}#e74c3c{% endif %}; font-size: 10px;"></i>
+            <span class="badge-status {% if course.is_active %}active{% else %}inactive{% endif %}">
+                {% if course.is_active %}Active{% else %}Inactive{% endif %}
+            </span>
+        </span>
+    </div>
+</div>
 
-            <div class="col-md-6">
-                <div class="detail-card">
-                    <h6 class="mb-3"><i class="fas fa-cogs me-2"></i>Course Details</h6>
-                    <div class="mb-3">
-                        <div class="detail-label">Credits</div>
-                        <div class="detail-value">{{ course.credits }} Credit{{ course.credits|pluralize }}</div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="detail-label">Level</div>
-                        <div class="detail-value">{{ course.get_level_display }}</div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="detail-label">Duration</div>
-                        <div class="detail-value">{{ course.duration }}</div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="detail-label">Fee</div>
-                        <div class="detail-value">${{ course.fee|floatformat:2 }}</div>
-                    </div>
-                </div>
-
-                <div class="detail-card">
-                    <h6 class="mb-3"><i class="fas fa-users me-2"></i>Assignments</h6>
-                    <div class="mb-3">
-                        <div class="detail-label">Major</div>
-                        <div class="detail-value">{{ course.major.name|default:"Not Assigned" }}</div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="detail-label">Teacher</div>
-                        <div class="detail-value">{{ course.teacher.get_full_name|default:"Not Assigned" }}</div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="detail-label">Prerequisites</div>
-                        <div class="detail-value">
-                            {% if prerequisites %}
-                            {% for prereq in prerequisites %}
-                            <span class="badge bg-secondary">{{ prereq.code }}</span>
-                            {% endfor %}
-                            {% else %}
-                            <span class="text-muted">None</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="detail-label">Time Slots</div>
-                        <div class="detail-value">
-                            {% if course.time_slots.all %}
-                                {% for slot in course.time_slots.all %}
-                                    <span class="badge bg-info text-white" style="font-size: 12px; font-weight: 500; padding: 4px 10px; margin-right: 4px; display: inline-block;">{{ slot }}</span>
-                                {% endfor %}
-                            {% else %}
-                                <span class="text-muted">None</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="detail-label">Students Enrolled</div>
-                        <div class="detail-value">{{ student_count }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="d-flex gap-2 justify-content-end">
-            <a href="{% url 'courses:course_edit' course.pk %}" class="btn btn-warning">
-                <i class="fas fa-edit me-2"></i>Edit Course
+<!-- ===== COURSE INFORMATION ===== -->
+<div class="info-card">
+    <div class="card-header-custom">
+        <h5><i class="fas fa-info-circle"></i>Course Information</h5>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'courses:course_edit' course.pk %}" class="btn btn-warning btn-sm">
+                <i class="fas fa-edit me-1"></i>Edit Course
             </a>
             <a href="{% url 'courses:course_toggle_status' course.pk %}"
-                class="btn {% if course.is_active %}btn-danger{% else %}btn-success{% endif %}"
+                class="btn btn-sm {% if course.is_active %}btn-danger{% else %}btn-success{% endif %}"
                 onclick="return confirm('Are you sure you want to {% if course.is_active %}deactivate{% else %}activate{% endif %} this course?')">
-                <i class="fas {% if course.is_active %}fa-times{% else %}fa-check{% endif %} me-2"></i>
+                <i class="fas {% if course.is_active %}fa-times{% else %}fa-check{% endif %} me-1"></i>
                 {% if course.is_active %}Deactivate{% else %}Activate{% endif %}
             </a>
-            <a href="{% url 'courses:course_delete' course.pk %}" class="btn btn-danger"
+            <a href="{% url 'courses:course_delete' course.pk %}" class="btn btn-danger btn-sm"
                 onclick="return confirm('Are you sure you want to delete this course?')">
-                <i class="fas fa-trash me-2"></i>Delete
+                <i class="fas fa-trash me-1"></i>Delete
+            </a>
+            <a href="{% url 'courses:course_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i>Back
             </a>
         </div>
     </div>
+    <div class="card-body-custom">
+        <div class="info-grid-2">
+            <div class="info-item">
+                <div class="info-label">Course Name</div>
+                <div class="info-value">{{ course.name }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Course Code</div>
+                <div class="info-value">{{ course.code }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Course ID</div>
+                <div class="info-value">{{ course.course_id }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Major</div>
+                <div class="info-value">{{ course.major.name|default:"Not Assigned" }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Description</div>
+                <div class="info-value">{{ course.description }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Duration</div>
+                <div class="info-value">{{ course.duration }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Credits</div>
+                <div class="info-value">{{ course.credits }} Credit{{ course.credits|pluralize }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Level</div>
+                <div class="info-value">{{ course.get_level_display }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Fee</div>
+                <div class="info-value">${{ course.fee|floatformat:2 }}</div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- ===== ASSIGNED CLASSES TABLE ===== -->
+<div class="page-card">
+    <div class="card-header-custom">
+        <h5><i class="fas fa-chalkboard"></i>Assigned Classes</h5>
+        <a href="{% url 'courses:course_edit' course.pk %}" class="btn btn-sm btn-primary">
+            <i class="fas fa-edit me-1"></i>Edit Assignments
+        </a>
+    </div>
+    <div class="card-body-custom">
+        {% if teacher_classes.exists %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Class Name</th>
+                        <th>Teacher</th>
+                        <th>Schedule</th>
+                        <th>Students</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for class in teacher_classes %}
+                    <tr>
+                        <td class="fw-bold">{{ class.name }}</td>
+                        <td>{{ class.teacher.get_full_name|default:"Unassigned" }}</td>
+                        <td>{{ class.get_schedule_display }}</td>
+                        <td>{{ class.get_student_count }} / {{ class.capacity }}</td>
+                        <td>
+                            <span class="status-badge {% if class.is_active %}active{% else %}inactive{% endif %}">
+                                {% if class.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-chalkboard"></i>
+            <h6>No Classes Assigned</h6>
+            <p>Edit this course to assign it to classes.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ===== STUDENTS TABLE ===== -->
+<div class="page-card">
+    <div class="card-header-custom">
+        <h5><i class="fas fa-user-graduate"></i>Students Enrolled</h5>
+        <a href="{% url 'courses:course_add_student' course.pk %}" class="btn btn-sm btn-primary">
+            <i class="fas fa-user-plus me-1"></i>Assign Students
+        </a>
+    </div>
+    <div class="card-body-custom">
+        {% if students %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="studentsTable">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Student ID</th>
+                        <th>Email</th>
+                        <th>Year</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="student-avatar-sm {% cycle 'blue' 'green' 'orange' 'purple' 'red' %}">
+                                    {{ student.first_name|first|upper }}
+                                </div>
+                                <span class="fw-bold">{{ student.get_full_name }}</span>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-secondary">{{ student.student_id }}</span></td>
+                        <td>{{ student.email }}</td>
+                        <td>{{ student.year }}</td>
+                        <td>
+                            <span class="status-badge {% if student.is_active %}active{% else %}inactive{% endif %}">
+                                {% if student.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a href="{% url 'courses:course_student_edit' course.pk student.pk %}" class="btn btn-sm btn-warning text-white" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'courses:course_student_delete' course.pk student.pk %}" class="btn btn-sm btn-danger" title="Delete" onclick="return confirm('Remove {{ student.get_full_name }} from this course?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-user-graduate"></i>
+            <h6>No Students Enrolled</h6>
+            <p>No students are enrolled in this course yet.</p>
+            <a href="{% url 'courses:course_add_student' course.pk %}" class="btn btn-primary btn-sm mt-2">
+                <i class="fas fa-user-plus me-1"></i>Assign Students
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
 {% endblock %}

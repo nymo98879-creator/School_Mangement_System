@@ -838,5 +838,38 @@
             else { this.classList.remove('has-remark'); }
         });
     });
+
+    function refreshCourseStudents() {
+        const courseId = {{ course.id }};
+        fetch(`/classes/ajax/course/${courseId}/students/`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.json())
+        .then(data => {
+            const students = data.students || [];
+            const tbody = document.getElementById('studentTableBody');
+            if (!tbody) return;
+
+            const currentIds = new Set();
+            const rows = tbody.querySelectorAll('.student-row');
+            rows.forEach(row => currentIds.add(row.id));
+
+            const newIds = new Set();
+            students.forEach(s => newIds.add('row-' + s.id));
+
+            if (currentIds.size !== newIds.size || ![...currentIds].every(id => newIds.has(id))) {
+                const info = document.querySelector('.alert-info');
+                if (info) {
+                    info.innerHTML = '<i class="fas fa-info-circle me-2"></i> Student list updated. refreshing...';
+                    info.classList.add('alert-warning');
+                    info.classList.remove('alert-info');
+                }
+                setTimeout(() => location.reload(), 1200);
+            }
+        })
+        .catch(err => console.error('Failed to refresh course students:', err));
+    }
+
+    setInterval(refreshCourseStudents, 60000);
 </script>
 {% endblock %}

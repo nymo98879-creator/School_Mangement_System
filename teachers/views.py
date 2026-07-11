@@ -99,7 +99,11 @@ def teacher_edit(request, pk):
 @admin_required
 def teacher_detail(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
-    context = {'teacher': teacher}
+    classes = Class.objects.filter(teacher=teacher, is_active=True)
+    context = {
+        'teacher': teacher,
+        'classes': classes,
+    }
     return render(request, 'Backend/admin/teacher/teacher_detail.html', context)
 
 @login_required

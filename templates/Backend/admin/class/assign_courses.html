@@ -2,73 +2,421 @@
 {% load static %}
 
 {% block title %}Assign Courses to {{ class.name }}{% endblock %}
-{% block page_title %}Assign Courses to {{ class.name }}{% endblock %}
+{% block page_title %}Assign Courses{% endblock %}
+
+{% block extra_css %}
+<style>
+    .assign-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .class-info-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 25px;
+        border-left: 4px solid #4263eb;
+    }
+
+    .class-info-card .class-name {
+        font-size: 22px;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .class-info-card .class-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 10px;
+        color: #7f8c8d;
+        font-size: 14px;
+    }
+
+    .class-info-card .class-meta .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .class-info-card .class-meta .meta-item i {
+        color: #4263eb;
+        width: 18px;
+    }
+
+    .course-selection-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+    .course-selection-card .card-header {
+        padding: 18px 25px;
+        border-bottom: 1px solid #ecf0f1;
+        background: #fafbfc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .course-selection-card .card-header h5 {
+        margin: 0;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .course-selection-card .card-header .header-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .course-selection-card .card-body {
+        padding: 25px;
+    }
+
+    .course-selection-card .card-footer {
+        padding: 18px 25px;
+        border-top: 1px solid #ecf0f1;
+        background: #fafbfc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .search-box {
+        margin-bottom: 20px;
+    }
+
+    .search-box input {
+        border-radius: 8px;
+        padding: 10px 16px;
+        border: 1px solid #cbd5e1;
+        font-size: 14px;
+        width: 100%;
+        transition: all 0.3s;
+    }
+
+    .search-box input:focus {
+        outline: none;
+        border-color: #4263eb;
+        box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.1);
+    }
+
+    .selected-count {
+        background: #4263eb;
+        color: white;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .course-row {
+        transition: all 0.3s;
+    }
+
+    .course-row:hover {
+        background: #f8fafb;
+    }
+
+    .course-row.table-success {
+        background: #f0faf5;
+    }
+
+    .course-row.table-success:hover {
+        background: #e8f5ee;
+    }
+
+    .course-checkbox {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #27ae60, #1e8449);
+        border: none;
+        color: white;
+        padding: 10px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(39, 174, 96, 0.3);
+        color: white;
+    }
+
+    .btn-back {
+        padding: 10px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        background: #e2e8f0;
+        border: none;
+        color: #475569;
+    }
+
+    .btn-back:hover {
+        background: #cbd5e1;
+    }
+
+    .select-all-btn {
+        cursor: pointer;
+        color: #4263eb;
+        font-weight: 600;
+        font-size: 14px;
+        background: none;
+        border: none;
+    }
+
+    .select-all-btn:hover {
+        text-decoration: underline;
+    }
+
+    .badge-course {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    @media (max-width: 768px) {
+        .class-info-card .class-meta {
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .course-selection-card .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .course-selection-card .card-footer {
+            flex-direction: column;
+        }
+
+        .course-selection-card .card-footer .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-8 mx-auto">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-book me-2"></i>
-                    Assign Courses to {{ class.name }}
-                </h5>
-            </div>
-            <div class="card-body">
-                <form method="POST">
-                    {% csrf_token %}
+<div class="assign-container">
+    <!-- Messages -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Select Courses</label>
-                        <select name="courses" class="form-control" multiple style="height: 200px;">
-                            {% for course in all_courses %}
-                            <option value="{{ course.id }}" {% if course.id in assigned_ids %}selected{% endif %}>
-                                {{ course.code }} - {{ course.name }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                        <div class="form-text">
-                            Hold Ctrl/Cmd to select multiple courses
-                        </div>
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i> Save Assignments
-                        </button>
-                        <a href="{% url 'classes:class_edit' class.id %}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-2"></i> Back
-                        </a>
-                    </div>
-                </form>
-            </div>
+    <!-- Class Info -->
+    <div class="class-info-card">
+        <div class="class-name">
+            <i class="fas fa-chalkboard me-2" style="color: #4263eb;"></i>{{ class.name }}
         </div>
-
-        <!-- Current Assignments -->
-        <div class="card mt-3">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-list me-2"></i>
-                    Currently Assigned Courses ({{ assigned_ids|length }})
-                </h5>
-            </div>
-            <div class="card-body">
-                {% if assigned_ids %}
-                <ul class="list-group">
-                    {% for course in class.courses.all %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>
-                            <strong>{{ course.code }}</strong> - {{ course.name }}
-                        </span>
-                        <span class="badge bg-info">{{ course.credits }} Credits</span>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <p class="text-muted text-center">No courses assigned to this class yet.</p>
-                {% endif %}
-            </div>
+        <div class="class-meta">
+            <span class="meta-item">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <strong>{{ class.teacher.get_full_name|default:"No Teacher Assigned" }}</strong>
+            </span>
+            <span class="meta-item">
+                <i class="fas fa-users"></i>
+                {{ class.enrolled_students.count }} Students
+            </span>
+            <span class="meta-item">
+                <i class="fas fa-book"></i>
+                {{ class.courses.count }} Courses Assigned
+            </span>
+            <span class="meta-item">
+                <i class="fas fa-{{ class.is_active|yesno:'check-circle,times-circle' }}"
+                    style="color: {% if class.is_active %}#27ae60{% else %}#e74c3c{% endif %};"></i>
+                <span class="badge {% if class.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                    {{ class.is_active|yesno:"Active,Inactive" }}
+                </span>
+            </span>
+            <span class="meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                {{ class.start_date|date:"M d, Y" }} - {{ class.end_date|date:"M d, Y" }}
+            </span>
         </div>
     </div>
+
+    <!-- Course Selection -->
+    <form method="POST">
+        {% csrf_token %}
+        <div class="course-selection-card">
+            <div class="card-header">
+                <h5><i class="fas fa-book me-2"></i>Select Courses to Assign</h5>
+                <div class="header-actions">
+                    <span class="selected-count" id="selectedCount">0 selected</span>
+                    <button type="button" class="select-all-btn" onclick="toggleAllCourses()">
+                        <i class="fas fa-check-double me-1"></i>Select All
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Search Box -->
+                <div class="search-box">
+                    <input type="text" id="searchCourses" placeholder="Search courses by name or code..."
+                        onkeyup="filterCourses()">
+                </div>
+
+                <!-- Course List -->
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th width="50">Select</th>
+                                <th>Code</th>
+                                <th>Course Name</th>
+                                <th>Teacher</th>
+                                <th>Credits</th>
+                                <th>Level</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courseList">
+                            {% for course in all_courses %}
+                            <tr class="course-row {% if course.id in assigned_ids %}table-success{% endif %}"
+                                data-course-id="{{ course.id }}" data-name="{{ course.name|lower }}"
+                                data-code="{{ course.code|lower }}">
+                                <td>
+                                    <input type="checkbox" name="courses" value="{{ course.id }}"
+                                        id="course-{{ course.id }}" class="course-checkbox" {% if course.id in
+                                        assigned_ids %}checked{% endif %} onchange="updateSelectedCount()">
+                                </td>
+                                <td><span class="badge bg-secondary">{{ course.code }}</span></td>
+                                <td>{{ course.name }}</td>
+                                <td>
+                                    {% if course.teacher %}
+                                    <span class="badge bg-info">{{ course.teacher.get_full_name }}</span>
+                                    {% else %}
+                                    <span class="badge bg-warning">Not Assigned</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ course.credits }}</td>
+                                <td>{{ course.level|default:"N/A" }}</td>
+                                <td>
+                                    <span
+                                        class="badge {% if course.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ course.is_active|yesno:"Active,Inactive" }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <i class="fas fa-book fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
+                                    <h6 class="text-muted">No Courses Available</h6>
+                                    <p class="text-muted small">Create courses first before assigning them to this
+                                        class.</p>
+                                    <a href="{% url 'courses:course_add' %}" class="btn btn-primary btn-sm mt-2">
+                                        <i class="fas fa-plus me-2"></i>Add New Course
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'classes:class_detail' class.id %}" class="btn-back">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Class
+                </a>
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save me-2"></i>Save Assignments
+                </button>
+            </div>
+        </div>
+    </form>
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // ===== UPDATE SELECTED COUNT =====
+    function updateSelectedCount() {
+        const checkboxes = document.querySelectorAll('.course-checkbox');
+        const checked = document.querySelectorAll('.course-checkbox:checked');
+        const count = checked.length;
+        document.getElementById('selectedCount').textContent = count + ' selected';
+
+        // Update row styling
+        checkboxes.forEach(cb => {
+            const row = cb.closest('.course-row');
+            if (cb.checked) {
+                row.classList.add('table-success');
+            } else {
+                row.classList.remove('table-success');
+            }
+        });
+    }
+
+    // ===== TOGGLE ALL COURSES =====
+    function toggleAllCourses() {
+        const checkboxes = document.querySelectorAll('.course-checkbox');
+        const checked = document.querySelectorAll('.course-checkbox:checked');
+        const allChecked = checkboxes.length === checked.length;
+
+        checkboxes.forEach(cb => {
+            cb.checked = !allChecked;
+        });
+
+        updateSelectedCount();
+    }
+
+    // ===== FILTER COURSES =====
+    function filterCourses() {
+        const searchTerm = document.getElementById('searchCourses').value.toLowerCase().trim();
+        const rows = document.querySelectorAll('.course-row');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const name = row.dataset.name || '';
+            const code = row.dataset.code || '';
+            const match = name.includes(searchTerm) || code.includes(searchTerm);
+            row.style.display = match ? '' : 'none';
+            if (match) visibleCount++;
+        });
+
+        // Show/hide no results message
+        const noResults = document.getElementById('noResults');
+        if (noResults) {
+            if (visibleCount === 0 && rows.length > 0) {
+                noResults.style.display = '';
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+    }
+
+    // ===== INITIALIZE =====
+    document.addEventListener('DOMContentLoaded', function () {
+        updateSelectedCount();
+
+        // Enter key on search should not submit form
+        document.getElementById('searchCourses').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
 {% endblock %}

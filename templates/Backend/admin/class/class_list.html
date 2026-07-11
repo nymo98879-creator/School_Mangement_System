@@ -7,7 +7,6 @@
 {% block extra_css %}
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
-    /* ===== STATS CARDS ===== */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -15,139 +14,41 @@
         margin-bottom: 30px;
     }
 
-    .stats-card {
-        background: white;
-        border-radius: 16px;
-        padding: 24px 24px 20px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-        border: 1px solid #eef2f7;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stats-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-    }
-
-    .stats-card .stats-number {
-        font-size: 32px;
-        font-weight: 700;
-        color: #1a1a2e;
-        line-height: 1.2;
-    }
-
-    .stats-card .stats-label {
-        color: #6c757d;
-        font-size: 14px;
-        font-weight: 500;
-        margin-top: 2px;
-    }
-
-    .stats-card .stats-icon {
-        position: absolute;
-        top: 18px;
-        right: 18px;
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        color: white;
-        opacity: 0.9;
-    }
-
-    .stats-card .stats-icon.blue {
-        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-    }
-
-    .stats-card .stats-icon.green {
-        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    }
-
-    .stats-card .stats-icon.orange {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    }
-
-    .stats-card .stats-icon.purple {
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    }
-
-    .stats-card .stats-trend {
-        display: inline-block;
-        font-size: 12px;
-        font-weight: 600;
-        padding: 3px 12px;
-        border-radius: 20px;
-        margin-top: 8px;
-    }
-
-    .stats-card .stats-trend.up {
-        color: #16a34a;
-        background: #dcfce7;
-    }
-
-    .stats-card .stats-trend.down {
-        color: #dc2626;
-        background: #fee2e2;
-    }
-
-    .stats-card .stats-trend.neutral {
-        color: #d97706;
-        background: #fef3c7;
-    }
-
-    /* ===== SEARCH SECTION ===== */
     .search-section {
         background: white;
-        border-radius: 16px;
+        border-radius: 14px;
         padding: 20px 24px;
-        margin-bottom: 24px;
-        border: 1px solid #eef2f7;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
     }
 
-    .search-section .search-input {
-        border: 1.5px solid #e2e8f0;
+    .search-section .search-input,
+    .search-section .form-select,
+    .search-section .form-control {
+        border: 1.5px solid #e8ecf0;
         border-radius: 10px;
         padding: 10px 16px;
         font-size: 14px;
+        background: #f8fafc;
         transition: all 0.2s;
-        background: #fafbfc;
         width: 100%;
+        color: #2d3748;
     }
 
-    .search-section .search-input:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    .search-section .search-input:focus,
+    .search-section .form-select:focus,
+    .search-section .form-control:focus {
+        border-color: #4263eb;
+        box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.12);
         background: white;
         outline: none;
     }
 
     .search-section .search-input::placeholder {
-        color: #adb5bd;
+        color: #b0bac4;
     }
 
-    .search-section .form-select {
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 10px 16px;
-        font-size: 14px;
-        background: #fafbfc;
-        transition: all 0.2s;
-        width: 100%;
-    }
-
-    .search-section .form-select:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        outline: none;
-    }
-
-    /* ===== ACTIONS BAR ===== */
     .actions-bar {
         display: flex;
         justify-content: space-between;
@@ -158,7 +59,7 @@
     }
 
     .actions-bar .btn-add {
-        background: #4f46e5;
+        background: linear-gradient(135deg, #4263eb, #3b5bdb);
         color: white;
         border: none;
         border-radius: 10px;
@@ -168,13 +69,14 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        text-decoration: none;
     }
 
     .actions-bar .btn-add:hover {
-        background: #4338ca;
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
         color: white;
+        text-decoration: none;
     }
 
     .actions-bar .btn-refresh {
@@ -188,25 +90,27 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        text-decoration: none;
     }
 
     .actions-bar .btn-refresh:hover {
         background: #f8fafc;
         border-color: #cbd5e1;
+        text-decoration: none;
     }
 
     .actions-bar .result-count {
-        color: #6c757d;
+        color: #8a94a6;
         font-size: 14px;
+        font-weight: 500;
     }
 
-    /* ===== CLASS TABLE ===== */
     .class-table-container {
         background: white;
         border-radius: 16px;
-        border: 1px solid #eef2f7;
+        border: 1px solid rgba(0, 0, 0, 0.04);
         overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     }
 
     .class-table {
@@ -217,23 +121,22 @@
 
     .class-table thead th {
         background: #f8fafc;
-        color: #4a5568;
-        font-weight: 600;
-        font-size: 12px;
+        color: #8a94a6;
+        font-weight: 700;
+        font-size: 11px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 14px 18px;
-        border-bottom: 2px solid #eef2f7;
-        text-align: left;
+        letter-spacing: 0.8px;
+        padding: 12px 16px;
+        border-bottom: 2px solid #f0f4f8;
         white-space: nowrap;
     }
 
     .class-table tbody td {
-        padding: 16px 18px;
-        border-bottom: 1px solid #f0f2f8;
+        padding: 14px 16px;
+        border-bottom: 1px solid #f0f4f8;
         vertical-align: middle;
         font-size: 14px;
-        color: #1a1a2e;
+        color: #2d3748;
     }
 
     .class-table tbody tr:last-child td {
@@ -241,63 +144,35 @@
     }
 
     .class-table tbody tr:hover {
-        background: #fafbfc;
+        background: #f8fafc;
     }
 
-    .no-results {
-        text-align: center;
-        padding: 60px 20px;
-        display: none;
-    }
-
-    .no-results i {
-        font-size: 56px;
-        color: #e2e8f0;
-        margin-bottom: 16px;
-    }
-
-    .no-results h5 {
-        color: #1a1a2e;
-        font-weight: 600;
-        margin-bottom: 8px;
-    }
-
-    .no-results p {
-        color: #6c757d;
-        font-size: 14px;
-        margin-bottom: 16px;
-    }
-
-    .no-results.show {
-        display: block;
-    }
-
-    /* ===== CLASS NAME ===== */
     .class-name-cell .class-name {
         font-weight: 600;
-        color: #1a1a2e;
+        color: #1a2332;
         font-size: 15px;
     }
 
     .class-name-cell .class-subject {
         font-size: 13px;
-        color: #6c757d;
+        color: #8a94a6;
         margin-top: 2px;
         display: flex;
         align-items: center;
         gap: 6px;
+        flex-wrap: wrap;
     }
 
-    .class-name-cell .class-subject .subject-badge {
-        background: #eef2ff;
-        color: #4f46e5;
+    .subject-badge {
+        background: #eef4ff;
+        color: #4263eb;
         padding: 1px 10px;
         border-radius: 12px;
         font-size: 11px;
         font-weight: 500;
+        display: inline-block;
     }
 
-    /* ===== TEACHER BADGE ===== */
     .teacher-badge {
         display: inline-flex;
         align-items: center;
@@ -307,127 +182,126 @@
         font-size: 13px;
         font-weight: 500;
         background: #f1f5f9;
-        color: #1a1a2e;
+        color: #1a2332;
     }
 
     .teacher-badge i {
-        color: #4f46e5;
+        color: #4263eb;
         font-size: 12px;
     }
 
     .teacher-badge.not-assigned {
-        background: #f1f5f9;
-        color: #94a3b8;
-        font-style: italic;
+        background: #fef0f0;
+        color: #e74c3c;
     }
 
-    /* ===== LOCATION BADGE ===== */
+    .teacher-badge.not-assigned i {
+        color: #e74c3c;
+    }
+
     .location-badge {
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
+        padding: 4px 14px;
+        border-radius: 20px;
         font-size: 13px;
-        color: #4a5568;
+        font-weight: 500;
+        background: #f1f5f9;
+        color: #1a2332;
     }
 
     .location-badge i {
-        color: #6c757d;
+        color: #4263eb;
         font-size: 12px;
     }
 
-    /* ===== TERM BADGE ===== */
-    .term-badge {
-        display: inline-block;
-        padding: 2px 12px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 500;
-        background: #eef2ff;
-        color: #4f46e5;
-    }
-
-    .term-badge.fall {
-        background: #fef3c7;
-        color: #d97706;
-    }
-
-    .term-badge.spring {
-        background: #dcfce7;
-        color: #16a34a;
-    }
-
-    .term-badge.summer {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    .term-badge.winter {
-        background: #e0f2fe;
-        color: #0284c7;
-    }
-
-    /* ===== DATE RANGE ===== */
-    .date-range {
-        font-size: 12px;
-        color: #6c757d;
-        margin-top: 2px;
-    }
-
-    .date-range i {
-        margin-right: 4px;
-        font-size: 11px;
-        color: #94a3b8;
-    }
-
-    /* ===== TIME SLOT ===== */
     .time-slot-display {
-        font-size: 13px;
-        color: #1a1a2e;
-        font-weight: 500;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
     }
 
     .time-slot-display .days {
-        color: #4f46e5;
-        font-weight: 600;
+        font-size: 12px;
+        color: #8a94a6;
+        font-weight: 500;
     }
 
     .time-slot-display .time {
-        color: #6c757d;
-        font-weight: 400;
-        font-size: 12px;
+        font-size: 13px;
+        color: #1a2332;
+        font-weight: 600;
+        font-family: 'Courier New', monospace;
+        background: #f8fafc;
+        padding: 2px 8px;
+        border-radius: 6px;
+        display: inline-block;
     }
 
-    /* ===== STUDENT COUNT ===== */
     .student-count {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 3px 12px;
+        padding: 4px 14px;
         border-radius: 20px;
         font-size: 13px;
-        font-weight: 600;
-    }
-
-    .student-count.full {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    .student-count.near-full {
-        background: #fef3c7;
-        color: #d97706;
-    }
-
-    .student-count.available {
-        background: #dcfce7;
-        color: #16a34a;
+        font-weight: 500;
+        background: #f1f5f9;
+        color: #1a2332;
     }
 
     .student-count i {
+        color: #4263eb;
         font-size: 12px;
     }
 
-    /* ===== STATUS BADGE ===== */
+    .student-count.full {
+        background: #fef0f0;
+        color: #e74c3c;
+    }
+
+    .student-count.full i {
+        color: #e74c3c;
+    }
+
+    .student-count.near-full {
+        background: #fef9e7;
+        color: #f39c12;
+    }
+
+    .student-count.near-full i {
+        color: #f39c12;
+    }
+
+    .student-count.available {
+        background: #eafaf1;
+        color: #27ae60;
+    }
+
+    .student-count.available i {
+        color: #27ae60;
+    }
+
+    .term-badge {
+        display: inline-block;
+        padding: 3px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .term-badge.semester1 {
+        background: #eafaf1;
+        color: #27ae60;
+    }
+
+    .term-badge.semester2 {
+        background: #eef4ff;
+        color: #4263eb;
+    }
+
     .status-badge {
         display: inline-flex;
         align-items: center;
@@ -439,39 +313,50 @@
     }
 
     .status-badge.active {
-        background: #dcfce7;
-        color: #16a34a;
+        background: #eafaf1;
+        color: #27ae60;
     }
 
     .status-badge.active i {
-        color: #16a34a;
+        color: #27ae60;
     }
 
     .status-badge.inactive {
-        background: #fee2e2;
-        color: #dc2626;
+        background: #fef0f0;
+        color: #e74c3c;
     }
 
     .status-badge.inactive i {
-        color: #dc2626;
+        color: #e74c3c;
     }
 
-    /* ===== ACTION BUTTONS ===== */
+    .date-range {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .date-range i {
+        margin-right: 4px;
+        font-size: 11px;
+        color: #94a3b8;
+    }
+
     .action-group {
         display: flex;
         gap: 4px;
+        flex-wrap: wrap;
     }
 
     .action-btn {
-        width: 34px;
-        height: 34px;
         border-radius: 8px;
-        border: none;
+        font-size: 13px;
+        transition: all 0.2s;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 13px;
-        transition: all 0.2s;
+        width: 34px;
+        height: 34px;
+        border: none;
         cursor: pointer;
         text-decoration: none;
     }
@@ -479,39 +364,47 @@
     .action-btn:hover {
         transform: translateY(-2px);
         text-decoration: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
 
     .action-btn.view {
-        background: #eef2ff;
-        color: #4f46e5;
-    }
-
-    .action-btn.view:hover {
-        background: #4f46e5;
-        color: white;
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        background: #e8f4fd;
+        color: #4263eb;
     }
 
     .action-btn.edit {
-        background: #fef3c7;
-        color: #d97706;
-    }
-
-    .action-btn.edit:hover {
-        background: #d97706;
-        color: white;
-        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        background: #fef9e7;
+        color: #f39c12;
     }
 
     .action-btn.toggle {
-        background: #fee2e2;
-        color: #dc2626;
+        background: #eafaf1;
+        color: #27ae60;
+    }
+
+    .action-btn.delete {
+        background: #fef0f0;
+        color: #e74c3c;
+    }
+
+    .action-btn.view:hover {
+        background: #4263eb;
+        color: white;
+    }
+
+    .action-btn.edit:hover {
+        background: #f39c12;
+        color: white;
     }
 
     .action-btn.toggle:hover {
-        background: #dc2626;
+        background: #27ae60;
         color: white;
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+
+    .action-btn.delete:hover {
+        background: #e74c3c;
+        color: white;
     }
 
     .action-btn.toggle.active-toggle {
@@ -522,98 +415,199 @@
     .action-btn.toggle.active-toggle:hover {
         background: #16a34a;
         color: white;
-        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
     }
 
-    .action-btn.delete {
-        background: #fee2e2;
-        color: #dc2626;
+    .pagination-custom {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+        margin-top: 24px;
+        padding-bottom: 10px;
     }
 
-    .action-btn.delete:hover {
-        background: #dc2626;
+    .pagination-custom .page-btn {
+        min-width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #4a5568;
+        background: white;
+        border: 1.5px solid #e2e8f0;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .pagination-custom .page-btn:hover {
+        border-color: #4263eb;
+        color: #4263eb;
+        background: #f0f7ff;
+        text-decoration: none;
+    }
+
+    .pagination-custom .page-btn.active {
+        background: #4263eb;
         color: white;
-        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        border-color: #4263eb;
     }
 
-    /* ===== EMPTY STATE ===== */
+    .pagination-custom .page-btn.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
     .empty-state {
         text-align: center;
         padding: 60px 20px;
     }
 
     .empty-state i {
-        font-size: 56px;
-        color: #e2e8f0;
+        font-size: 48px;
+        color: #cbd5e1;
         margin-bottom: 16px;
+        display: block;
     }
 
     .empty-state h5 {
-        color: #1a1a2e;
+        color: #1a2332;
         font-weight: 600;
         margin-bottom: 8px;
     }
 
     .empty-state p {
-        color: #6c757d;
-        font-size: 14px;
+        color: #8a94a6;
         margin-bottom: 16px;
     }
 
-    /* ===== PAGINATION ===== */
-    .pagination-custom {
-        display: flex;
-        justify-content: center;
-        gap: 4px;
-        padding: 20px 0 10px;
-        flex-wrap: wrap;
-    }
-
-    .pagination-custom .page-btn {
-        min-width: 38px;
-        height: 38px;
-        border-radius: 8px;
-        border: 1.5px solid #e2e8f0;
-        background: white;
-        color: #4a5568;
-        font-weight: 500;
-        font-size: 14px;
+    .empty-state .btn-add {
+        background: linear-gradient(135deg, #4263eb, #3b5bdb);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 24px;
+        font-weight: 600;
+        transition: all 0.2s;
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-        padding: 0 12px;
-        transition: all 0.2s;
+        gap: 8px;
         text-decoration: none;
     }
 
-    .pagination-custom .page-btn:hover {
-        background: #f8fafc;
-        border-color: #cbd5e1;
-        text-decoration: none;
-    }
-
-    .pagination-custom .page-btn.active {
-        background: #4f46e5;
-        border-color: #4f46e5;
+    .empty-state .btn-add:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
         color: white;
+        text-decoration: none;
     }
 
-    .pagination-custom .page-btn.active:hover {
-        background: #4338ca;
-        border-color: #4338ca;
+    .no-results {
+        display: none;
+        text-align: center;
+        padding: 40px 20px;
     }
 
-    .pagination-custom .page-btn.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+    .no-results.show {
+        display: block;
     }
 
-    .pagination-custom .page-btn.disabled:hover {
+    .no-results i {
+        font-size: 36px;
+        color: #cbd5e1;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    .no-results h5 {
+        color: #1a2332;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .no-results p {
+        color: #8a94a6;
+    }
+
+    .stats-card {
         background: white;
-        border-color: #e2e8f0;
+        border-radius: 14px;
+        padding: 20px 24px;
+        position: relative;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease;
     }
 
-    /* ===== RESPONSIVE ===== */
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .stats-card .stats-number {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a2332;
+        margin-bottom: 2px;
+    }
+
+    .stats-card .stats-label {
+        font-size: 14px;
+        color: #8a94a6;
+        font-weight: 500;
+    }
+
+    .stats-card .stats-icon {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .stats-card .stats-icon.blue {
+        background: #eef4ff;
+        color: #4263eb;
+    }
+
+    .stats-card .stats-icon.green {
+        background: #eafaf1;
+        color: #27ae60;
+    }
+
+    .stats-card .stats-icon.orange {
+        background: #fef9e7;
+        color: #f39c12;
+    }
+
+    .stats-card .stats-icon.purple {
+        background: #f3e8ff;
+        color: #8b5cf6;
+    }
+
+    .stats-card .stats-trend {
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-block;
+        margin-top: 6px;
+    }
+
+    .stats-card .stats-trend.up {
+        color: #27ae60;
+    }
+
+    .stats-card .stats-trend.neutral {
+        color: #8a94a6;
+    }
+
     @media (max-width: 768px) {
         .stats-grid {
             grid-template-columns: repeat(2, 1fr);
@@ -672,6 +666,13 @@
             width: 30px;
             height: 30px;
             font-size: 11px;
+        }
+
+        .pagination-custom .page-btn {
+            min-width: 32px;
+            height: 32px;
+            font-size: 12px;
+            padding: 0 8px;
         }
     }
 
@@ -735,7 +736,6 @@
         }
     }
 
-    /* ===== ANIMATIONS ===== */
     @keyframes fadeInUp {
         from {
             opacity: 0;
@@ -764,7 +764,6 @@
         animation-delay: 0.3s;
     }
 
-    /* ===== SELECT2 OVERRIDES ===== */
     .select2-container .select2-selection--single {
         height: 46px;
         border: 1.5px solid #e2e8f0;
@@ -912,17 +911,20 @@
             </thead>
             <tbody id="tableBody">
                 {% for class in classes %}
-                <tr class="class-row" data-teacher="{{ class.teacher.id|default:'' }}"
-                    data-building="{{ class.building.id|default:'' }}"
+                <tr class="class-row" data-teacher="{{ class.teacher.id|default_if_none:'' }}"
+                    data-building="{{ class.building.id|default_if_none:'' }}"
                     data-status="{% if class.is_active %}active{% else %}inactive{% endif %}"
-                    data-name="{{ class.name|lower }}" data-subject="{{ class.course.name|lower|default:'' }}"
-                    data-code="{{ class.code|lower|default:'' }}">
+                    data-name="{{ class.name|lower|default:'' }}"
+                    data-subject="{% for c in class.courses.all %}{{ c.name|lower|default:'' }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                    data-code="{{ class.code|lower|default:'' }}"
+                    data-courses="{% for c in class.courses.all %}{{ c.code|lower|default:'' }}{% if not forloop.last %},{% endif %}{% endfor %}">
                     <td>{{ forloop.counter }}</td>
                     <td>
                         <div class="class-name-cell">
                             <div class="class-name">{{ class.name }}</div>
                             <div class="class-subject">
-                                <span class="subject-badge">{{ class.course.name|default:"No Subject" }}</span>
+                                <span class="subject-badge">{% if class.courses.exists %}{% for c in class.courses.all%}{{ c.code }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}No
+                                    Subject{% endif %}</span>
                                 <span class="date-range">
                                     <i class="fas fa-calendar-alt"></i>
                                     {% if class.start_date and class.end_date %}
@@ -961,7 +963,7 @@
                     </td>
                     <td>
                         {% if class.term %}
-                        <span class="term-badge {{ class.term.term_type }}">
+                        <span class="term-badge semester{{ class.term.term_type|default:1 }}">
                             {{ class.term.get_term_type_display }} {{ class.term.academic_year }}
                         </span>
                         {% else %}
@@ -990,7 +992,7 @@
                         {% with student_count=class.get_student_count %}
                         <span class="student-count 
                             {% if student_count >= class.capacity %}full
-                            {% elif student_count >= class.capacity|add:" -5" %}near-full {% else %}available{%endif%}">
+                            {% elif student_count >= class.capacity|add:" -5" %}near-full {% else %}available{% endif%}">
                             <i class="fas fa-user"></i>
                             {{ student_count }}/{{ class.capacity|default:30 }}
                             {% if student_count >= class.capacity %}
@@ -1007,10 +1009,6 @@
                     </td>
                     <td>
                         <div class="action-group">
-                            <!-- <a href="{% url 'classes:class_detail' class.pk %}" class="action-btn view"
-                                data-bs-toggle="tooltip" title="View Details">
-                                <i class="fas fa-eye"></i>
-                            </a> -->
                             <a href="{% url 'classes:class_edit' class.pk %}" class="action-btn edit"
                                 data-bs-toggle="tooltip" title="Edit Class">
                                 <i class="fas fa-edit"></i>

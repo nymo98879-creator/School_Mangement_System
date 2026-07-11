@@ -8,22 +8,24 @@
 <style>
     .detail-card {
         background: white;
-        border-radius: 12px;
-        padding: 25px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        border: 1px solid rgba(0,0,0,0.04);
+        overflow: hidden;
+        margin-bottom: 25px;
     }
 
     .detail-card .detail-title {
-        font-weight: 600;
-        color: #2c3e50;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #e8f0fe;
+        font-weight: 700;
+        color: #1a2332;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f0f4f8;
         margin-bottom: 20px;
+        font-size: 17px;
     }
 
     .detail-card .detail-title i {
-        color: #27ae60;
+        color: #4263eb;
         margin-right: 10px;
     }
 
@@ -32,7 +34,7 @@
         height: 150px;
         border-radius: 50%;
         object-fit: cover;
-        border: 4px solid #e8f0fe;
+        border: 4px solid #f0f4f8;
     }
 
     .profile-avatar-placeholder {
@@ -46,13 +48,13 @@
         color: white;
         font-size: 48px;
         font-weight: 700;
-        border: 4px solid #e8f0fe;
+        border: 4px solid #f0f4f8;
         margin: 0 auto;
     }
 
     .detail-item {
         padding: 10px 0;
-        border-bottom: 1px solid #f0f2f8;
+        border-bottom: 1px solid #f0f4f8;
     }
 
     .detail-item:last-child {
@@ -60,15 +62,18 @@
     }
 
     .detail-item .label {
-        color: #7f8c8d;
-        font-size: 13px;
-        font-weight: 500;
+        color: #8a94a6;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .detail-item .value {
-        font-weight: 500;
-        color: #2c3e50;
-        margin-top: 2px;
+        font-weight: 600;
+        color: #1a2332;
+        margin-top: 4px;
+        font-size: 15px;
     }
 
     .status-badge-large {
@@ -76,16 +81,18 @@
         border-radius: 20px;
         font-size: 14px;
         font-weight: 600;
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
 
     .status-badge-large.active {
-        background: #d5f5e3;
+        background: #eafaf1;
         color: #27ae60;
     }
 
     .status-badge-large.inactive {
-        background: #fadbd8;
+        background: #fef0f0;
         color: #e74c3c;
     }
 
@@ -95,7 +102,7 @@
     }
 
     .qualification-tag {
-        background: #e8f0fe;
+        background: #eef4ff;
         color: #4263eb;
         padding: 4px 15px;
         border-radius: 20px;
@@ -231,6 +238,55 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Assigned Classes -->
+        <div class="detail-card">
+            <div class="detail-title">
+                <i class="fas fa-chalkboard"></i>Assigned Classes
+            </div>
+            {% if classes %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Class Name</th>
+                            <th>Courses</th>
+                            <th>Students</th>
+                            <th>Schedule</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for class in classes %}
+                        <tr>
+                            <td class="fw-bold">{{ class.name }}</td>
+                            <td>
+                                {% if class.courses.exists %}
+                                    {% for c in class.courses.all %}
+                                    <span class="badge bg-info text-white mb-1 d-inline-block" style="font-size: 11px;">
+                                        {{ c.code }}
+                                    </span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="text-muted">No courses</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ class.get_student_count }} / {{ class.capacity }}</td>
+                            <td>{{ class.get_schedule_display }}</td>
+                            <td>
+                                <span class="badge {% if class.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if class.is_active %}Active{% else %}Inactive{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted mb-0">No classes assigned to this teacher yet.</p>
+            {% endif %}
         </div>
     </div>
 </div>

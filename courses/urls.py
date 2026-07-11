@@ -32,5 +32,10 @@ urlpatterns = [
     path('<int:pk>/edit/', views.course_edit, name='course_edit'),
     path('<int:pk>/delete/', views.course_delete, name='course_delete'),
     path('<int:pk>/toggle-status/', views.course_toggle_status, name='course_toggle_status'),
+    path('<int:pk>/add-students/', views.course_add_student, name='course_add_student'),
+    path('<int:course_pk>/add-student/<int:student_pk>/', views.course_add_student_direct, name='course_add_student_direct'),
+    path('<int:course_pk>/remove-student/<int:student_pk>/', views.course_remove_student, name='course_remove_student'),
+    path('<int:course_pk>/edit-student/<int:student_pk>/', views.course_student_edit, name='course_student_edit'),
+    path('<int:course_pk>/delete-student/<int:student_pk>/', views.course_student_delete, name='course_student_delete'),
     path('export/csv/', views.course_export_csv, name='course_export_csv'),
 ]

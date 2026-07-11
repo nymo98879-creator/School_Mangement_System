@@ -78,6 +78,74 @@
         color: #4263eb;
     }
 
+    /* ===== COURSES SECTION ===== */
+    .courses-section {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        margin-bottom: 25px;
+    }
+
+    .courses-section .card-header-custom {
+        padding: 18px 25px;
+        border-bottom: 1px solid #ecf0f1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: #fafbfc;
+    }
+
+    .courses-section .card-header-custom h5 {
+        margin: 0;
+        font-weight: 600;
+        color: #2c3e50;
+        font-size: 17px;
+    }
+
+    .courses-section .card-header-custom h5 i {
+        color: #4263eb;
+        margin-right: 8px;
+    }
+
+    .courses-section .card-header-custom .badge-count {
+        background: #4263eb;
+        color: white;
+        padding: 2px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+    }
+
+    .courses-section .card-body-custom {
+        padding: 0;
+        overflow-x: auto;
+    }
+
+    .courses-section .empty-courses {
+        text-align: center;
+        padding: 50px 20px;
+    }
+
+    .courses-section .empty-courses i {
+        font-size: 56px;
+        color: #cbd5e1;
+        margin-bottom: 15px;
+    }
+
+    .courses-section .empty-courses h6 {
+        color: #475569;
+        font-weight: 600;
+        font-size: 18px;
+    }
+
+    .courses-section .empty-courses p {
+        color: #94a3b8;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
     /* ===== OVERVIEW CARDS ===== */
     .overview-grid {
         display: grid;
@@ -463,6 +531,23 @@
         margin-right: 8px;
     }
 
+    .btn-assign-courses {
+        background: linear-gradient(135deg, #4263eb, #3b5bdb);
+        border: none;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+
+    .btn-assign-courses:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(66, 99, 235, 0.3);
+        color: white;
+    }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 992px) {
         .overview-grid {
@@ -579,6 +664,11 @@
             font-size: 12px;
             gap: 8px;
         }
+
+        .courses-section .card-header-custom {
+            flex-direction: column;
+            align-items: flex-start;
+        }
     }
 </style>
 {% endblock %}
@@ -616,6 +706,86 @@
                 style="color: {% if class.status == 'active' %}#27ae60{% elif class.status == 'upcoming' %}#f39c12{% else %}#e74c3c{% endif %}; font-size: 10px;"></i>
             <span class="badge-status {{ class.status }}">{{ class.get_status_display }}</span>
         </span>
+    </div>
+</div>
+
+<!-- ===== ASSIGNED COURSES SECTION ===== -->
+<div class="courses-section">
+    <div class="card-header-custom">
+        <h5>
+            <i class="fas fa-book"></i>Assigned Courses
+            <span class="badge-count">{{ courses|length }}</span>
+        </h5>
+        <div class="d-flex gap-2">
+            <a href="{% url 'classes:class_assign_courses' class.id %}" class="btn-assign-courses">
+                <i class="fas fa-plus me-1"></i>Assign Courses
+            </a>
+            <a href="{% url 'classes:class_edit' class.id %}" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-edit me-1"></i>Edit Class
+            </a>
+        </div>
+    </div>
+    <div class="card-body-custom">
+        {% if courses %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Code</th>
+                        <th>Course Name</th>
+                        <th>Teacher</th>
+                        <th>Credits</th>
+                        <th>Level</th>
+                        <th>Students</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><span class="badge bg-secondary">{{ course.code }}</span></td>
+                        <td>{{ course.name }}</td>
+                        <td>
+                            {% if course.teacher %}
+                            <span class="badge bg-info">{{ course.teacher.get_full_name }}</span>
+                            {% else %}
+                            <span class="badge bg-warning">Not Assigned</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ course.credits }}</td>
+                        <td>{{ course.level|default:"N/A" }}</td>
+                        <td>{{ course.students.count }}</td>
+                        <td>
+                            <span class="badge {% if course.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ course.is_active|yesno:"Active,Inactive" }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'attendance:admin_course_attendance_detail' course.id %}"
+                                class="btn btn-sm btn-primary" title="View Attendance">
+                                <i class="fas fa-clipboard-check"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-courses">
+            <i class="fas fa-book-open"></i>
+            <h6>No Courses Assigned</h6>
+            <p>No courses are currently assigned to this class.</p>
+            <p class="text-muted small">Click the <strong>"Assign Courses"</strong> button above to add courses to this
+                class.</p>
+            <a href="{% url 'classes:class_assign_courses' class.id %}" class="btn btn-primary mt-3">
+                <i class="fas fa-plus me-2"></i>Assign Courses Now
+            </a>
+        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -709,7 +879,8 @@
                                 </div>
                             </div>
                         </td>
-                        <td><span class="badge bg-secondary" style="font-weight: 400; font-size: 12px;">{{ student.student_id }}</span>
+                        <td><span class="badge bg-secondary" style="font-weight: 400; font-size: 12px;">{{
+                                student.student_id }}</span>
                         </td>
                         <td style="text-align: center;">
                             <div class="attendance-group">
@@ -720,15 +891,15 @@
                                     id="btn-present-{{ student.id }}" title="Present">
                                     <i class="fas fa-check-circle"></i> Present
                                 </button>
-                
+
                                 <!-- Late Button -->
                                 <button
                                     class="attendance-btn {% if student.attendance_status == 'late' %}active-late{% else %}inactive{% endif %}"
-                                    onclick="selectAttendance({{ class.id }}, {{ student.id }}, 'late')" id="btn-late-{{ student.id }}"
-                                    title="Late">
+                                    onclick="selectAttendance({{ class.id }}, {{ student.id }}, 'late')"
+                                    id="btn-late-{{ student.id }}" title="Late">
                                     <i class="fas fa-clock"></i> Late
                                 </button>
-                
+
                                 <!-- Absent Button -->
                                 <button
                                     class="attendance-btn {% if student.attendance_status == 'absent' %}active-absent{% else %}inactive{% endif %}"
@@ -736,7 +907,7 @@
                                     id="btn-absent-{{ student.id }}" title="Absent">
                                     <i class="fas fa-times-circle"></i> Absent
                                 </button>
-                
+
                                 <!-- Excused Button -->
                                 <button
                                     class="attendance-btn {% if student.attendance_status == 'excused' %}active-excused{% else %}inactive{% endif %}"
@@ -750,8 +921,8 @@
                         </td>
                         <td>
                             <input type="text" class="remark-input" placeholder="Add remark..."
-                                onchange="saveRemark({{ class.id }}, {{ student.id }}, this.value)" data-student="{{ student.id }}"
-                                id="remark-{{ student.id }}">
+                                onchange="saveRemark({{ class.id }}, {{ student.id }}, this.value)"
+                                data-student="{{ student.id }}" id="remark-{{ student.id }}">
                         </td>
                         <td>
                             <span
@@ -766,12 +937,12 @@
                         </td>
                         <td>
                             <div class="d-flex gap-1">
-                                <a href="{% url 'attendance:admin_student_attendance' student.id %}" class="action-btn-sm view"
-                                    title="View Attendance">
+                                <a href="{% url 'attendance:admin_student_attendance' student.id %}"
+                                    class="action-btn-sm view" title="View Attendance">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="{% url 'classes:class_remove_student' class.id student.id %}" class="action-btn-sm remove"
-                                    title="Remove Student"
+                                <a href="{% url 'classes:class_remove_student' class.id student.id %}"
+                                    class="action-btn-sm remove" title="Remove Student"
                                     onclick="return confirm('Remove {{ student.get_full_name }} from this class?')">
                                     <i class="fas fa-user-minus"></i>
                                 </a>
@@ -784,7 +955,8 @@
                             <i class="fas fa-user-graduate fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
                             <h6 class="text-muted">No Students Enrolled</h6>
                             <p class="text-muted small">Add students to this class to track attendance.</p>
-                            <a href="{% url 'classes:class_add_student' class.id %}" class="btn btn-primary btn-sm mt-2">
+                            <a href="{% url 'classes:class_add_student' class.id %}"
+                                class="btn btn-primary btn-sm mt-2">
                                 <i class="fas fa-user-plus me-2"></i>Add Students
                             </a>
                         </td>
@@ -867,103 +1039,104 @@
     }
 
     // ===== SAVE ALL ATTENDANCE =====
-        function saveAllAttendance(classId) {
-            var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            var attendanceData = {};
-            var hasAttendance = false;
-            var markedStudents = [];
+    function saveAllAttendance(classId) {
+        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        var attendanceData = {};
+        var hasAttendance = false;
+        var markedStudents = [];
 
-            // Collect all attendance data
-            var inputs = document.querySelectorAll('input[name^="attendance_"]');
-            for (var i = 0; i < inputs.length; i++) {
-                var input = inputs[i];
-                var studentId = input.id.replace('status-', '');
-                var status = input.value;
-                var remarkInput = document.getElementById('remark-' + studentId);
-                var remark = remarkInput ? remarkInput.value : '';
+        // Collect all attendance data
+        var inputs = document.querySelectorAll('input[name^="attendance_"]');
+        for (var i = 0; i < inputs.length; i++) {
+            var input = inputs[i];
+            var studentId = input.id.replace('status-', '');
+            var status = input.value;
+            var remarkInput = document.getElementById('remark-' + studentId);
+            var remark = remarkInput ? remarkInput.value : '';
 
-                if (status) {
-                    hasAttendance = true;
-                    markedStudents.push(studentId);
-                    attendanceData[studentId] = {
-                        status: status,
-                        remark: remark
-                    };
-                }
+            if (status) {
+                hasAttendance = true;
+                markedStudents.push(studentId);
+                attendanceData[studentId] = {
+                    status: status,
+                    remark: remark
+                };
             }
+        }
 
-            // Check if any attendance is marked
-            if (!hasAttendance) {
-                alert('Please mark attendance for at least one student before saving.');
-                return;
-            }
+        // Check if any attendance is marked
+        if (!hasAttendance) {
+            alert('Please mark attendance for at least one student before saving.');
+            return;
+        }
 
-            // Confirm save
-            var count = Object.keys(attendanceData).length;
-            if (!confirm('Are you sure you want to save attendance for ' + count + ' student(s)?')) {
-                return;
-            }
+        // Confirm save
+        var count = Object.keys(attendanceData).length;
+        if (!confirm('Are you sure you want to save attendance for ' + count + ' student(s)?')) {
+            return;
+        }
 
-            // Show loading state
-            var saveBtn = document.querySelector('.save-btn');
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+        // Show loading state
+        var saveBtn = document.querySelector('.save-btn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
 
-            // Send to server
-            var xhr = new XMLHttpRequest();
-            var url = '/classes/save-attendance/' + classId + '/';
-            console.log('Sending to URL:', url);
-            console.log('Data:', attendanceData);
+        // Send to server
+        var xhr = new XMLHttpRequest();
+        var url = '/classes/save-attendance/' + classId + '/';
+        console.log('Sending to URL:', url);
+        console.log('Data:', attendanceData);
 
-            xhr.open('POST', url, true);
-            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            xhr.setRequestHeader('X-CSRFToken', csrfToken);
-            xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('X-CSRFToken', csrfToken);
+        xhr.setRequestHeader('Content-Type', 'application/json');
 
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    saveBtn.disabled = false;
-                    saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Attendance';
-
-                    if (xhr.status === 200) {
-                        try {
-                            var data = JSON.parse(xhr.responseText);
-                            console.log('Response:', data);
-
-                            if (data.success) {
-                                var message = data.message || 'Attendance saved successfully!';
-                                if (data.errors && data.errors.length > 0) {
-                                    message += '\n\nWarnings:\n- ' + data.errors.join('\n- ');
-                                }
-                                alert(message);
-
-                                if (data.saved_count > 0) {
-                                    location.reload();
-                                }
-                            } else {
-                                alert(data.message || 'Failed to save attendance. Please try again.');
-                            }
-                        } catch (e) {
-                            console.error('Parse error:', e);
-                            alert('Error parsing server response.');
-                        }
-                    } else {
-                        alert('An error occurred while saving attendance. Status: ' + xhr.status);
-                    }
-                }
-            };
-
-            xhr.onerror = function () {
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Attendance';
-                alert('Network error. Please check your connection.');
-            };
 
-            xhr.send(JSON.stringify({
-                attendance: attendanceData,
-                date: '{{ today|date:"Y-m-d" }}'
-            }));
-        }
+                if (xhr.status === 200) {
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        console.log('Response:', data);
+
+                        if (data.success) {
+                            var message = data.message || 'Attendance saved successfully!';
+                            if (data.errors && data.errors.length > 0) {
+                                message += '\n\nWarnings:\n- ' + data.errors.join('\n- ');
+                            }
+                            alert(message);
+
+                            if (data.saved_count > 0) {
+                                location.reload();
+                            }
+                        } else {
+                            alert(data.message || 'Failed to save attendance. Please try again.');
+                        }
+                    } catch (e) {
+                        console.error('Parse error:', e);
+                        alert('Error parsing server response.');
+                    }
+                } else {
+                    alert('An error occurred while saving attendance. Status: ' + xhr.status);
+                }
+            }
+        };
+
+        xhr.onerror = function () {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Attendance';
+            alert('Network error. Please check your connection.');
+        };
+
+        xhr.send(JSON.stringify({
+            attendance: attendanceData,
+            date: '{{ today|date:"Y-m-d" }}'
+        }));
+    }
+
     // ===== SAVE REMARK =====
     function saveRemark(classId, studentId, remark) {
         // Don't save if remark is empty
