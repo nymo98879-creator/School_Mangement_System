@@ -587,6 +587,7 @@
     
 #     return render(request, 'Backend/setting/settings.html', context)
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -707,9 +708,6 @@ def dashboard(request):
             # Get classes assigned to this teacher
             classes = Class.objects.filter(teacher=teacher, is_active=True).distinct()
 
-            # Get students using ManyToMany
-            students = Student.objects.filter(classes_enrolled__in=classes, is_active=True).distinct()
-            
             # Get course IDs from classes assigned to this teacher
             class_course_ids = list(
                 Course.objects.filter(class_offerings__in=classes, is_active=True)
@@ -728,6 +726,13 @@ def dashboard(request):
 
             # Get courses for this teacher from both class assignments and direct course assignments
             courses = Course.objects.filter(id__in=course_ids, is_active=True).distinct()
+
+            # Get students (union of class enrollment and course enrollment)
+            from django.db.models import Q
+            students = Student.objects.filter(
+                Q(classes_enrolled__in=classes) | Q(courses__in=courses),
+                is_active=True
+            ).distinct()
 
             today = date.today()
 
@@ -1097,8 +1102,11 @@ def teacher_class_view(request):
         today_attendance = Attendance.objects.filter(date=today, course_id__in=course_ids) if course_ids else Attendance.objects.none()
         today_attendance_count = today_attendance.count()
         
-        # Calculate total students across classes using ManyToMany
-        total_students = Student.objects.filter(classes_enrolled__in=classes, is_active=True).distinct()
+        # Calculate total students across classes using ManyToMany (union of class and course enrollment)
+        total_students = Student.objects.filter(
+            Q(classes_enrolled__in=classes) | Q(courses__in=courses),
+            is_active=True
+        ).distinct()
         total_students_count = total_students.count()
         
         # Calculate attendance rate
@@ -1138,33 +1146,152 @@ def teacher_class_view(request):
 @teacher_or_admin_required
 def teacher_student_view(request):
     """Teachers can only view students in their assigned classes"""
+    search_query = request.GET.get('search', '')
+    class_filter = request.GET.get('class_filter', '')
+    course_filter = request.GET.get('course_filter', '')
+    
     if request.user.role == 'admin':
         students = Student.objects.filter(is_active=True)
+        classes = Class.objects.filter(is_active=True)
+        courses = Course.objects.filter(is_active=True)
         classes_count = Class.objects.count()
     else:
         try:
             teacher = Teacher.objects.get(user=request.user)
             classes = Class.objects.filter(teacher=teacher, is_active=True).distinct()
+            
+            class_course_ids = list(
+                Course.objects.filter(class_offerings__in=classes, is_active=True)
+                .values_list('id', flat=True)
+                .distinct()
+            )
+            direct_course_ids = list(
+                Course.objects.filter(teacher=teacher, is_active=True)
+                .values_list('id', flat=True)
+                .distinct()
+            )
+            course_ids = list(set(class_course_ids) | set(direct_course_ids))
+            courses = Course.objects.filter(id__in=course_ids, is_active=True).distinct()
+            
             students = Student.objects.filter(
-                classes_enrolled__in=classes,
+                Q(classes_enrolled__in=classes) | Q(courses__in=courses),
                 is_active=True
             ).distinct()
             classes_count = classes.count()
         except Teacher.DoesNotExist:
             students = Student.objects.none()
+            classes = Class.objects.none()
+            courses = Course.objects.none()
             classes_count = 0
     
-    # Calculate counts correctly
+    if search_query:
+        students = students.filter(
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(student_id__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(guardian_name__icontains=search_query)
+        ).distinct()
+    
+    if class_filter:
+        students = students.filter(classes_enrolled__id=class_filter).distinct()
+    
+    if course_filter:
+        students = students.filter(courses__id=course_filter).distinct()
+    
     total_students = students.count()
     active_students = students.filter(is_active=True).count()
     
     context = {
         'students': students,
+        'classes': classes,
+        'courses': courses,
         'classes_count': classes_count,
         'total_students': total_students,
         'active_students': active_students,
+        'search_query': search_query,
+        'class_filter': class_filter,
+        'course_filter': course_filter,
     }
     return render(request, 'Backend/teacher/student/student_list.html', context)
+
+
+@login_required
+@teacher_or_admin_required
+def teacher_student_ajax(request):
+    """AJAX endpoint for teacher student search/filter"""
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Invalid method'}, status=405)
+    
+    search_query = request.GET.get('search', '')
+    class_filter = request.GET.get('class_filter', '')
+    course_filter = request.GET.get('course_filter', '')
+    
+    if request.user.role == 'admin':
+        students = Student.objects.filter(is_active=True)
+    else:
+        try:
+            teacher = Teacher.objects.get(user=request.user)
+            classes = Class.objects.filter(teacher=teacher, is_active=True).distinct()
+            
+            class_course_ids = list(
+                Course.objects.filter(class_offerings__in=classes, is_active=True)
+                .values_list('id', flat=True)
+                .distinct()
+            )
+            direct_course_ids = list(
+                Course.objects.filter(teacher=teacher, is_active=True)
+                .values_list('id', flat=True)
+                .distinct()
+            )
+            course_ids = list(set(class_course_ids) | set(direct_course_ids))
+            courses = Course.objects.filter(id__in=course_ids, is_active=True).distinct()
+            
+            students = Student.objects.filter(
+                Q(classes_enrolled__in=classes) | Q(courses__in=courses),
+                is_active=True
+            ).distinct()
+        except Teacher.DoesNotExist:
+            return JsonResponse({'students': [], 'total': 0})
+    
+    if search_query:
+        students = students.filter(
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(student_id__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(guardian_name__icontains=search_query)
+        ).distinct()
+    
+    if class_filter:
+        students = students.filter(classes_enrolled__id=class_filter).distinct()
+    
+    if course_filter:
+        students = students.filter(courses__id=course_filter).distinct()
+    
+    students = students.select_related('user', 'major').prefetch_related('classes_enrolled', 'courses')[:50]
+    
+    student_data = []
+    for student in students:
+        classes_list = [c.name for c in student.classes_enrolled.all()] or ['Not Assigned']
+        student_data.append({
+            'id': student.id,
+            'full_name': student.get_full_name(),
+            'first_name': student.first_name,
+            'last_name': student.last_name,
+            'student_id': student.student_id,
+            'email': student.email,
+            'classes': classes_list,
+            'is_active': student.is_active,
+            'enrollment_date': student.enrollment_date.strftime('%b %d, %Y') if student.enrollment_date else '',
+            'guardian_name': student.guardian_name,
+            'guardian_phone': student.guardian_phone,
+        })
+    
+    return JsonResponse({
+        'students': student_data,
+        'total': len(student_data)
+    })
 
 
 @login_required
@@ -1176,9 +1303,13 @@ def teacher_student_detail(request, student_id):
     if request.user.role != 'admin':
         try:
             teacher = Teacher.objects.get(user=request.user)
-            # Check if student is enrolled in any of teacher's classes
+            # Check if student is enrolled in any of teacher's classes or courses
             teacher_classes = Class.objects.filter(teacher=teacher, is_active=True).distinct()
-            if not student.classes_enrolled.filter(id__in=teacher_classes).exists():
+            teacher_courses = Course.objects.filter(
+                class_offerings__in=teacher_classes, is_active=True
+            ).distinct() | Course.objects.filter(teacher=teacher, is_active=True).distinct()
+            if not (student.classes_enrolled.filter(id__in=teacher_classes).exists() or 
+                    student.courses.filter(id__in=teacher_courses).exists()):
                 messages.error(request, 'You do not have permission to view this student.')
                 return redirect('accounts:teacher_student_view')
         except Teacher.DoesNotExist:

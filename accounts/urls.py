@@ -23,6 +23,7 @@ urlpatterns = [
     # Remove this line - attendance is handled by attendance app
     # path('teacher/attendance/', views.teacher_attendance_view, name='teacher_attendance'),
     path('teacher/students/', views.teacher_student_view, name='teacher_student_view'),
+    path('teacher/students/ajax/', views.teacher_student_ajax, name='teacher_student_ajax'),
     path('teacher/student/<int:student_id>/', views.teacher_student_detail, name='teacher_student_detail'),
     path('teacher/student/<int:student_id>/attendance/', views.teacher_student_detail, name='teacher_student_attendance'),
     path('teacher/class/<int:pk>/', views.teacher_class_detail, name='teacher_class_detail'),

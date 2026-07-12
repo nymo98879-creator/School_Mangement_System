@@ -6,181 +6,28 @@
 
 {% block extra_css %}
 <style>
-    /* Stats Cards - Dark Blue Theme */
-    .stats-card {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        border: none;
-        border-left: 4px solid #4263eb;
-    }
+    * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background: #f8fafc; color: #1e293b; }
 
-    .stats-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 10px 30px rgba(66, 99, 235, 0.15);
-    }
-
-    .stats-card .stats-icon {
-        width: 55px;
-        height: 55px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        color: white;
-        position: absolute;
-        top: 20px;
-        right: 20px;
-    }
-
-    .stats-card .stats-icon.blue {
-        background: linear-gradient(135deg, #4263eb 0%, #3b5bdb 100%);
-    }
-
-    .stats-card .stats-icon.green {
-        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-    }
-
-    .stats-card .stats-icon.orange {
-        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-    }
-
-    .stats-card .stats-icon.purple {
-        background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
-    }
-
-    .stats-card .stats-icon.red {
-        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-    }
-
-    .stats-card .stats-number {
-        font-size: 32px;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-top: 5px;
-    }
-
-    .stats-card .stats-label {
-        color: #7f8c8d;
-        font-size: 14px;
-        font-weight: 500;
-        margin-top: 2px;
-    }
-
-    .stats-card .stats-trend {
-        font-size: 13px;
-        font-weight: 600;
-        margin-top: 8px;
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-    }
-
-    .stats-card .stats-trend.up {
-        color: #27ae60;
-        background: #d5f5e3;
-    }
-
-    .stats-card .stats-trend.down {
-        color: #e74c3c;
-        background: #fadbd8;
-    }
-
-    .stats-card .stats-trend.neutral {
-        color: #f39c12;
-        background: #fdebd0;
-    }
-
-    /* Quick Action Cards - Dark Blue Theme */
-    .action-card {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        text-align: center;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
-        transition: all 0.3s ease;
-        cursor: pointer;
-        border: 2px solid transparent;
-        text-decoration: none;
-        display: block;
-        height: 100%;
-    }
-
-    .action-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(66, 99, 235, 0.15);
-        border-color: #4263eb;
-    }
-
-    .action-card .action-icon {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 15px;
-        font-size: 30px;
-        color: white;
-        transition: all 0.3s ease;
-    }
-
-    .action-card .action-icon.blue {
-        background: linear-gradient(135deg, #4263eb 0%, #3b5bdb 100%);
-    }
-
-    .action-card .action-icon.green {
-        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-    }
-
-    .action-card .action-icon.orange {
-        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-    }
-
-    .action-card .action-icon.purple {
-        background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
-    }
-
-    .action-card .action-title {
-        font-size: 16px;
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 5px;
-    }
-
-    .action-card .action-desc {
-        font-size: 13px;
-        color: #7f8c8d;
-        margin: 0;
-    }
-
-    .action-card:hover .action-icon {
-        transform: scale(1.1) rotate(5deg);
-    }
-
-    /* Welcome Banner - Dark Blue Theme */
+    /* ===== WELCOME HERO BANNER ===== */
     .welcome-banner {
-        background: linear-gradient(135deg, #1a2332 0%, #2c3e50 50%, #4263eb 100%);
-        border-radius: 15px;
-        padding: 30px 35px;
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #0f172a 100%);
+        border-radius: 16px;
+        padding: 28px 32px;
         color: white;
-        margin-bottom: 30px;
+        margin-bottom: 24px;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
     }
 
     .welcome-banner::before {
         content: '';
         position: absolute;
-        right: -50px;
-        top: -50px;
-        width: 200px;
-        height: 200px;
+        right: -30px;
+        top: -30px;
+        width: 180px;
+        height: 180px;
         background: rgba(255, 255, 255, 0.06);
         border-radius: 50%;
     }
@@ -188,159 +35,93 @@
     .welcome-banner::after {
         content: '';
         position: absolute;
-        right: 30px;
-        bottom: -70px;
-        width: 150px;
-        height: 150px;
+        right: 60px;
+        bottom: -60px;
+        width: 140px;
+        height: 140px;
         background: rgba(255, 255, 255, 0.04);
         border-radius: 50%;
     }
 
-    .welcome-banner h3 {
-        font-weight: 700;
-        margin-bottom: 8px;
+    .welcome-banner .welcome-content {
         position: relative;
         z-index: 1;
+    }
+
+    .welcome-banner h3 {
+        font-weight: 800;
+        font-size: 22px;
+        margin-bottom: 10px;
+        letter-spacing: -0.3px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
     .welcome-banner h3 i {
-        color: #f1c40f;
+        color: #fbbf24;
     }
 
-    .welcome-banner p {
-        opacity: 0.9;
-        margin: 0;
-        position: relative;
-        z-index: 1;
-        font-size: 15px;
-    }
-
-    .welcome-banner .welcome-icon {
-        position: absolute;
-        right: 30px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 80px;
-        opacity: 0.1;
-        z-index: 0;
-    }
-
-    /* Card Styles - Dark Blue Theme */
-    .custom-card {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
-        border: none;
-        height: 100%;
-        transition: all 0.3s ease;
-    }
-
-    .custom-card:hover {
-        box-shadow: 0 8px 25px rgba(66, 99, 235, 0.1);
-    }
-
-    .custom-card .card-header-custom {
+    .welcome-banner .welcome-meta {
         display: flex;
-        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
         align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #e8f0fe;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
     }
 
-    .custom-card .card-header-custom h5 {
-        margin: 0;
-        font-weight: 600;
-        color: #2c3e50;
-    }
-
-    .custom-card .card-header-custom h5 i {
-        color: #4263eb;
-    }
-
-    .custom-card .card-header-custom .badge-count {
-        background: linear-gradient(135deg, #4263eb 0%, #3b5bdb 100%);
-        color: white;
-        padding: 4px 14px;
+    .welcome-banner .welcome-meta .meta-pill {
+        background: rgba(255, 255, 255, 0.12);
+        padding: 5px 14px;
         border-radius: 20px;
         font-size: 12px;
         font-weight: 600;
-    }
-
-    /* Button Styles - Dark Blue Theme */
-    .btn-primary {
-        background: linear-gradient(135deg, #4263eb 0%, #3b5bdb 100%);
-        border: none;
-        padding: 12px 20px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(66, 99, 235, 0.4);
-        background: linear-gradient(135deg, #3b5bdb 0%, #1a2332 100%);
-    }
-
-    .btn-success {
-        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-        border: none;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-
-    .btn-success:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(46, 204, 113, 0.4);
-    }
-
-    .btn-warning {
-        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-        border: none;
-        font-weight: 600;
-        color: white;
-        transition: all 0.3s ease;
-    }
-
-    .btn-warning:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4);
-        color: white;
-    }
-
-    .btn-info {
-        background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-        border: none;
-        font-weight: 600;
-        color: white;
-        transition: all 0.3s ease;
-    }
-
-    .btn-info:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(26, 188, 156, 0.4);
-        color: white;
-    }
-
-    /* Quick Stats Mini Cards */
-    .mini-stat {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 15px;
-        padding: 15px 20px;
-        background: #f8fafb;
-        border-radius: 12px;
+        gap: 6px;
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .welcome-banner .welcome-meta .meta-pill i {
+        font-size: 11px;
+        opacity: 0.8;
+    }
+
+    /* ===== BENTO KPI CARDS ===== */
+    .bento-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .bento-card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px 22px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        border: 1px solid #e2e8f0;
         transition: all 0.3s ease;
-        border-left: 3px solid #4263eb;
+        position: relative;
+        overflow: hidden;
     }
 
-    .mini-stat:hover {
-        background: #e8f0fe;
-        transform: translateX(5px);
+    .bento-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
     }
 
-    .mini-stat .mini-icon {
+    .bento-card .bento-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+    }
+
+    .bento-card .bento-icon {
         width: 40px;
         height: 40px;
         border-radius: 10px;
@@ -348,341 +129,516 @@
         align-items: center;
         justify-content: center;
         font-size: 18px;
+        color: #64748b;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+
+    .bento-card .bento-trend {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #dcfce7;
+        color: #16a34a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .bento-card .bento-number {
+        font-size: 28px;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -0.5px;
+        line-height: 1.2;
+        margin-bottom: 4px;
+    }
+
+    .bento-card .bento-label {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+    }
+
+    /* ===== MINI METRICS ===== */
+    .mini-metrics {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .mini-card {
+        background: white;
+        border-radius: 12px;
+        padding: 14px 18px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        transition: all 0.2s;
+    }
+
+    .mini-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .mini-card .mini-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mini-card .mini-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
         color: white;
         flex-shrink: 0;
     }
 
-    .mini-stat .mini-icon.blue {
-        background: #4263eb;
+    .mini-card .mini-icon.blue { background: #2563eb; }
+    .mini-card .mini-icon.green { background: #16a34a; }
+    .mini-card .mini-icon.orange { background: #d97706; }
+    .mini-card .mini-icon.purple { background: #9333ea; }
+
+    .mini-card .mini-text .mini-label {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
-    .mini-stat .mini-icon.green {
-        background: #27ae60;
+    .mini-card .mini-text .mini-value {
+        font-size: 18px;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.2;
     }
 
-    .mini-stat .mini-icon.orange {
-        background: #f39c12;
+    .mini-card .mini-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 20px;
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        white-space: nowrap;
     }
 
-    .mini-stat .mini-icon.purple {
-        background: #9b59b6;
+    /* ===== MODULE ACTIONS ===== */
+    .module-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
     }
 
-    .mini-stat .mini-text {
-        flex: 1;
+    .module-card {
+        background: white;
+        border-radius: 14px;
+        padding: 18px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        border: 1px solid #e2e8f0;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
     }
 
-    .mini-stat .mini-text .label {
+    .module-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
+        color: inherit;
+    }
+
+    .module-card .module-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: white;
+        margin-bottom: 12px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+
+    .module-card .module-title {
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+
+    .module-card .module-desc {
         font-size: 12px;
-        color: #7f8c8d;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+
+    .module-card .module-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .module-card .module-menu a {
+        font-size: 12px;
+        color: #475569;
+        text-decoration: none;
+        padding: 5px 10px;
+        border-radius: 6px;
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+        transition: all 0.2s;
         font-weight: 500;
     }
 
-    .mini-stat .mini-text .value {
-        font-size: 18px;
-        font-weight: 700;
-        color: #2c3e50;
+    .module-card .module-menu a:hover {
+        background: #eff6ff;
+        border-color: #dbeafe;
+        color: #2563eb;
     }
 
-    /* Recent Activity Timeline */
+    /* ===== ACTIVITY TIMELINE ===== */
     .timeline {
         position: relative;
-        padding-left: 30px;
+        padding-left: 22px;
     }
 
     .timeline::before {
         content: '';
         position: absolute;
-        left: 7px;
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        background: #e8f0fe;
+        left: 5px;
+        top: 4px;
+        bottom: 4px;
+        width: 1px;
+        background: #e2e8f0;
     }
 
     .timeline-item {
         position: relative;
-        margin-bottom: 25px;
-        padding-left: 15px;
+        margin-bottom: 18px;
+        padding-left: 14px;
+    }
+
+    .timeline-item:last-child {
+        margin-bottom: 0;
     }
 
     .timeline-item::before {
         content: '';
         position: absolute;
-        left: -30px;
-        top: 5px;
-        width: 14px;
-        height: 14px;
+        left: -22px;
+        top: 4px;
+        width: 9px;
+        height: 9px;
         border-radius: 50%;
-        background: #4263eb;
-        border: 3px solid white;
-        box-shadow: 0 0 0 3px #4263eb;
+        background: #cbd5e1;
+        border: 2px solid white;
+        box-shadow: 0 0 0 2px #cbd5e1;
+        z-index: 1;
     }
 
-    .timeline-item.timeline-success::before {
-        background: #27ae60;
-        box-shadow: 0 0 0 3px #27ae60;
-    }
-
-    .timeline-item.timeline-warning::before {
-        background: #f39c12;
-        box-shadow: 0 0 0 3px #f39c12;
-    }
-
-    .timeline-item.timeline-danger::before {
-        background: #e74c3c;
-        box-shadow: 0 0 0 3px #e74c3c;
-    }
+    .timeline-item.timeline-success::before { background: #16a34a; box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15); }
+    .timeline-item.timeline-warning::before { background: #d97706; box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.15); }
+    .timeline-item.timeline-danger::before { background: #dc2626; box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15); }
 
     .timeline-item .timeline-time {
-        font-size: 12px;
-        color: #7f8c8d;
-        font-weight: 500;
+        font-size: 11px;
+        color: #94a3b8;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .timeline-item .timeline-content {
-        font-size: 14px;
-        color: #2c3e50;
-        margin-top: 3px;
+        font-size: 13px;
+        color: #475569;
+        margin-top: 2px;
+        line-height: 1.4;
     }
 
     .timeline-item .timeline-content strong {
-        color: #2c3e50;
+        color: #0f172a;
+        font-weight: 700;
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-        .welcome-banner {
-            padding: 20px;
-        }
-
-        .welcome-banner .welcome-icon {
-            font-size: 50px;
-            right: 15px;
-        }
-
-        .stats-card .stats-number {
-            font-size: 24px;
-        }
-
-        .stats-card .stats-icon {
-            width: 45px;
-            height: 45px;
-            font-size: 20px;
-            top: 15px;
-            right: 15px;
-        }
-
-        .action-card {
-            padding: 20px;
-        }
+    /* ===== CARD HEADERS ===== */
+    .card-header-clean {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f1f5f9;
     }
 
-    /* Badge Styles */
-    .badge-admin {
-        background: #e8f0fe;
-        color: #4263eb;
-        padding: 5px 12px;
+    .card-header-clean h5 {
+        margin: 0;
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-header-clean h5 i {
+        color: #2563eb;
+        font-size: 16px;
+    }
+
+    .card-header-clean .badge-count {
+        background: #f1f5f9;
+        color: #475569;
+        padding: 3px 12px;
         border-radius: 20px;
-        font-weight: 600;
-        font-size: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* ===== CUSTOM CARD ===== */
+    .custom-card {
+        background: white;
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .custom-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1200px) {
+        .bento-grid { grid-template-columns: repeat(2, 1fr); }
+        .mini-metrics { grid-template-columns: repeat(2, 1fr); }
+        .module-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+        .bento-grid { grid-template-columns: 1fr; }
+        .mini-metrics { grid-template-columns: 1fr; }
+        .module-grid { grid-template-columns: 1fr; }
+        .welcome-banner { padding: 20px; }
+        .welcome-banner h3 { font-size: 18px; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Welcome Banner -->
+
+<!-- ===== WELCOME HERO BANNER ===== -->
 <div class="welcome-banner">
-    <div class="welcome-icon">
-        <i class="fas fa-shield-alt"></i>
+    <div class="welcome-content">
+        <h3>
+            <i class="fas fa-hand-wave me-2"></i>
+            Welcome back, {{ user.get_full_name|default:user.username }}!
+        </h3>
+        <div class="welcome-meta">
+            <span class="meta-pill">
+                <i class="far fa-calendar"></i>
+                {{ current_date|date:"l, F d, Y" }} - {{ current_time|time:"g:i A" }}
+            </span>
+            <span class="meta-pill">
+                <i class="fas fa-users"></i>
+                {{ total_students|default:0 }} Students
+            </span>
+            <span class="meta-pill">
+                <i class="fas fa-chalkboard-teacher"></i>
+                {{ total_teachers|default:0 }} Teachers
+            </span>
+            <span class="meta-pill">
+                <i class="fas fa-cubes"></i>
+                {{ total_classes|default:0 }} Classes
+            </span>
+        </div>
     </div>
-    <h3>
-        <i class="fas fa-hand-wave me-2"></i>
-        Welcome back, {{ user.get_full_name|default:user.username }}! 
-    </h3>
-    <p>
-        <i class="fas fa-calendar-alt me-2"></i>
-        Today is {{ current_date|date:"l, F d, Y" }} - {{ current_time|time:"g:i A" }}
-        <span class="ms-3" style="background: rgba(255,255,255,0.15); padding: 4px 15px; border-radius: 20px;">
-            <i class="fas fa-users me-1"></i>
-            {{ total_students|default:0 }} Students | {{ total_teachers|default:0 }} Teachers
-        </span>
-    </p>
 </div>
 
-<!-- Stats Cards -->
-<div class="row g-4">
-    <div class="col-md-3 col-sm-6">
-        <div class="stats-card">
-            <div class="stats-icon blue">
+<!-- ===== MAIN BENTO KPI CARDS ===== -->
+<div class="bento-grid">
+    <div class="bento-card">
+        <div class="bento-header">
+            <div class="bento-icon">
                 <i class="fas fa-users"></i>
             </div>
-            <div class="stats-number">{{ total_students|default:0 }}</div>
-            <div class="stats-label">Total Students</div>
-            <span class="stats-trend up">
-                <i class="fas fa-arrow-up me-1"></i>Active
-            </span>
+            <div class="bento-trend">
+                <i class="fas fa-arrow-up"></i>
+            </div>
         </div>
+        <div class="bento-number">{{ total_students|default:0 }}</div>
+        <div class="bento-label">Total Students</div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stats-card" style="border-left-color: #27ae60;">
-            <div class="stats-icon green">
+    <div class="bento-card">
+        <div class="bento-header">
+            <div class="bento-icon">
                 <i class="fas fa-chalkboard-teacher"></i>
             </div>
-            <div class="stats-number">{{ total_teachers|default:0 }}</div>
-            <div class="stats-label">Total Teachers</div>
-            <span class="stats-trend up">
-                <i class="fas fa-arrow-up me-1"></i>Active
-            </span>
+            <div class="bento-trend">
+                <i class="fas fa-arrow-up"></i>
+            </div>
         </div>
+        <div class="bento-number">{{ total_teachers|default:0 }}</div>
+        <div class="bento-label">Total Teachers</div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stats-card" style="border-left-color: #f39c12;">
-            <div class="stats-icon orange">
+    <div class="bento-card">
+        <div class="bento-header">
+            <div class="bento-icon">
                 <i class="fas fa-book"></i>
             </div>
-            <div class="stats-number">{{ total_courses|default:0 }}</div>
-            <div class="stats-label">Total Courses</div>
-            <span class="stats-trend neutral">
-                <i class="fas fa-minus me-1"></i>Active
-            </span>
+            <div class="bento-trend">
+                <i class="fas fa-arrow-up"></i>
+            </div>
         </div>
+        <div class="bento-number">{{ total_courses|default:0 }}</div>
+        <div class="bento-label">Total Courses</div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="stats-card" style="border-left-color: #9b59b6;">
-            <div class="stats-icon purple">
+    <div class="bento-card">
+        <div class="bento-header">
+            <div class="bento-icon">
                 <i class="fas fa-calendar-check"></i>
             </div>
-            <div class="stats-number">{{ today_attendance|default:0 }}</div>
-            <div class="stats-label">Today's Attendance</div>
-            <span class="stats-trend up">
-                <i class="fas fa-arrow-up me-1"></i>{{ attendance_percentage|default:"0%" }}
-            </span>
+            <div class="bento-trend">
+                <i class="fas fa-arrow-up"></i>
+            </div>
         </div>
+        <div class="bento-number">{{ today_attendance|default:0 }}</div>
+        <div class="bento-label">Today's Attendance</div>
     </div>
 </div>
 
-<!-- Quick Stats Mini Cards -->
-<div class="row g-3 mt-2">
-    <div class="col-md-3 col-sm-6">
-        <div class="mini-stat">
-            <div class="mini-icon blue"><i class="fas fa-cubes"></i></div>
+<!-- ===== SECONDARY MINI-METRICS ===== -->
+<div class="mini-metrics">
+    <div class="mini-card">
+        <div class="mini-left">
+            <div class="mini-icon blue">
+                <i class="fas fa-cubes"></i>
+            </div>
             <div class="mini-text">
-                <div class="label">Total Classes</div>
-                <div class="value">{{ total_classes|default:0 }}</div>
+                <div class="mini-label">Classes</div>
+                <div class="mini-value">{{ total_classes|default:0 }}</div>
             </div>
         </div>
+        <span class="mini-badge">Active</span>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="mini-stat">
-            <div class="mini-icon green"><i class="fas fa-user-graduate"></i></div>
+    <div class="mini-card">
+        <div class="mini-left">
+            <div class="mini-icon green">
+                <i class="fas fa-user-check"></i>
+            </div>
             <div class="mini-text">
-                <div class="label">Present Today</div>
-                <div class="value">{{ present_today|default:0 }}</div>
+                <div class="mini-label">Present Today</div>
+                <div class="mini-value">{{ present_today|default:0 }}</div>
             </div>
         </div>
+        <span class="mini-badge">{{ attendance_percentage|default:"0%" }}</span>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="mini-stat">
-            <div class="mini-icon orange"><i class="fas fa-clock"></i></div>
+    <div class="mini-card">
+        <div class="mini-left">
+            <div class="mini-icon orange">
+                <i class="fas fa-clock"></i>
+            </div>
             <div class="mini-text">
-                <div class="label">Pending Requests</div>
-                <div class="value">{{ pending_requests|default:0 }}</div>
+                <div class="mini-label">Pending</div>
+                <div class="mini-value">0</div>
             </div>
         </div>
+        <span class="mini-badge">New</span>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="mini-stat">
-            <div class="mini-icon purple"><i class="fas fa-percent"></i></div>
+    <div class="mini-card">
+        <div class="mini-left">
+            <div class="mini-icon purple">
+                <i class="fas fa-percent"></i>
+            </div>
             <div class="mini-text">
-                <div class="label">Attendance Rate</div>
-                <div class="value">{{ attendance_rate|default:"0%" }}</div>
+                <div class="mini-label">Attendance Rate</div>
+                <div class="mini-value">{{ attendance_rate|default:"0%" }}</div>
             </div>
         </div>
+        <span class="mini-badge">Today</span>
     </div>
 </div>
 
-<!-- Admin Controls & Recent Activity -->
-<div class="row mt-4">
-    <!-- Admin Controls -->
+<!-- ===== CORE MODULE ACTIONS & RECENT ACTIVITY ===== -->
+<div class="row mt-2">
+    <!-- Core Module Actions -->
     <div class="col-lg-8">
         <div class="custom-card">
-            <div class="card-header-custom">
-                <h5><i class="fas fa-tasks me-2"></i>Admin Controls</h5>
+            <div class="card-header-clean">
+                <h5><i class="fas fa-bolt"></i>Core Module Actions</h5>
                 <span class="badge-count">
-                    <i class="fas fa-crown me-1"></i>Full Access
+                    <i class="fas fa-grid-2 me-1"></i>Modules
                 </span>
             </div>
-            <div class="row g-3">
-                <!-- Students -->
-                <div class="col-md-3 col-sm-6">
-                    <a href="{% url 'students:student_list' %}" class="action-card">
-                        <div class="action-icon blue">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="action-title">Students</div>
-                        <p class="action-desc">Manage all students</p>
-                    </a>
+            <div class="module-grid">
+                <div class="module-card" onclick="location.href='{% url 'students:student_list' %}'">
+                    <div class="module-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="module-title">Students</div>
+                    <div class="module-desc">Manage student records</div>
+                    <div class="module-menu">
+                        <a href="{% url 'students:student_list' %}" onclick="event.stopPropagation()">Manage All</a>
+                        <a href="{% url 'students:student_add' %}" onclick="event.stopPropagation()">Add New</a>
+                        <a href="{% url 'attendance:admin_attendance_list' %}" onclick="event.stopPropagation()">Reports</a>
+                    </div>
                 </div>
-                <!-- Teachers -->
-                <div class="col-md-3 col-sm-6">
-                    <a href="{% url 'teachers:teacher_list' %}" class="action-card">
-                        <div class="action-icon green">
-                            <i class="fas fa-chalkboard-teacher"></i>
-                        </div>
-                        <div class="action-title">Teachers</div>
-                        <p class="action-desc">Manage all teachers</p>
-                    </a>
+                <div class="module-card" onclick="location.href='{% url 'teachers:teacher_list' %}'">
+                    <div class="module-icon" style="background: linear-gradient(135deg, #16a34a, #059669);">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="module-title">Teachers</div>
+                    <div class="module-desc">Manage faculty staff</div>
+                    <div class="module-menu">
+                        <a href="{% url 'teachers:teacher_list' %}" onclick="event.stopPropagation()">Manage All</a>
+                        <a href="{% url 'teachers:teacher_add' %}" onclick="event.stopPropagation()">Add New</a>
+                        <a href="{% url 'teachers:teacher_list' %}" onclick="event.stopPropagation()">Reports</a>
+                    </div>
                 </div>
-                <!-- Classes -->
-                <div class="col-md-3 col-sm-6">
-                    <a href="{% url 'classes:class_list' %}" class="action-card">
-                        <div class="action-icon orange">
-                            <i class="fas fa-cubes"></i>
-                        </div>
-                        <div class="action-title">Classes</div>
-                        <p class="action-desc">Manage all classes</p>
-                    </a>
+                <div class="module-card" onclick="location.href='{% url 'classes:class_list' %}'">
+                    <div class="module-icon" style="background: linear-gradient(135deg, #d97706, #b45309);">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <div class="module-title">Classes</div>
+                    <div class="module-desc">Manage class schedules</div>
+                    <div class="module-menu">
+                        <a href="{% url 'classes:class_list' %}" onclick="event.stopPropagation()">Manage All</a>
+                        <a href="{% url 'classes:class_create' %}" onclick="event.stopPropagation()">Add New</a>
+                        <a href="{% url 'classes:class_list' %}" onclick="event.stopPropagation()">Reports</a>
+                    </div>
                 </div>
-                <!-- Courses -->
-                <div class="col-md-3 col-sm-6">
-                    <a href="{% url 'courses:course_list' %}" class="action-card">
-                        <div class="action-icon purple">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="action-title">Courses</div>
-                        <p class="action-desc">Manage all courses</p>
-                    </a>
-                </div>
-                <!-- Attendance -->
-                <div class="col-md-4 col-sm-6">
-                    <a href="{% url 'attendance:admin_attendance_list' %}" class="action-card">
-                        <div class="action-icon" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
-                            <i class="fas fa-calendar-check"></i>
-                        </div>
-                        <div class="action-title">Attendance</div>
-                        <p class="action-desc">View attendance reports</p>
-                    </a>
-                </div>
-                <!-- Reports -->
-                <div class="col-md-4 col-sm-6">
-                    <a href="#" class="action-card">
-                        <div class="action-icon" style="background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);">
-                            <i class="fas fa-file-alt"></i>
-                        </div>
-                        <div class="action-title">Reports</div>
-                        <p class="action-desc">Generate reports</p>
-                    </a>
-                </div>
-                <!-- Settings -->
-                <div class="col-md-4 col-sm-6">
-                    <a href="#" class="action-card">
-                        <div class="action-icon" style="background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);">
-                            <i class="fas fa-cog"></i>
-                        </div>
-                        <div class="action-title">Settings</div>
-                        <p class="action-desc">System settings</p>
-                    </a>
+                <div class="module-card" onclick="location.href='{% url 'courses:course_list' %}'">
+                    <div class="module-icon" style="background: linear-gradient(135deg, #9333ea, #7c3aed);">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="module-title">Courses</div>
+                    <div class="module-desc">Manage course catalog</div>
+                    <div class="module-menu">
+                        <a href="{% url 'courses:course_list' %}" onclick="event.stopPropagation()">Manage All</a>
+                        <a href="{% url 'courses:course_add' %}" onclick="event.stopPropagation()">Add New</a>
+                        <a href="{% url 'courses:course_list' %}" onclick="event.stopPropagation()">Reports</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -691,8 +647,8 @@
     <!-- Recent Activity -->
     <div class="col-lg-4">
         <div class="custom-card">
-            <div class="card-header-custom">
-                <h5><i class="fas fa-bell me-2"></i>Recent Activity</h5>
+            <div class="card-header-clean">
+                <h5><i class="fas fa-bell"></i>Recent Activity</h5>
                 <span class="badge-count">
                     <i class="fas fa-rotate me-1"></i>Latest
                 </span>
@@ -700,8 +656,7 @@
             <div class="timeline">
                 {% if recent_activities %}
                 {% for activity in recent_activities %}
-                <div
-                    class="timeline-item {% if activity.type == 'success' %}timeline-success{% elif activity.type == 'warning' %}timeline-warning{% elif activity.type == 'danger' %}timeline-danger{% endif %}">
+                <div class="timeline-item {% if activity.type == 'success' %}timeline-success{% elif activity.type == 'warning' %}timeline-warning{% elif activity.type == 'danger' %}timeline-danger{% endif %}">
                     <div class="timeline-time">
                         <i class="far fa-clock me-1"></i>{{ activity.time|timesince }} ago
                     </div>
@@ -713,7 +668,7 @@
                 {% endfor %}
                 {% else %}
                 <div class="text-center py-4">
-                    <i class="fas fa-inbox fa-2x mb-2" style="opacity: 0.2; color: #4263eb;"></i>
+                    <i class="fas fa-inbox fa-2x mb-2" style="opacity: 0.2; color: #94a3b8;"></i>
                     <p class="text-muted small mb-0">No recent activities</p>
                 </div>
                 {% endif %}
@@ -721,64 +676,41 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Initialize tooltips
     document.addEventListener('DOMContentLoaded', function () {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    });
-
-    // Animate stats cards on load
-    document.addEventListener('DOMContentLoaded', function () {
-        const cards = document.querySelectorAll('.stats-card');
+        // Animate bento cards on load
+        const cards = document.querySelectorAll('.bento-card, .mini-card, .module-card');
         cards.forEach((card, index) => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
             setTimeout(() => {
-                card.style.transition = 'all 0.5s ease';
+                card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
-            }, index * 150);
+            }, index * 80);
         });
-    });
 
-    // Auto-hide alerts after 5 seconds
-    setTimeout(function () {
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function (alert) {
-            alert.style.transition = 'opacity 0.5s ease';
-            alert.style.opacity = '0';
-            setTimeout(function () {
-                alert.style.display = 'none';
-            }, 500);
-        });
-    }, 5000);
+        // Count animation
+        function animateCount(element, target, duration = 1000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    start = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(start);
+            }, 16);
+        }
 
-    // Count animation for stats
-    function animateCount(element, target, duration = 1000) {
-        let start = 0;
-        const increment = target / (duration / 16);
-        const timer = setInterval(() => {
-            start += increment;
-            if (start >= target) {
-                start = target;
-                clearInterval(timer);
-            }
-            element.textContent = Math.round(start);
-        }, 16);
-    }
-
-    // Animate numbers when visible
-    document.addEventListener('DOMContentLoaded', function () {
-        const numberElements = document.querySelectorAll('.stats-number');
-        numberElements.forEach(el => {
+        document.querySelectorAll('.bento-number, .mini-value').forEach(el => {
             const target = parseInt(el.textContent);
-            if (target > 0) {
+            if (target > 0 && !isNaN(target)) {
                 animateCount(el, target);
             }
         });

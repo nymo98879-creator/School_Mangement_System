@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from accounts.decorators import admin_required
 from .models import Teacher
 from .forms import TeacherForm, TeacherSearchForm
+from classes.models import Class
 import csv
 from datetime import datetime
 

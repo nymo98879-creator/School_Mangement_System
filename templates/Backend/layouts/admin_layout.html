@@ -35,130 +35,140 @@
             top: 0;
             left: 0;
             width: 260px;
-            background: linear-gradient(180deg, #1a1f36 0%, #222843 50%, #1a1f36 100%);
-            color: white;
+            background: #FFFFFF;
+            color: #334155;
             padding: 0;
             transition: all 0.3s ease;
             z-index: 1000;
-            overflow-y: auto;
-            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.18);
+            overflow-y: hidden;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.04);
             display: flex;
             flex-direction: column;
+            border-right: 1px solid #e2e8f0;
         }
 
         .sidebar::-webkit-scrollbar {
-            width: 3px;
+            width: 0px;
+            background: transparent;
         }
 
         .sidebar::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
+            background: transparent;
         }
 
         .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+            background: transparent;
+            border-radius: 0;
         }
 
         /* ===== SIDEBAR BRAND ===== */
         .sidebar-brand {
-            padding: 15px 20px 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 24px 20px 18px;
+            border-bottom: 1px solid #f1f5f9;
             text-align: center;
             flex-shrink: 0;
         }
 
         .sidebar-brand .brand-icon {
-            width: 45px;
-            height: 45px;
-            background: rgba(66, 99, 235, 0.2);
-            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            background: #eff6ff;
+            border: 1.5px solid #dbeafe;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 8px;
+            margin: 0 auto 10px;
             font-size: 22px;
-            color: #4263eb;
+            color: #2563eb;
+            flex-shrink: 0;
         }
 
         .sidebar-brand h3 {
-            font-weight: 700;
+            font-weight: 800;
             margin: 0;
             font-size: 18px;
-            letter-spacing: 0.5px;
+            letter-spacing: -0.3px;
+            color: #0f172a;
         }
 
         .sidebar-brand h3 i {
-            color: #4263eb;
+            color: #2563eb;
+            margin-right: 6px;
         }
 
         .sidebar-brand small {
             display: block;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 10px;
-            margin-top: 2px;
-            letter-spacing: 1px;
+            color: #94a3b8;
+            font-size: 11px;
+            margin-top: 3px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         /* ===== SIDEBAR USER ===== */
         .sidebar-user {
-            padding: 10px 20px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 14px 20px;
+            border-bottom: 1px solid #f1f5f9;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             flex-shrink: 0;
         }
 
         .sidebar-user .avatar {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: rgba(66, 99, 235, 0.3);
+            background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 16px;
-            color: #4263eb;
-            border: 2px solid rgba(66, 99, 235, 0.3);
+            color: #334155;
+            border: 1.5px solid #e2e8f0;
             flex-shrink: 0;
         }
 
         .sidebar-user .user-info .name {
-            font-weight: 600;
+            font-weight: 700;
             font-size: 13px;
-            color: white;
-            line-height: 1.2;
+            color: #0f172a;
+            line-height: 1.3;
         }
 
         .sidebar-user .user-info .role {
             font-size: 10px;
-            color: rgba(255, 255, 255, 0.4);
+            color: #94a3b8;
+            font-weight: 600;
+            margin-top: 2px;
         }
 
         .sidebar-user .user-info .role i {
             margin-right: 3px;
-            color: #4263eb;
+            color: #334155;
             font-size: 9px;
         }
 
         /* ===== SIDEBAR MENU ===== */
         .sidebar-menu-wrapper {
             flex: 1;
-            overflow-y: auto;
-            padding-bottom: 10px;
+            overflow-y: hidden;
+            padding: 10px 0;
         }
 
         .sidebar-menu-wrapper::-webkit-scrollbar {
-            width: 3px;
+            width: 0px;
+            background: transparent;
         }
 
         .sidebar-menu-wrapper::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
+            background: transparent;
         }
 
         .sidebar-menu-wrapper::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+            background: transparent;
+            border-radius: 0;
         }
 
         .sidebar-menu {
@@ -167,29 +177,43 @@
             margin: 0;
         }
 
+        /* ===== MENU HEADERS ===== */
+        .sidebar-menu .menu-header {
+            padding: 18px 20px 6px;
+            color: #94a3b8;
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            font-weight: 700;
+        }
+
         /* ===== SINGLE LINK ===== */
         .sidebar-menu .menu-link {
             display: flex;
             align-items: center;
-            padding: 8px 20px;
-            color: rgba(255, 255, 255, 0.6);
+            padding: 9px 20px;
+            color: #475569;
             text-decoration: none;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-            font-size: 13px;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+            font-size: 13.5px;
+            font-weight: 600;
             gap: 10px;
+            margin: 2px 0;
+            border-radius: 0 10px 10px 0;
+            margin-right: 12px;
         }
 
         .sidebar-menu .menu-link:hover {
-            background: rgba(66, 99, 235, 0.08);
-            color: white;
-            border-left-color: #4263eb;
+            background: #f8fafc;
+            color: #0f172a;
+            border-left-color: #3b82f6;
         }
 
         .sidebar-menu .menu-link.active {
-            background: rgba(66, 99, 235, 0.12);
-            color: white;
-            border-left-color: #4263eb;
+            background: #eff6ff;
+            color: #2563eb;
+            border-left-color: #2563eb;
         }
 
         .sidebar-menu .menu-link i {
@@ -197,47 +221,45 @@
             font-size: 14px;
             text-align: center;
             flex-shrink: 0;
+            color: #64748b;
         }
 
-        .sidebar-menu .menu-link .badge-notification {
-            margin-left: auto;
-            background: #e74c3c;
-            color: white;
-            padding: 1px 7px;
-            border-radius: 20px;
-            font-size: 9px;
-            font-weight: 700;
-            flex-shrink: 0;
+        .sidebar-menu .menu-link.active i {
+            color: #2563eb;
         }
 
         /* ===== DROPDOWN TOGGLE ===== */
         .sidebar-menu .dropdown-toggle {
             display: flex;
             align-items: center;
-            padding: 8px 20px;
-            color: rgba(255, 255, 255, 0.6);
+            padding: 9px 20px;
+            color: #475569;
             text-decoration: none;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-            font-size: 13px;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+            font-size: 13.5px;
+            font-weight: 600;
             cursor: pointer;
             gap: 10px;
             background: none;
             border: none;
             width: 100%;
             text-align: left;
+            margin: 2px 0;
+            border-radius: 0 10px 10px 0;
+            margin-right: 12px;
         }
 
         .sidebar-menu .dropdown-toggle:hover {
-            background: rgba(66, 99, 235, 0.08);
-            color: white;
-            border-left-color: #4263eb;
+            background: #f8fafc;
+            color: #0f172a;
+            border-left-color: #3b82f6;
         }
 
         .sidebar-menu .dropdown-toggle.active {
-            background: rgba(66, 99, 235, 0.12);
-            color: white;
-            border-left-color: #4263eb;
+            background: #eff6ff;
+            color: #2563eb;
+            border-left-color: #2563eb;
         }
 
         .sidebar-menu .dropdown-toggle i {
@@ -245,28 +267,36 @@
             font-size: 14px;
             text-align: center;
             flex-shrink: 0;
+            color: #64748b;
         }
 
-        .sidebar-menu .dropdown-toggle .badge-notification {
-            margin-left: auto;
-            background: #e74c3c;
-            color: white;
-            padding: 1px 7px;
-            border-radius: 20px;
-            font-size: 9px;
-            font-weight: 700;
-            flex-shrink: 0;
+        .sidebar-menu .dropdown-toggle.active i {
+            color: #2563eb;
         }
 
         .sidebar-menu .dropdown-toggle .arrow {
             margin-left: auto;
-            transition: transform 0.3s;
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+            color: #94a3b8;
+            transition: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+        }
+
+        .sidebar-menu .dropdown-toggle .arrow .arrow-icon {
+            font-size: 10px;
+            line-height: 1;
         }
 
         .sidebar-menu .dropdown-toggle .arrow.open {
-            transform: rotate(180deg);
+            transform: none;
+        }
+
+        .sidebar-menu .dropdown-toggle .arrow.open {
+            transform: none;
         }
 
         /* ===== DROPDOWN MENU ===== */
@@ -274,38 +304,40 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            background: rgba(0, 0, 0, 0.2);
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
+            background: transparent;
+            display: none;
         }
 
         .sidebar-menu .dropdown-menu-custom.show {
-            max-height: 500px;
+            display: block;
         }
 
         .sidebar-menu .dropdown-menu-custom li a {
             display: flex;
             align-items: center;
-            padding: 6px 20px 6px 50px;
-            color: rgba(255, 255, 255, 0.5);
+            padding: 8px 20px 8px 44px;
+            color: #475569;
             text-decoration: none;
-            transition: all 0.3s;
-            font-size: 12px;
+            transition: all 0.2s;
+            font-size: 13px;
+            font-weight: 500;
             gap: 10px;
-            border-left: 3px solid transparent;
+            border-left: 4px solid transparent;
+            margin: 2px 0;
+            background: transparent;
+            border-radius: 0;
         }
 
         .sidebar-menu .dropdown-menu-custom li a:hover {
-            background: rgba(66, 99, 235, 0.08);
-            color: white;
-            border-left-color: #4263eb;
+            background: transparent;
+            color: #0f172a;
+            border-left-color: #3b82f6;
         }
 
         .sidebar-menu .dropdown-menu-custom li a.active {
-            background: rgba(66, 99, 235, 0.1);
-            color: white;
-            border-left-color: #4263eb;
+            background: transparent;
+            color: #2563eb;
+            border-left-color: #2563eb;
         }
 
         .sidebar-menu .dropdown-menu-custom li a i {
@@ -313,34 +345,28 @@
             font-size: 12px;
             text-align: center;
             flex-shrink: 0;
+            color: #64748b;
         }
 
-        .sidebar-menu .dropdown-menu-custom li a .badge-notification {
-            margin-left: auto;
-            background: #e74c3c;
-            color: white;
-            padding: 1px 6px;
-            border-radius: 20px;
-            font-size: 8px;
-            font-weight: 700;
-            flex-shrink: 0;
+        .sidebar-menu .dropdown-menu-custom li a.active i {
+            color: #2563eb;
         }
 
         /* ===== LOGOUT ===== */
         .sidebar-menu .logout-section {
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            margin-top: 5px;
-            padding-top: 5px;
+            border-top: 1px solid #f1f5f9;
+            margin-top: 10px;
+            padding-top: 10px;
         }
 
         .sidebar-menu .logout-section .menu-link {
-            color: rgba(255, 255, 255, 0.4);
+            color: #64748b;
         }
 
         .sidebar-menu .logout-section .menu-link:hover {
-            color: #e74c3c;
-            background: rgba(231, 76, 60, 0.08);
-            border-left-color: #e74c3c;
+            color: #dc2626;
+            background: #fef2f2;
+            border-left-color: #dc2626;
         }
 
         /* ===== MAIN CONTENT ===== */
@@ -967,18 +993,18 @@
         <!-- User Profile -->
         <div class="sidebar-user">
             <div class="avatar">
-                <i class="fas fa-user-shield"></i>
+                <i class="fas fa-user"></i>
             </div>
             <div class="user-info">
                 <div class="name">{{ user.get_full_name|default:user.username }}</div>
-                <div class="role"><i class="fas fa-crown"></i> Administrator</div>
+                <div class="role"><i class="fas fa-desktop"></i> Administrator</div>
             </div>
         </div>
 
         <!-- Menu with Dropdowns -->
         <div class="sidebar-menu-wrapper">
             <ul class="sidebar-menu">
-                <!-- Dashboard -->
+                <li class="menu-header">MAIN NAVIGATION</li>
                 <li>
                     <a href="{% url 'accounts:dashboard' %}"
                         class="menu-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
@@ -986,157 +1012,125 @@
                     </a>
                 </li>
 
-                <!-- Students -->
+                <li class="menu-header">MANAGEMENT</li>
                 <li>
                     <a href="{% url 'students:student_list' %}"
-                        class="menu-link {% if 'students' in request.path %}active{% endif %}">
+                        class="menu-link {% if request.resolver_match.url_name == 'student_list' %}active{% endif %}">
                         <i class="fas fa-users"></i> Students
-                        <span class="badge-notification">{{ total_students|default:0 }}</span>
                     </a>
                 </li>
-
-                <!-- Facilities Dropdown -->
                 <li>
-                    <button
-                        class="dropdown-toggle {% if 'building' in request.path or 'floor' in request.path or 'room' in request.path %}active{% endif %}"
+                    <button class="dropdown-toggle {% if request.resolver_match.url_name|slice:":9" == "building_" or request.resolver_match.url_name|slice:":6" == "floor_" or request.resolver_match.url_name|slice:":5" == "room_" %}active{% endif %}"
+                        data-arrow-closed="fa-chevron-right" data-arrow-open="fa-chevron-down"
                         onclick="toggleDropdown(this)">
                         <i class="fas fa-building"></i> Facilities
-                        <span class="badge-notification">{{ total_buildings|default:0 }}</span>
-                        <span class="arrow">▼</span>
+                        <span class="arrow"><i class="fas fa-chevron-right arrow-icon"></i></span>
                     </button>
-                    <ul
-                        class="dropdown-menu-custom {% if 'building' in request.path or 'floor' in request.path or 'room' in request.path %}show{% endif %}">
+                    <ul class="dropdown-menu-custom {% if request.resolver_match.url_name|slice:":9" == "building_" or request.resolver_match.url_name|slice:":6" == "floor_" or request.resolver_match.url_name|slice:":5" == "room_" %}show{% endif %}">
                         <li>
                             <a href="{% url 'classes:building_list' %}"
-                                class="{% if 'building' in request.path %}active{% endif %}">
+                                class="{% if request.resolver_match.url_name == 'building_list' %}active{% endif %}">
                                 <i class="fas fa-building"></i> Buildings
-                                <span class="badge-notification">{{ total_buildings|default:0 }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="{% url 'classes:floor_list' %}"
-                                class="{% if 'floor' in request.path %}active{% endif %}">
+                                class="{% if request.resolver_match.url_name == 'floor_list' %}active{% endif %}">
                                 <i class="fas fa-layer-group"></i> Floors
-                                <span class="badge-notification">{{ total_floors|default:0 }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="{% url 'classes:room_list' %}"
-                                class="{% if 'room' in request.path %}active{% endif %}">
+                                class="{% if request.resolver_match.url_name == 'room_list' %}active{% endif %}">
                                 <i class="fas fa-door-open"></i> Rooms
-                                <span class="badge-notification">{{ total_rooms|default:0 }}</span>
                             </a>
                         </li>
                     </ul>
                 </li>
-
-                <!-- Academics Dropdown -->
                 <li>
-                    <button
-                        class="dropdown-toggle {% if 'faculty' in request.path or 'department' in request.path or 'major' in request.path or 'course' in request.path %}active{% endif %}"
+                    <button class="dropdown-toggle {% if request.resolver_match.url_name|slice:":8" == "faculty_" or request.resolver_match.url_name|slice:":11" == "department_" or request.resolver_match.url_name|slice:":6" == "major_" or request.resolver_match.url_name|slice:":7" == "course_" %}active{% endif %}"
+                        data-arrow-closed="fa-chevron-right" data-arrow-open="fa-chevron-down"
                         onclick="toggleDropdown(this)">
                         <i class="fas fa-university"></i> Academics
-                        <span class="badge-notification">{{ total_courses|default:0 }}</span>
-                        <span class="arrow">▼</span>
+                        <span class="arrow"><i class="fas fa-chevron-right arrow-icon"></i></span>
                     </button>
-                    <ul
-                        class="dropdown-menu-custom {% if 'faculty' in request.path or 'department' in request.path or 'major' in request.path or 'course' in request.path %}show{% endif %}">
+                    <ul class="dropdown-menu-custom {% if request.resolver_match.url_name|slice:":8" == "faculty_" or request.resolver_match.url_name|slice:":11" == "department_" or request.resolver_match.url_name|slice:":6" == "major_" or request.resolver_match.url_name|slice:":7" == "course_" %}show{% endif %}">
                         <li>
                             <a href="{% url 'courses:faculty_list' %}"
-                                class="{% if 'faculty' in request.path %}active{% endif %}">
+                                class="{% if request.resolver_match.url_name == 'faculty_list' %}active{% endif %}">
                                 <i class="fas fa-university"></i> Faculties
-                                <span class="badge-notification">{{ total_faculties|default:0 }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="{% url 'courses:department_list' %}"
-                                class="{% if 'department' in request.path %}active{% endif %}">
+                                class="{% if request.resolver_match.url_name == 'department_list' %}active{% endif %}">
                                 <i class="fas fa-building"></i> Departments
-                                <span class="badge-notification">{{ total_departments|default:0 }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="{% url 'courses:major_list' %}"
-                                class="{% if 'major' in request.path %}active{% endif %}">
+                                class="{% if request.resolver_match.url_name == 'major_list' %}active{% endif %}">
                                 <i class="fas fa-graduation-cap"></i> Majors
-                                <span class="badge-notification">{{ total_majors|default:0 }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="{% url 'courses:course_list' %}"
-                                class="{% if 'course' in request.path and not 'faculty' in request.path and not 'department' in request.path and not 'major' in request.path %}active{% endif %}">
+                                class="{% if request.resolver_match.url_name == 'course_list' %}active{% endif %}">
                                 <i class="fas fa-book"></i> Courses
-                                <span class="badge-notification">{{ total_courses|default:0 }}</span>
                             </a>
                         </li>
                     </ul>
                 </li>
-
-                <!-- Schedule Dropdown -->
                 <li>
-                    <button
-                        class="dropdown-toggle {% if 'term' in request.path or 'timeslot' in request.path %}active{% endif %}"
+                    <button class="dropdown-toggle {% if request.resolver_match.url_name|slice:":5" == "term_" or request.resolver_match.url_name|slice:":9" == "timeslot_" %}active{% endif %}"
+                        data-arrow-closed="fa-chevron-right" data-arrow-open="fa-chevron-down"
                         onclick="toggleDropdown(this)">
                         <i class="fas fa-calendar-alt"></i> Schedule
-                        <span class="badge-notification">{{ total_terms|default:0 }}</span>
-                        <span class="arrow">▼</span>
+                        <span class="arrow"><i class="fas fa-chevron-right arrow-icon"></i></span>
                     </button>
-                    <ul
-                        class="dropdown-menu-custom {% if 'term' in request.path or 'timeslot' in request.path %}show{% endif %}">
+                    <ul class="dropdown-menu-custom {% if request.resolver_match.url_name|slice:":5" == "term_" or request.resolver_match.url_name|slice:":9" == "timeslot_" %}show{% endif %}">
                         <li>
                             <a href="{% url 'classes:term_list' %}"
-                                class="{% if 'term' in request.path %}active{% endif %}">
+                                class="{% if request.resolver_match.url_name == 'term_list' %}active{% endif %}">
                                 <i class="fas fa-calendar-alt"></i> Terms
-                                <span class="badge-notification">{{ total_terms|default:0 }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="{% url 'classes:timeslot_list' %}"
-                                class="{% if 'timeslot' in request.path %}active{% endif %}">
+                                class="{% if request.resolver_match.url_name == 'timeslot_list' %}active{% endif %}">
                                 <i class="fas fa-clock"></i> Time Slots
-                                <span class="badge-notification">{{ total_timeslots|default:0 }}</span>
                             </a>
                         </li>
                     </ul>
                 </li>
-
-                <!-- Teachers -->
                 <li>
                     <a href="{% url 'teachers:teacher_list' %}"
-                        class="menu-link {% if 'teachers' in request.path %}active{% endif %}">
+                        class="menu-link {% if request.resolver_match.url_name|slice:":8" == "teacher_" %}active{% endif %}">
                         <i class="fas fa-chalkboard-teacher"></i> Teachers
-                        <span class="badge-notification">{{ total_teachers|default:0 }}</span>
                     </a>
                 </li>
-
-                <!-- Classes -->
                 <li>
                     <a href="{% url 'classes:class_list' %}"
-                        class="menu-link {% if 'classes' in request.path and not 'building' in request.path and not 'floor' in request.path and not 'room' in request.path and not 'term' in request.path and not 'timeslot' in request.path %}active{% endif %}">
+                        class="menu-link {% if request.resolver_match.url_name == 'class_list' %}active{% endif %}">
                         <i class="fas fa-cubes"></i> All Classes
-                        <span class="badge-notification">{{ total_classes|default:0 }}</span>
                     </a>
                 </li>
-
-                <!-- Attendance -->
                 <li>
                     <a href="{% url 'attendance:admin_attendance_list' %}"
-                        class="menu-link {% if 'attendance' in request.path %}active{% endif %}">
+                        class="menu-link {% if request.resolver_match.url_name|slice:":10" == "attendance_" %}active{% endif %}">
                         <i class="fas fa-calendar-check"></i> Attendance
-                        <span class="badge-notification">{{ total_attendances|default:0 }}</span>
                     </a>
                 </li>
 
-            <li>
-                <a href="{% url 'accounts:settings' %}" class="menu-link {% if 'settings' in request.path %}active{% endif %}">
-                    <i class="fas fa-cog"></i> Settings
-                </a>
-            </li>
-
-                <!-- Logout -->
+                <li class="menu-header">SYSTEM</li>
+                <li>
+                    <a href="{% url 'accounts:settings' %}" class="menu-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+                        <i class="fas fa-gear"></i> Settings
+                    </a>
+                </li>
                 <li class="logout-section">
                     <a href="{% url 'accounts:logout' %}" class="menu-link">
-                        <i class="fas fa-sign-out-alt"></i> Logout
+                        <i class="fas fa-arrow-right-from-bracket"></i> Logout
                     </a>
                 </li>
             </ul>
@@ -1205,38 +1199,47 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ===== TOGGLE DROPDOWN =====
         function toggleDropdown(button) {
             const menu = button.nextElementSibling;
-            const arrow = button.querySelector('.arrow');
+            const arrow = button.querySelector('.arrow-icon');
+            const closedIcon = button.dataset.arrowClosed || 'fa-chevron-right';
+            const openIcon = button.dataset.arrowOpen || 'fa-chevron-down';
 
-            // Close other dropdowns
+            if (!menu || !menu.classList.contains('dropdown-menu-custom')) return;
+
             document.querySelectorAll('.dropdown-menu-custom.show').forEach(function (el) {
                 if (el !== menu) {
                     el.classList.remove('show');
                     const prevBtn = el.previousElementSibling;
                     if (prevBtn) {
-                        const prevArrow = prevBtn.querySelector('.arrow');
-                        if (prevArrow) prevArrow.classList.remove('open');
+                        const prevArrow = prevBtn.querySelector('.arrow-icon');
+                        if (prevArrow) {
+                            prevArrow.classList.remove('open');
+                            prevArrow.className = 'fas ' + (prevBtn.dataset.arrowClosed || 'fa-chevron-right') + ' arrow-icon';
+                        }
                     }
                 }
             });
 
-            // Toggle current dropdown
             menu.classList.toggle('show');
-            if (arrow) arrow.classList.toggle('open');
-
-            // Update active state
             button.classList.toggle('active');
+
+            if (arrow) {
+                if (menu.classList.contains('show')) {
+                    arrow.className = 'fas ' + openIcon + ' arrow-icon';
+                    arrow.classList.add('open');
+                } else {
+                    arrow.className = 'fas ' + closedIcon + ' arrow-icon';
+                    arrow.classList.remove('open');
+                }
+            }
         }
 
-        // ===== TOGGLE SIDEBAR =====
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('show');
             document.getElementById('mainContent').classList.toggle('sidebar-open');
         }
 
-        // ===== CLOSE SIDEBAR ON OUTSIDE CLICK (MOBILE) =====
         document.addEventListener('click', function (event) {
             const sidebar = document.getElementById('sidebar');
             const menuToggle = document.querySelector('.menu-toggle');
@@ -1248,7 +1251,6 @@
             }
         });
 
-        // ===== INITIALIZE TOOLTIPS =====
         document.addEventListener('DOMContentLoaded', function () {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -1256,13 +1258,15 @@
             });
         });
 
-        // ===== KEEP DROPDOWN OPEN ON PAGE LOAD IF ACTIVE =====
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.dropdown-menu-custom.show').forEach(function (menu) {
                 const btn = menu.previousElementSibling;
                 if (btn) {
-                    const arrow = btn.querySelector('.arrow');
-                    if (arrow) arrow.classList.add('open');
+                    const arrow = btn.querySelector('.arrow-icon');
+                    if (arrow) {
+                        arrow.className = 'fas ' + (btn.dataset.arrowOpen || 'fa-chevron-down') + ' arrow-icon';
+                        arrow.classList.add('open');
+                    }
                 }
             });
         });

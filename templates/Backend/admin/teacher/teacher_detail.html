@@ -6,40 +6,92 @@
 
 {% block extra_css %}
 <style>
-    .detail-card {
+    .welcome-banner {
+        background: linear-gradient(135deg, #1a472a 0%, #2d7d46 50%, #1a472a 100%);
+        border-radius: 20px;
+        padding: 35px 40px;
+        color: white;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(13, 40, 24, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.1);
+    }
+
+    .welcome-banner::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 250px;
+        height: 250px;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+        border-radius: 50%;
+        filter: blur(20px);
+    }
+
+    .welcome-banner::after {
+        content: '';
+        position: absolute;
+        bottom: -80px;
+        right: 100px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+        border-radius: 50%;
+        filter: blur(20px);
+    }
+
+    .welcome-banner h4 {
+        font-weight: 800;
+        font-size: 24px;
+        margin-bottom: 10px;
+        letter-spacing: -0.5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .welcome-banner h4 i {
+        color: #10b981;
+        text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    .welcome-banner p {
+        color: #94a3b8;
+        font-size: 14.5px;
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .profile-card {
         background: white;
-        border-radius: 16px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        border: 1px solid rgba(0,0,0,0.04);
+        border-radius: 20px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
         overflow: hidden;
         margin-bottom: 25px;
+        border-top: 4px solid #10b981;
     }
 
-    .detail-card .detail-title {
-        font-weight: 700;
-        color: #1a2332;
-        padding-bottom: 12px;
-        border-bottom: 2px solid #f0f4f8;
-        margin-bottom: 20px;
-        font-size: 17px;
+    .profile-card .card-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid #f0f2f8;
+        background: #fafbfc;
+        text-align: center;
     }
 
-    .detail-card .detail-title i {
-        color: #4263eb;
-        margin-right: 10px;
-    }
-
-    .profile-avatar-large {
-        width: 150px;
-        height: 150px;
+    .profile-card .card-header .profile-avatar {
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
         object-fit: cover;
-        border: 4px solid #f0f4f8;
+        border: 4px solid #f0f2f8;
+        margin-bottom: 15px;
     }
 
-    .profile-avatar-placeholder {
-        width: 150px;
-        height: 150px;
+    .profile-card .card-header .profile-avatar-placeholder {
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
         background: linear-gradient(135deg, #27ae60, #1e8449);
         display: flex;
@@ -48,20 +100,135 @@
         color: white;
         font-size: 48px;
         font-weight: 700;
-        border: 4px solid #f0f4f8;
-        margin: 0 auto;
+        border: 4px solid #f0f2f8;
+        margin: 0 auto 15px auto;
     }
 
-    .detail-item {
+    .profile-card .card-header h5 {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0 0 5px 0;
+    }
+
+    .profile-card .card-header .teacher-id {
+        font-size: 13px;
+        color: #64748b;
+        font-weight: 600;
+    }
+
+    .profile-card .card-body {
+        padding: 24px;
+    }
+
+    .profile-card .card-body .info-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13.5px;
+        color: #475569;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f2f8;
+    }
+
+    .profile-card .card-body .info-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .profile-card .card-body .info-item i {
+        width: 18px;
+        color: #64748b;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .profile-card .card-footer {
+        padding: 16px 24px;
+        background: #f8fafc;
+        border-top: 1px solid #f1f5f9;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .profile-card .card-footer .btn-action {
+        padding: 8px 14px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex: 1;
+        gap: 5px;
+        min-width: 75px;
+        transition: all 0.3s;
+        border: none;
+        text-decoration: none;
+    }
+
+    .profile-card .card-footer .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        color: white;
+    }
+
+    .profile-card .card-footer .btn-action.btn-warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .profile-card .card-footer .btn-action.btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+
+    .profile-card .card-footer .btn-action.btn-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .detail-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        margin-bottom: 25px;
+        border-top: 4px solid #10b981;
+    }
+
+    .detail-card .card-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid #f0f2f8;
+        background: #fafbfc;
+    }
+
+    .detail-card .card-header h5 {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+        font-size: 17px;
+    }
+
+    .detail-card .card-header h5 i {
+        color: #10b981;
+        margin-right: 10px;
+    }
+
+    .detail-card .card-body {
+        padding: 24px;
+    }
+
+    .detail-card .card-body .detail-item {
         padding: 10px 0;
-        border-bottom: 1px solid #f0f4f8;
+        border-bottom: 1px solid #f0f2f8;
     }
 
-    .detail-item:last-child {
+    .detail-card .card-body .detail-item:last-child {
         border-bottom: none;
     }
 
-    .detail-item .label {
+    .detail-card .card-body .detail-item .label {
         color: #8a94a6;
         font-size: 12px;
         font-weight: 600;
@@ -69,109 +236,241 @@
         letter-spacing: 0.5px;
     }
 
-    .detail-item .value {
+    .detail-card .card-body .detail-item .value {
         font-weight: 600;
         color: #1a2332;
         margin-top: 4px;
         font-size: 15px;
     }
 
-    .status-badge-large {
-        padding: 6px 20px;
+    .badge-status {
+        padding: 3px 12px;
         border-radius: 20px;
-        font-size: 14px;
-        font-weight: 600;
-        display: inline-flex;
+        font-size: 11.5px;
+        font-weight: 700;
+        display: inline-block;
+    }
+
+    .badge-status.active {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.15);
+    }
+
+    .badge-status.inactive {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.15);
+    }
+
+    .class-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .class-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-top: 4px solid #10b981;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .class-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+        border-color: rgba(16, 185, 129, 0.25);
+    }
+
+    .class-card .card-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid #f0f2f8;
+        background: #fafbfc;
+    }
+
+    .class-card .card-header .class-title {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 16px;
+        margin: 0;
+        display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 10px;
     }
 
-    .status-badge-large.active {
-        background: #eafaf1;
-        color: #27ae60;
+    .class-card .card-header .class-title i {
+        color: #10b981;
+        font-size: 18px;
     }
 
-    .status-badge-large.inactive {
-        background: #fef0f0;
-        color: #e74c3c;
+    .class-card .card-body {
+        padding: 24px;
+        flex: 1;
     }
 
-    .action-buttons .btn {
-        padding: 10px 25px;
-        font-weight: 600;
+    .class-card .card-body .class-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13.5px;
+        color: #475569;
+        margin-bottom: 12px;
     }
 
-    .qualification-tag {
-        background: #eef4ff;
-        color: #4263eb;
-        padding: 4px 15px;
+    .class-card .card-body .class-info i {
+        width: 18px;
+        color: #64748b;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 5px;
+    }
+
+    .section-header h5 {
+        font-weight: 800;
+        color: #0f172a;
+        font-size: 18px;
+        letter-spacing: -0.3px;
+    }
+
+    .section-header h5 i {
+        color: #10b981;
+        margin-right: 10px;
+    }
+
+    .section-header .badge-count {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        padding: 4px 18px;
         border-radius: 20px;
         font-size: 13px;
-        display: inline-block;
+        font-weight: 600;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        grid-column: 1 / -1;
+    }
+
+    .empty-state i {
+        font-size: 70px;
+        color: #10b981;
+        opacity: 0.2;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h5 {
+        color: #0f172a;
+        font-weight: 700;
+    }
+
+    .empty-state p {
+        color: #64748b;
+    }
+
+    @media (max-width: 768px) {
+        .class-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .class-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+    <div>
+        <h4 class="fw-bold text-slate-800 mb-1" style="font-size: 24px; color: #1e293b;">
+            <i class="fas fa-chalkboard-teacher text-emerald me-2" style="color: #10b981;"></i>Teacher Details
+        </h4>
+        <p class="text-muted mb-0">View and manage teacher profile and assigned classes.</p>
+    </div>
+    <span class="badge px-3 py-2 rounded-pill fw-bold"
+        style="font-size: 0.95rem; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
+        {% if teacher.is_active %}
+        <i class="fas fa-circle me-1" style="font-size: 8px;"></i>Active
+        {% else %}
+        <i class="fas fa-circle me-1" style="font-size: 8px;"></i>Inactive
+        {% endif %}
+    </span>
+</div>
+<hr class="mt-2 mb-4">
+
 <div class="row">
     <!-- Profile & Quick Actions -->
     <div class="col-lg-4">
-        <div class="detail-card text-center">
-            {% if teacher.profile_picture %}
-            <img src="{{ teacher.profile_picture.url }}" alt="Profile" class="profile-avatar-large mb-3">
-            {% else %}
-            <div class="profile-avatar-placeholder mb-3">
-                {{ teacher.first_name|first|upper }}
-            </div>
-            {% endif %}
-
-            <h4 class="fw-bold mb-1">{{ teacher.get_full_name }}</h4>
-            <p class="text-muted">{{ teacher.teacher_id }}</p>
-
-            <span class="qualification-tag mb-2">{{ teacher.qualification }}</span>
-
-            <span class="status-badge-large {% if teacher.is_active %}active{% else %}inactive{% endif %} d-block mt-2">
-                {% if teacher.is_active %}
-                <i class="fas fa-circle me-1" style="font-size: 8px;"></i> Active
+        <div class="profile-card">
+            <div class="card-header">
+                {% if teacher.profile_picture %}
+                <img src="{{ teacher.profile_picture.url }}" alt="Profile" class="profile-avatar">
                 {% else %}
-                <i class="fas fa-circle me-1" style="font-size: 8px;"></i> Inactive
+                <div class="profile-avatar-placeholder">
+                    {{ teacher.first_name|first|upper }}
+                </div>
                 {% endif %}
-            </span>
-
-            <div class="action-buttons mt-3">
-                <div class="d-grid gap-2">
-                    <a href="{% url 'teachers:teacher_edit' teacher.pk %}" class="btn btn-warning text-white">
-                        <i class="fas fa-edit me-2"></i>Edit Teacher
-                    </a>
-                    <a href="{% url 'teachers:teacher_toggle_status' teacher.pk %}"
-                        class="btn {% if teacher.is_active %}btn-danger{% else %}btn-success{% endif %}"
-                        onclick="return confirm('Are you sure you want to {% if teacher.is_active %}deactivate{% else %}activate{% endif %} this teacher?')">
-                        <i
-                            class="fas {% if teacher.is_active %}fa-user-slash{% else %}fa-user-check{% endif %} me-2"></i>
-                        {% if teacher.is_active %}Deactivate{% else %}Activate{% endif %}
-                    </a>
-                    <a href="{% url 'teachers:teacher_delete' teacher.pk %}" class="btn btn-danger">
-                        <i class="fas fa-trash me-2"></i>Delete Teacher
-                    </a>
+                <h5>{{ teacher.get_full_name }}</h5>
+                <p class="teacher-id">{{ teacher.teacher_id }}</p>
+                <span class="badge-status {% if teacher.is_active %}active{% else %}inactive{% endif %} mt-2 d-inline-block">
+                    {% if teacher.is_active %}Active{% else %}Inactive{% endif %}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>{{ teacher.email }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone"></i>
+                    <span>{{ teacher.phone }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ teacher.address|default:"Not provided" }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>{{ teacher.qualification }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <span>{{ teacher.specialization|default:"Not specified" }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Hired: {{ teacher.hire_date|date:"F d, Y" }}</span>
                 </div>
             </div>
-        </div>
-
-        <div class="detail-card">
-            <div class="detail-title">
-                <i class="fas fa-calendar-alt"></i>Quick Info
-            </div>
-            <div class="detail-item">
-                <div class="label">Hire Date</div>
-                <div class="value">{{ teacher.hire_date|date:"F d, Y" }}</div>
-            </div>
-            <div class="detail-item">
-                <div class="label">Years Active</div>
-                <div class="value">{{ teacher.hire_date|timesince }}</div>
-            </div>
-            <div class="detail-item">
-                <div class="label">Last Updated</div>
-                <div class="value">{{ teacher.updated_at|date:"F d, Y H:i" }}</div>
+            <div class="card-footer">
+                <a href="{% url 'teachers:teacher_edit' teacher.pk %}" class="btn-action btn-warning" title="Edit Teacher">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a href="{% url 'teachers:teacher_toggle_status' teacher.pk %}"
+                    class="btn-action {% if teacher.is_active %}btn-danger{% else %}btn-success{% endif %}"
+                    onclick="return confirm('Are you sure you want to {% if teacher.is_active %}deactivate{% else %}activate{% endif %} this teacher?')">
+                    <i class="fas {% if teacher.is_active %}fa-user-slash{% else %}fa-user-check{% endif %}"></i>
+                    {% if teacher.is_active %}Deactivate{% else %}Activate{% endif %}
+                </a>
             </div>
         </div>
     </div>
@@ -180,40 +479,42 @@
     <div class="col-lg-8">
         <!-- Personal Information -->
         <div class="detail-card">
-            <div class="detail-title">
-                <i class="fas fa-user-tie"></i>Personal Information
+            <div class="card-header">
+                <h5><i class="fas fa-user-tie"></i>Personal Information</h5>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="detail-item">
-                        <div class="label">Full Name</div>
-                        <div class="value">{{ teacher.get_full_name }}</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="detail-item">
+                            <div class="label">Full Name</div>
+                            <div class="value">{{ teacher.get_full_name }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Teacher ID</div>
+                            <div class="value"><span class="badge bg-secondary">{{ teacher.teacher_id }}</span></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Date of Birth</div>
+                            <div class="value">{{ teacher.date_of_birth|date:"F d, Y" }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Gender</div>
+                            <div class="value">{{ teacher.get_gender_display }}</div>
+                        </div>
                     </div>
-                    <div class="detail-item">
-                        <div class="label">Teacher ID</div>
-                        <div class="value"><span class="badge bg-secondary">{{ teacher.teacher_id }}</span></div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="label">Date of Birth</div>
-                        <div class="value">{{ teacher.date_of_birth|date:"F d, Y" }}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="label">Gender</div>
-                        <div class="value">{{ teacher.get_gender_display }}</div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="detail-item">
-                        <div class="label">Email</div>
-                        <div class="value">{{ teacher.email }}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="label">Phone</div>
-                        <div class="value">{{ teacher.phone }}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="label">Address</div>
-                        <div class="value">{{ teacher.address|default:"Not provided" }}</div>
+                    <div class="col-md-6">
+                        <div class="detail-item">
+                            <div class="label">Email</div>
+                            <div class="value">{{ teacher.email }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Phone</div>
+                            <div class="value">{{ teacher.phone }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Address</div>
+                            <div class="value">{{ teacher.address|default:"Not provided" }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -221,20 +522,22 @@
 
         <!-- Professional Information -->
         <div class="detail-card">
-            <div class="detail-title">
-                <i class="fas fa-graduation-cap"></i>Professional Information
+            <div class="card-header">
+                <h5><i class="fas fa-graduation-cap"></i>Professional Information</h5>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="detail-item">
-                        <div class="label">Qualification</div>
-                        <div class="value">{{ teacher.qualification }}</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="detail-item">
+                            <div class="label">Qualification</div>
+                            <div class="value">{{ teacher.qualification }}</div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="detail-item">
-                        <div class="label">Specialization</div>
-                        <div class="value">{{ teacher.specialization }}</div>
+                    <div class="col-md-6">
+                        <div class="detail-item">
+                            <div class="label">Specialization</div>
+                            <div class="value">{{ teacher.specialization }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -242,52 +545,103 @@
 
         <!-- Assigned Classes -->
         <div class="detail-card">
-            <div class="detail-title">
-                <i class="fas fa-chalkboard"></i>Assigned Classes
+            <div class="card-header">
+                <h5><i class="fas fa-chalkboard"></i>Assigned Classes</h5>
             </div>
-            {% if classes %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>Class Name</th>
-                            <th>Courses</th>
-                            <th>Students</th>
-                            <th>Schedule</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for class in classes %}
-                        <tr>
-                            <td class="fw-bold">{{ class.name }}</td>
-                            <td>
-                                {% if class.courses.exists %}
-                                    {% for c in class.courses.all %}
-                                    <span class="badge bg-info text-white mb-1 d-inline-block" style="font-size: 11px;">
-                                        {{ c.code }}
-                                    </span>
-                                    {% endfor %}
-                                {% else %}
-                                    <span class="text-muted">No courses</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ class.get_student_count }} / {{ class.capacity }}</td>
-                            <td>{{ class.get_schedule_display }}</td>
-                            <td>
-                                <span class="badge {% if class.is_active %}bg-success{% else %}bg-danger{% endif %}">
-                                    {% if class.is_active %}Active{% else %}Inactive{% endif %}
-                                </span>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="card-body">
+                {% if classes %}
+                <div class="class-grid">
+                    {% for class in classes %}
+                    <div class="class-card" data-class-id="{{ class.id }}" data-name="{{ class.name|lower }}" data-code="{{ class.code|lower|default:'' }}" data-status="{% if class.is_active %}active{% else %}inactive{% endif %}">
+                        <div class="card-header">
+                            <div class="class-title">
+                                <i class="fas fa-cube"></i>
+                                <span>{{ class.name }}</span>
+                                <span class="class-code" style="font-size: 10.5px; font-weight: 700; background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 2px 10px; border-radius: 20px; border: 1px solid rgba(16, 185, 129, 0.15); margin-left: auto;">{{ class.code|default:"" }}</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="class-info">
+                                <i class="fas fa-book"></i>
+                                <span><strong>{{ class.courses.count }}</strong> Course{{ class.courses.count|pluralize }} assigned</span>
+                            </div>
+                            <div class="class-info">
+                                <i class="fas fa-users"></i>
+                                <span><strong>{{ class.get_student_count }}</strong> / {{ class.capacity }} Students</span>
+                            </div>
+                            <div class="class-info">
+                                <i class="fas fa-clock"></i>
+                                <span>{{ class.get_schedule_display }}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer" style="padding: 1.25rem;">
+                            <a href="{% url 'classes:class_courses_view' class.id %}"
+                                class="btn btn-primary w-100 rounded-pill py-2 text-center text-white"
+                                style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                                <i class="fas fa-book-open me-2"></i> View Courses
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-chalkboard"></i>
+                    <h5>No Classes Assigned</h5>
+                    <p>This teacher hasn't been assigned to any classes yet.</p>
+                </div>
+                {% endif %}
             </div>
-            {% else %}
-            <p class="text-muted mb-0">No classes assigned to this teacher yet.</p>
-            {% endif %}
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.stats-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 150);
+        });
+
+        const classCards = document.querySelectorAll('.class-card');
+        classCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 300 + (index * 100));
+        });
+
+        function animateCount(element, target, duration = 1000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += increment;
+                if (start >= target) {
+                    start = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(start);
+            }, 16);
+        }
+
+        const numberElements = document.querySelectorAll('.stats-number');
+        numberElements.forEach(el => {
+            const target = parseInt(el.textContent.replace(/,/g, '').replace('%', ''));
+            if (target > 0 && !isNaN(target)) {
+                animateCount(el, target);
+            }
+        });
+    });
+</script>
 {% endblock %}
