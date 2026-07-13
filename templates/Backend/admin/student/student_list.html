@@ -347,6 +347,36 @@
         margin-top: 2px;
     }
 
+    /* Cell value tokens (kept as classes so dark mode can re-theme) */
+    .cell-id {
+        font-weight: 600;
+        color: #475569;
+    }
+
+    .cell-class {
+        font-weight: 500;
+        color: #334155;
+    }
+
+    .cell-gender {
+        color: #475569;
+    }
+
+    .cell-guardian-name {
+        font-weight: 500;
+        color: #334155;
+    }
+
+    .cell-guardian-phone {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .cell-unassigned {
+        color: #94a3b8;
+        font-style: italic;
+    }
+
     .instructor-cell {
         display: inline-flex;
         align-items: center;
@@ -688,20 +718,20 @@
                             <div class="student-meta">{{ student.email }}</div>
                         </div>
                     </td>
-                    <td><span style="font-weight: 600; color: #475569;">{{ student.student_id }}</span></td>
+                    <td><span class="cell-id">{{ student.student_id }}</span></td>
                     <td>
                         {% if student.class_enrolled %}
-                        <span style="font-weight: 500; color: #334155;">{{ student.class_enrolled.name }}</span>
+                        <span class="cell-class">{{ student.class_enrolled.name }}</span>
                         {% else %}
-                        <span style="color: #94a3b8; font-style: italic;">Not Assigned</span>
+                        <span class="cell-unassigned">Not Assigned</span>
                         {% endif %}
                     </td>
                     <td>
-                        <span style="color: #475569;">{{ student.get_gender_display }}</span>
+                        <span class="cell-gender">{{ student.get_gender_display }}</span>
                     </td>
                     <td>
-                        <div style="font-weight: 500; color: #334155;">{{ student.guardian_name }}</div>
-                        <div style="font-size: 13px; color: #64748b;">{{ student.guardian_phone }}</div>
+                        <div class="cell-guardian-name">{{ student.guardian_name }}</div>
+                        <div class="cell-guardian-phone">{{ student.guardian_phone }}</div>
                     </td>
                     <td>
                         <span class="status-text">
@@ -753,6 +783,17 @@
 </div>
 
 <!-- ===== PAGINATION ===== -->
+<!-- Rows per page selector -->
+<div class="per-page-selector">
+    <label for="perPageSelect">Rows per page:</label>
+    <select id="perPageSelect" class="filter-select">
+        <option value="5" {% if per_page == 5 %}selected{% endif %}>5</option>
+        <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+        <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+    </select>
+</div>
+<script src="{% static 'js/per-page.js' %}"></script>
+
 {% if students.has_other_pages %}
 <div class="pagination-wrapper" id="pagination">
     {% if students.has_previous %}

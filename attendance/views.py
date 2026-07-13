@@ -219,7 +219,15 @@ def admin_attendance_list(request):
                 Q(student__student_id__icontains=student_search)
             )
     
-    paginator = Paginator(attendances, 20)
+    per_page = request.GET.get('per_page', '20')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 20
+    if per_page not in (5, 10, 20):
+        per_page = 20
+
+    paginator = Paginator(attendances, per_page)
     page_number = request.GET.get('page')
     attendances_page = paginator.get_page(page_number)
     
@@ -235,6 +243,7 @@ def admin_attendance_list(request):
     
     context = {
         'attendances': attendances_page,
+        'per_page': per_page,
         'form': form,
         'total_attendances': total_attendances,
         'present_count': present_count,

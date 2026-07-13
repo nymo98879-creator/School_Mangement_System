@@ -52,12 +52,21 @@ def building_list(request):
         if status:
             buildings = buildings.filter(is_active=(status == 'active'))
     
-    paginator = Paginator(buildings, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(buildings, per_page)
     page = request.GET.get('page')
     buildings_page = paginator.get_page(page)
-    
+
     context = {
         'buildings': buildings_page,
+        'per_page': per_page,
         'form': form,
         'total': Building.objects.count(),
         'active': Building.objects.filter(is_active=True).count(),
@@ -142,13 +151,23 @@ def floor_list(request):
         if status:
             floors = floors.filter(is_active=(status == 'active'))
     
-    paginator = Paginator(floors, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(floors, per_page)
     page = request.GET.get('page')
     floors_page = paginator.get_page(page)
     
     context = {
         'floors': floors_page,
+        'per_page': per_page,
         'form': form,
+        'buildings': Building.objects.filter(is_active=True).order_by('name'),
         'total': Floor.objects.count(),
         'active': Floor.objects.filter(is_active=True).count(),
         'inactive': Floor.objects.filter(is_active=False).count(),
@@ -235,7 +254,15 @@ def room_list(request):
         if status:
             rooms = rooms.filter(is_active=(status == 'active'))
     
-    paginator = Paginator(rooms, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(rooms, per_page)
     page = request.GET.get('page')
     rooms_page = paginator.get_page(page)
     
@@ -243,7 +270,9 @@ def room_list(request):
     
     context = {
         'rooms': rooms_page,
+        'per_page': per_page,
         'form': form,
+        'buildings': Building.objects.filter(is_active=True).order_by('name'),
         'total': Room.objects.count(),
         'active': Room.objects.filter(is_active=True).count(),
         'inactive': Room.objects.filter(is_active=False).count(),
@@ -343,12 +372,21 @@ def term_list(request):
     # Get all unique academic years for the filter dropdown
     academic_years = Term.objects.values_list('academic_year', flat=True).distinct().order_by('-academic_year')
     
-    paginator = Paginator(terms, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(terms, per_page)
     page = request.GET.get('page')
     terms_page = paginator.get_page(page)
-    
+
     context = {
         'terms': terms_page,
+        'per_page': per_page,
         'total': Term.objects.count(),
         'active': Term.objects.filter(is_active=True).count(),
         'inactive': Term.objects.filter(is_active=False).count(),
@@ -446,12 +484,21 @@ def term_set_current(request, pk):
 def timeslot_list(request):
     slots = TimeSlot.objects.all()
     
-    paginator = Paginator(slots, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(slots, per_page)
     page = request.GET.get('page')
     slots_page = paginator.get_page(page)
-    
+
     context = {
         'timeslots': slots_page,
+        'per_page': per_page,
         'total': TimeSlot.objects.count(),
         'active': TimeSlot.objects.filter(is_active=True).count(),
         'inactive': TimeSlot.objects.filter(is_active=False).count(),
@@ -611,16 +658,25 @@ def class_list(request):
     inactive_classes = Class.objects.filter(is_active=False).count()
     total_students = Student.objects.count()
     
-    paginator = Paginator(classes, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(classes, per_page)
     page = request.GET.get('page')
     classes_page = paginator.get_page(page)
-    
+
     # Get teachers and buildings for dropdowns
     teachers = Teacher.objects.filter(is_active=True)
     buildings = Building.objects.filter(is_active=True)
-    
+
     context = {
         'classes': classes_page,
+        'per_page': per_page,
         'form': form,
         'total_classes': total_classes,
         'active_classes': active_classes,

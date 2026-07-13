@@ -4,68 +4,223 @@
 {% block title %}{{ title }}{% endblock %}
 {% block page_title %}{{ title }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    .form-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 28px;
+        box-shadow: none;
+    }
+
+    .form-card .form-header {
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #F1F5F9;
+    }
+
+    .form-card .form-header h3 {
+        font-weight: 700;
+        color: #0F172A;
+        font-size: 18px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-card .form-header h3 i {
+        color: #2563EB;
+        font-size: 18px;
+    }
+
+    .form-card .form-header .helper-text {
+        color: #94A3B8;
+        font-size: 13px;
+        margin-top: 6px;
+        font-weight: 500;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        font-size: 13.5px;
+        margin-bottom: 6px;
+    }
+
+    .form-label .required {
+        color: #DC2626;
+        margin-left: 2px;
+    }
+
+    .form-control,
+    .form-select {
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        padding: 10px 14px;
+        transition: all 0.2s;
+        font-size: 14px;
+        background: #FAFBFC;
+        color: #1E293B;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        background: #FFFFFF;
+        outline: none;
+    }
+
+    .form-control.is-invalid,
+    .form-select.is-invalid {
+        border-color: #DC2626;
+    }
+
+    .form-text {
+        font-size: 12px;
+        color: #64748B;
+        margin-top: 4px;
+    }
+
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 5px 0 0;
+        color: #DC2626;
+        font-size: 13px;
+    }
+
+    .errorlist li {
+        margin-bottom: 3px;
+    }
+
+    .btn-submit {
+        padding: 10px 28px;
+        font-weight: 600;
+        border-radius: 10px;
+        background: #2563EB;
+        border: none;
+        color: white;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-submit:hover {
+        background: #1D4ED8;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-cancel {
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 10px;
+        background: transparent;
+        border: none;
+        color: #64748B;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+    .btn-cancel:hover {
+        background: #F1F5F9;
+        color: #334155;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid #F1F5F9;
+    }
+
+    .info-box {
+        background: #EFF6FF;
+        border: 1px dashed #BFDBFE;
+        border-radius: 10px;
+        padding: 14px 18px;
+        color: #1E40AF;
+        font-size: 14px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .info-box i {
+        color: #2563EB;
+        font-size: 16px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-md-8 mx-auto">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-university me-2"></i>{{ title }}
-                </h5>
-            </div>
-            <div class="card-body">
-                <form method="POST">
-                    {% csrf_token %}
+<form method="POST" novalidate>
+    {% csrf_token %}
 
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Faculty Name <span class="text-danger">*</span></label>
-                            {{ form.name }}
-                            {% if form.name.errors %}
-                            <div class="text-danger">{{ form.name.errors }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Faculty Code <span class="text-danger">*</span></label>
-                            {{ form.code }}
-                            {% if form.code.errors %}
-                            <div class="text-danger">{{ form.code.errors }}</div>
-                            {% endif %}
-                            <small class="text-muted">e.g., SCI, ENG, BUS</small>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-bold">Description</label>
-                            {{ form.description }}
-                            {% if form.description.errors %}
-                            <div class="text-danger">{{ form.description.errors }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Dean</label>
-                            {{ form.dean }}
-                            {% if form.dean.errors %}
-                            <div class="text-danger">{{ form.dean.errors }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-check form-switch mt-4 pt-2">
-                                {{ form.is_active }}
-                                <label class="form-check-label fw-bold">Active Status</label>
-                            </div>
-                        </div>
-                    </div>
+    <div class="form-card">
+        <div class="form-header">
+            <h3><i class="fas fa-{% if 'student' in title|lower %}user-graduate{% elif 'teacher' in title|lower %}chalkboard-teacher{% elif 'course' in title|lower %}book{% elif 'class' in title|lower %}cubes{% elif 'faculty' in title|lower %}university{% elif 'department' in title|lower %}building{% elif 'major' in title|lower %}graduation-cap{% elif 'term' in title|lower %}calendar-alt{% elif 'timeslot' in title|lower %}clock{% elif 'building' in title|lower %}building{% elif 'floor' in title|lower %}layer-group{% elif 'room' in title|lower %}door-open{% else %}edit{% endif %}"></i>{{ title }}</h3>
+            <div class="helper-text">Fill in the details below to {% if is_edit %}update{% else %}create{% endif %} the record.</div>
+        </div>
 
-                    <div class="mt-4 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>Save Faculty
-                        </button>
-                        <a href="{% url 'courses:faculty_list' %}" class="btn btn-secondary">
-                            <i class="fas fa-times me-2"></i>Cancel
-                        </a>
-                    </div>
-                </form>
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} mb-3" style="border-radius: 10px; border: 1px solid #E2E8F0;">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="row g-3">
+            {% for field in form %}
+            {% if field.name != 'is_active' %}
+            <div class="col-md-4">
+                <label class="form-label" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                    {% if field.field.required %}<span class="required">*</span>{% endif %}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+                {% if field.errors %}
+                <div class="errorlist">{{ field.errors }}</div>
+                {% endif %}
             </div>
+            {% elif field.name == 'is_active' %}
+            <div class="col-md-4">
+                <div class="form-check" style="margin-top: 32px;">
+                    {{ field }}
+                    <label class="form-check-label" for="{{ field.id_for_label }}" style="color: #475569; font-weight: 600; font-size: 13.5px;">
+                        {{ field.label }}
+                    </label>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% block cancel_url %}{% url 'accounts:dashboard' %}{% endblock %}" class="btn-cancel">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-save"></i> {% block submit_text %}Save{% endblock %}
+            </button>
         </div>
     </div>
-</div>
+</form>
 {% endblock %}

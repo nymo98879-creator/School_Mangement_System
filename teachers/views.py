@@ -38,12 +38,21 @@ def teacher_list(request):
         elif status_filter == 'inactive':
             teachers = teachers.filter(is_active=False)
     
-    paginator = Paginator(teachers, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(teachers, per_page)
     page_number = request.GET.get('page')
     teachers_page = paginator.get_page(page_number)
     
     context = {
         'teachers': teachers_page,
+        'per_page': per_page,
         'form': form,
         'total_teachers': Teacher.objects.count(),
         'active_teachers': Teacher.objects.filter(is_active=True).count(),

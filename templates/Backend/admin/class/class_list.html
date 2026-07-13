@@ -872,6 +872,17 @@
 </div>
 
 <!-- ===== PAGINATION ===== -->
+<!-- Rows per page selector -->
+<div class="per-page-selector">
+    <label for="perPageSelect">Rows per page:</label>
+    <select id="perPageSelect" class="filter-select">
+        <option value="5" {% if per_page == 5 %}selected{% endif %}>5</option>
+        <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+        <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+    </select>
+</div>
+<script src="{% static 'js/per-page.js' %}"></script>
+
 {% if classes.has_other_pages %}
 <div class="pagination-wrapper" id="pagination">
     {% if classes.has_previous %}

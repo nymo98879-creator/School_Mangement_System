@@ -5,6 +5,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Theme: apply saved/system preference before first paint (no flash) -->
+    <script>
+        (function () {
+            try {
+                var stored = localStorage.getItem('theme');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var dark = stored ? stored === 'dark' : prefersDark;
+                var root = document.documentElement;
+                if (dark) {
+                    root.classList.add('dark');
+                    root.setAttribute('data-bs-theme', 'dark');
+                } else {
+                    root.setAttribute('data-bs-theme', 'light');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
     <title>{% block title %}Student Dashboard{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -373,6 +392,7 @@
             background: #a8a9ab;
         }
     </style>
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -434,6 +454,10 @@
                 </h4>
             </div>
             <div class="right-section">
+                <button id="themeToggle" class="theme-toggle-btn" type="button" data-bs-toggle="tooltip" title="Toggle dark / light theme">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
                 <button class="notification-btn" data-bs-toggle="tooltip" title="Notifications">
                     <i class="fas fa-bell"></i>
                     <span class="badge-dot"></span>
@@ -480,6 +504,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/theme.js' %}"></script>
     <script>
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('show');

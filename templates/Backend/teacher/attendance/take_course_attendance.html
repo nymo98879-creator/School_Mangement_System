@@ -2,782 +2,795 @@
 {% load static %}
 
 {% block title %}Take Attendance - {{ course.name }}{% endblock %}
-{% block page_title %}Take Attendance - {{ course.name }}{% endblock %}
+{% block page_title %}Take Attendance{% endblock %}
 
 {% block extra_css %}
 <style>
-    .attendance-form {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
-    .attendance-header {
-        background: linear-gradient(135deg, #1a472a 0%, #27ae60 100%);
-        color: white;
-        padding: 20px 25px;
-        border-radius: 12px 12px 0 0;
-        margin: -25px -25px 20px -25px;
+    body {
+        background: #F8FAFC;
+        color: #1E293B;
     }
 
-    .attendance-header h4 {
-        margin: 0;
+    /* ===== FORM CARD ===== */
+    .attendance-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 28px;
+        box-shadow: none;
+    }
+
+    .attendance-card .card-header {
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #F1F5F9;
+    }
+
+    .attendance-card .card-header h3 {
         font-weight: 700;
-    }
-
-    .attendance-header small {
-        opacity: 0.8;
-    }
-
-    .student-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
+        color: #0F172A;
+        font-size: 18px;
+        margin: 0;
         display: flex;
         align-items: center;
-        justify-content: center;
-        color: white;
+        gap: 10px;
+    }
+
+    .attendance-card .card-header h3 i {
+        color: #2563EB;
+        font-size: 18px;
+    }
+
+    .attendance-card .card-header .helper-text {
+        color: #94A3B8;
+        font-size: 13px;
+        margin-top: 6px;
+        font-weight: 500;
+    }
+
+    /* ===== METADATA GRID ===== */
+    .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .meta-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .meta-item .meta-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #94A3B8;
+    }
+
+    .meta-item .meta-value {
+        font-size: 14px;
         font-weight: 600;
+        color: #334155;
+    }
+
+    /* ===== FILTER BAR ===== */
+    .filter-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .filter-bar .search-wrapper {
+        flex: 1;
+        min-width: 240px;
+        position: relative;
+    }
+
+    .filter-bar .search-wrapper i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94A3B8;
+        font-size: 14px;
+    }
+
+    .filter-bar .search-input {
+        width: 100%;
+        padding: 10px 14px 10px 40px;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        font-size: 14px;
+        background: #FFFFFF;
+        transition: all 0.2s;
+        color: #1E293B;
+    }
+
+    .filter-bar .search-input:focus {
+        outline: none;
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    }
+
+    .filter-bar .search-input::placeholder {
+        color: #94A3B8;
+    }
+
+    .filter-bar .filter-select {
+        padding: 10px 14px;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        font-size: 14px;
+        background: #FFFFFF;
+        color: #1E293B;
+        min-width: 160px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .filter-bar .filter-select:focus {
+        outline: none;
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    }
+
+    /* ===== METRICS STRIP ===== */
+    .metrics-strip {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        padding: 14px 20px;
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .metric-item {
+        text-align: center;
+        min-width: 70px;
+    }
+
+    .metric-item .metric-number {
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+    .metric-item .metric-label {
+        font-size: 11px;
+        color: #64748B;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .metric-item.present .metric-number {
+        color: #16A34A;
+    }
+
+    .metric-item.late .metric-number {
+        color: #D97706;
+    }
+
+    .metric-item.absent .metric-number {
+        color: #DC2626;
+    }
+
+    .metric-item.excused .metric-number {
+        color: #2563EB;
+    }
+
+    .metric-item.total .metric-number {
+        color: #475569;
+    }
+
+    /* ===== DATA TABLE ===== */
+    .table-container {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 24px;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .data-table thead {
+        background: #F8FAFC;
+        border-bottom: 1px solid #E2E8F0;
+    }
+
+    .data-table thead th {
+        padding: 14px 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #64748B;
+        text-align: left;
+        white-space: nowrap;
+        border-bottom: 1px solid #E2E8F0;
+    }
+
+    .data-table tbody td {
+        padding: 16px 20px;
+        border-bottom: 1px solid #F1F5F9;
+        vertical-align: middle;
+        font-size: 14px;
+        color: #334155;
+    }
+
+    .data-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .data-table tbody tr:hover {
+        background: #F8FAFC;
+    }
+
+    .student-name-main {
+        font-weight: 700;
+        color: #0F172A;
+        font-size: 14px;
+        margin-bottom: 2px;
+    }
+
+    .student-email {
+        font-size: 12px;
+        color: #94A3B8;
+    }
+
+    .student-id-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        background: #F1F5F9;
+        color: #475569;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid #E2E8F0;
+    }
+
+    /* ===== ATTENDANCE ICON ACTIONS ===== */
+    .attendance-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .attendance-icon-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        color: #94A3B8;
+        background: transparent;
+    }
+
+    .attendance-icon-btn:hover {
+        background: #F1F5F9;
+        color: #334155;
+    }
+
+    .attendance-icon-btn.active-present {
+        background: #DCFCE7;
+        color: #16A34A;
+    }
+
+    .attendance-icon-btn.active-late {
+        background: #FEF3C7;
+        color: #D97706;
+    }
+
+    .attendance-icon-btn.active-absent {
+        background: #FEE2E2;
+        color: #DC2626;
+    }
+
+    .attendance-icon-btn.active-excused {
+        background: #DBEAFE;
+        color: #2563EB;
+    }
+
+    /* ===== STATUS PILL ===== */
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        gap: 6px;
+    }
+
+    .status-pill .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .status-pill.not-marked {
+        background: #F1F5F9;
+        color: #64748B;
+        border: 1px solid #E2E8F0;
+    }
+
+    .status-pill.not-marked .status-dot {
+        background: #94A3B8;
+    }
+
+    .status-pill.present {
+        background: #DCFCE7;
+        color: #16A34A;
+        border: 1px solid #BBF7D0;
+    }
+
+    .status-pill.present .status-dot {
+        background: #16A34A;
+        box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
+    }
+
+    .status-pill.late {
+        background: #FEF3C7;
+        color: #D97706;
+        border: 1px solid #FDE68A;
+    }
+
+    .status-pill.late .status-dot {
+        background: #D97706;
+        box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.15);
+    }
+
+    .status-pill.absent {
+        background: #FEE2E2;
+        color: #DC2626;
+        border: 1px solid #FECACA;
+    }
+
+    .status-pill.absent .status-dot {
+        background: #DC2626;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15);
+    }
+
+    .status-pill.excused {
+        background: #DBEAFE;
+        color: #2563EB;
+        border: 1px solid #BFDBFE;
+    }
+
+    .status-pill.excused .status-dot {
+        background: #2563EB;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+
+    /* ===== REMARKS INPUT ===== */
+    .remarks-input-wrapper {
+        position: relative;
+    }
+
+    .remarks-input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        font-size: 13px;
+        background: #FFFFFF;
+        transition: all 0.2s;
+        color: #1E293B;
+    }
+
+    .remarks-input:focus {
+        outline: none;
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    }
+
+    .remarks-input::placeholder {
+        color: #94A3B8;
+        font-style: italic;
+    }
+
+    /* ===== FORM ACTIONS ===== */
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #F1F5F9;
+    }
+
+    .btn-submit {
+        padding: 10px 28px;
+        font-weight: 600;
+        border-radius: 10px;
+        background: #2563EB;
+        border: none;
+        color: white;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-submit:hover {
+        background: #1D4ED8;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-cancel {
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 10px;
+        background: transparent;
+        border: none;
+        color: #64748B;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+    .btn-cancel:hover {
+        background: #F1F5F9;
+        color: #334155;
+    }
+
+    /* ===== ALERT BANNERS ===== */
+    .alert-banner {
+        border-radius: 10px;
+        border: 1px solid #E2E8F0;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+    }
+
+    .alert-banner.info {
+        background: #EFF6FF;
+        color: #1E40AF;
+        border-color: #BFDBFE;
+    }
+
+    .alert-banner.warning {
+        background: #FEF3C7;
+        color: #92400E;
+        border-color: #FDE68A;
+    }
+
+    .alert-banner i {
         font-size: 16px;
         flex-shrink: 0;
     }
 
-    .student-avatar.blue {
-        background: linear-gradient(135deg, #4263eb, #3b5bdb);
-    }
-
-    .student-avatar.green {
-        background: linear-gradient(135deg, #27ae60, #1e8449);
-    }
-
-    .student-avatar.orange {
-        background: linear-gradient(135deg, #f39c12, #d68910);
-    }
-
-    .student-avatar.purple {
-        background: linear-gradient(135deg, #9b59b6, #7d3c98);
-    }
-
-    .attendance-btn-group {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
-    .attendance-btn {
-        padding: 6px 14px;
-        border-radius: 6px;
-        border: 2px solid #e1e5eb;
-        background: white;
-        font-weight: 700;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 45px;
-        height: 36px;
-        color: #7f8c8d;
-    }
-
-    .attendance-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .attendance-btn.active-present {
-        background: #27ae60;
-        border-color: #27ae60;
-        color: white;
-        box-shadow: 0 3px 15px rgba(39, 174, 96, 0.4);
-        animation: popIn 0.3s ease;
-    }
-
-    .attendance-btn.active-late {
-        background: #f39c12;
-        border-color: #f39c12;
-        color: white;
-        box-shadow: 0 3px 15px rgba(243, 156, 18, 0.4);
-        animation: popIn 0.3s ease;
-    }
-
-    .attendance-btn.active-absent {
-        background: #e74c3c;
-        border-color: #e74c3c;
-        color: white;
-        box-shadow: 0 3px 15px rgba(231, 76, 60, 0.4);
-        animation: popIn 0.3s ease;
-    }
-
-    .attendance-btn.active-excused {
-        background: #4263eb;
-        border-color: #4263eb;
-        color: white;
-        box-shadow: 0 3px 15px rgba(66, 99, 235, 0.4);
-        animation: popIn 0.3s ease;
-    }
-
-    .attendance-btn.inactive {
-        opacity: 0.4;
-        border-color: #e1e5eb;
-        background: #f8f9fa;
-        color: #bdc3c7;
-    }
-
-    .attendance-btn.inactive:hover {
-        opacity: 0.8;
-        border-color: #bdc3c7;
-        transform: scale(1.05);
-    }
-
-    @keyframes popIn {
-        0% {
-            transform: scale(0.8);
-        }
-
-        50% {
-            transform: scale(1.1);
-        }
-
-        100% {
-            transform: scale(1);
-        }
-    }
-
-    .remarks-container .remarks-input {
-        width: 100%;
-        padding: 4px 10px;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 6px;
-        font-size: 12px;
-        background: #fafbfc;
-        transition: all 0.3s;
-        height: 30px;
-    }
-
-    .remarks-container .remarks-input:focus {
-        outline: none;
-        border-color: #4263eb;
-        box-shadow: 0 0 0 0.2rem rgba(66, 99, 235, 0.15);
-        background: white;
-    }
-
-    .remarks-container .remarks-input.has-remark {
-        border-color: #4263eb;
-        background: #ebf5fb;
-    }
-
-    .legend {
-        display: flex;
-        gap: 20px;
-        flex-wrap: wrap;
-        padding: 10px 0;
-    }
-
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 13px;
-        color: #2c3e50;
-        padding: 3px 10px;
-        border-radius: 4px;
-        background: #f8f9fa;
-    }
-
-    .legend-dot {
-        width: 14px;
-        height: 14px;
-        border-radius: 4px;
-        display: inline-block;
-    }
-
-    .legend-dot.present {
-        background: #27ae60;
-    }
-
-    .legend-dot.late {
-        background: #f39c12;
-    }
-
-    .legend-dot.absent {
-        background: #e74c3c;
-    }
-
-    .legend-dot.excused {
-        background: #4263eb;
-    }
-
-    .summary-stats {
-        background: #f8faf9;
-        border-radius: 8px;
-        padding: 12px 20px;
-        display: flex;
-        gap: 20px;
-        flex-wrap: wrap;
-        align-items: center;
-        border: 1px solid #eef2f7;
-    }
-
-    .summary-stats .stat-item {
-        text-align: center;
-        padding: 4px 12px;
-        border-radius: 6px;
-        background: white;
-        min-width: 60px;
-    }
-
-    .summary-stats .stat-item .stat-number {
-        font-size: 24px;
-        font-weight: 700;
-        display: block;
-        line-height: 1.2;
-    }
-
-    .summary-stats .stat-item .stat-label {
-        font-size: 11px;
-        color: #7f8c8d;
-        font-weight: 500;
-    }
-
-    .summary-stats .stat-item.present .stat-number {
-        color: #27ae60;
-    }
-
-    .summary-stats .stat-item.late .stat-number {
-        color: #f39c12;
-    }
-
-    .summary-stats .stat-item.absent .stat-number {
-        color: #e74c3c;
-    }
-
-    .summary-stats .stat-item.excused .stat-number {
-        color: #4263eb;
-    }
-
-    .summary-stats .stat-item.total .stat-number {
-        color: #2c3e50;
-    }
-
-    .summary-stats .stat-item.rate .stat-number {
-        color: #8e44ad;
-    }
-
-    .btn-submit {
-        padding: 10px 30px;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s;
-    }
-
-    .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(39, 174, 96, 0.3);
-    }
-
-    .status-label {
-        font-size: 13px;
-        font-weight: 600;
-        padding: 3px 12px;
-        border-radius: 12px;
-        display: inline-block;
-        min-width: 80px;
-        text-align: center;
-    }
-
-    .status-label.present {
-        background: #d5f5e3;
-        color: #27ae60;
-        border: 1px solid #27ae60;
-    }
-
-    .status-label.late {
-        background: #fdebd0;
-        color: #f39c12;
-        border: 1px solid #f39c12;
-    }
-
-    .status-label.absent {
-        background: #fadbd8;
-        color: #e74c3c;
-        border: 1px solid #e74c3c;
-    }
-
-    .status-label.excused {
-        background: #e8f0fe;
-        color: #4263eb;
-        border: 1px solid #4263eb;
-    }
-
-    .status-label.not-marked {
-        background: #f0f2f8;
-        color: #7f8c8d;
-        border: 1px solid #e9ecef;
-    }
-
-    .saved-indicator {
-        display: inline-block;
-        padding: 2px 10px;
-        border-radius: 12px;
-        font-size: 10px;
-        font-weight: 600;
-        background: #d5f5e3;
-        color: #27ae60;
-        margin-left: 6px;
-        border: 1px solid #27ae60;
-    }
-
-    .student-row.saved {
-        background: #fafffe;
-        border-left: 4px solid #27ae60;
-    }
-
-    .already-taken-warning {
-        background: #fef9e7;
-        border: 1px solid #f39c12;
-        border-radius: 8px;
-        padding: 10px 18px;
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
-
-    .already-taken-warning i {
-        color: #f39c12;
-        font-size: 18px;
-    }
-
-    .attendance-complete {
-        display: inline-block;
-        padding: 3px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-        background: #27ae60;
-        color: white;
-        box-shadow: 0 2px 10px rgba(39, 174, 96, 0.3);
-    }
-
-    .filter-section {
-        background: white;
-        border-radius: 12px;
-        padding: 15px 20px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-    }
-
-    .filter-section .search-input {
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 8px 16px;
-        font-size: 14px;
-        transition: all 0.2s;
-        background: #fafbfc;
-        width: 100%;
-    }
-
-    .filter-section .search-input:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        background: white;
-        outline: none;
-    }
-
-    .filter-section .form-select {
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 8px 16px;
-        font-size: 14px;
-        background: #fafbfc;
-        transition: all 0.2s;
-        width: 100%;
-    }
-
-    .filter-section .form-select:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        outline: none;
-    }
-
-    .table th {
-        font-weight: 600;
-        color: #2c3e50;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        border-bottom: 2px solid #eef2f7;
-    }
-
-    .table td {
-        vertical-align: middle;
-        padding: 10px 12px;
-    }
-
+    /* ===== EMPTY STATE ===== */
     .empty-state {
         text-align: center;
         padding: 60px 20px;
     }
 
     .empty-state i {
-        font-size: 60px;
-        color: #27ae60;
-        opacity: 0.3;
-        margin-bottom: 20px;
+        font-size: 48px;
+        color: #CBD5E1;
+        margin-bottom: 16px;
+        display: block;
     }
 
+    .empty-state h5 {
+        color: #0F172A;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: #64748B;
+    }
+
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-        .summary-stats {
-            gap: 10px;
-            padding: 10px 15px;
+        .meta-grid {
+            grid-template-columns: repeat(2, 1fr);
         }
 
-        .summary-stats .stat-item .stat-number {
-            font-size: 20px;
+        .filter-bar {
+            flex-direction: column;
+            align-items: stretch;
         }
 
-        .attendance-form {
-            padding: 15px;
+        .filter-bar .search-wrapper {
+            width: 100%;
         }
 
-        .attendance-header {
-            margin: -15px -15px 15px -15px;
-            padding: 15px 20px;
+        .filter-bar .filter-select {
+            width: 100%;
         }
 
-        .attendance-btn {
-            min-width: 35px;
-            height: 30px;
-            font-size: 12px;
-            padding: 4px 10px;
-        }
-
-        .legend {
-            gap: 8px;
-        }
-
-        .legend-item {
-            font-size: 11px;
-            padding: 2px 8px;
+        .metrics-strip {
+            gap: 16px;
         }
     }
 
     @media (max-width: 576px) {
-        .attendance-btn {
-            min-width: 28px;
-            height: 26px;
-            font-size: 10px;
-            padding: 2px 6px;
+        .meta-grid {
+            grid-template-columns: 1fr;
         }
 
-        .attendance-btn i {
-            display: none;
+        .metrics-strip {
+            gap: 12px;
         }
 
-        .status-label {
-            font-size: 10px;
-            min-width: 50px;
-            padding: 2px 6px;
-        }
-
-        .summary-stats .stat-item .stat-number {
-            font-size: 16px;
-        }
-
-        .summary-stats .stat-item .stat-label {
-            font-size: 9px;
+        .attendance-icon-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 11px;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="attendance-form">
-    <div class="attendance-header">
-        <h4><i class="fas fa-calendar-check me-2"></i>Take Course Attendance</h4>
-        <small>{{ course.name }} - {{ course.code }}</small>
-    </div>
+<form method="POST" id="attendanceForm">
+    {% csrf_token %}
+    <input type="hidden" name="course_id" value="{{ course.id }}">
 
-    <form method="POST" id="attendanceForm">
-        {% csrf_token %}
-        <input type="hidden" name="course_id" value="{{ course.id }}">
+    <div class="attendance-card">
+        <!-- Header -->
+        <div class="card-header">
+            <h3><i class="fas fa-calendar-check"></i> Take Attendance</h3>
+            <div class="helper-text">{{ course.name }} - {{ course.code }}</div>
+        </div>
 
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="form-label fw-bold">Date</label>
-                    <input type="date" name="date" class="form-control" value="{{ today|date:'Y-m-d' }}" required>
-                </div>
+        <!-- Metadata Grid -->
+        <div class="meta-grid">
+            <div class="meta-item">
+                <span class="meta-label">Date</span>
+                <span class="meta-value">{{ today|date:"F d, Y" }}</span>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="form-label fw-bold">Course</label>
-                    <input type="text" class="form-control" value="{{ course.name }} ({{ course.code }})" disabled>
-                </div>
+            <div class="meta-item">
+                <span class="meta-label">Course</span>
+                <span class="meta-value">{{ course.name }} ({{ course.code }})</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Teacher</span>
+                <span class="meta-value">{{ course.teacher.get_full_name|default:"-" }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Total Students</span>
+                <span class="meta-value">{{ total_students }}</span>
             </div>
         </div>
 
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="form-label fw-bold">Teacher</label>
-                    <input type="text" class="form-control"
-                        value="{{ course.teacher.get_full_name|default:'No Teacher Assigned' }}" disabled>
-                </div>
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" id="searchStudent" placeholder="Search students by name or ID...">
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="form-label fw-bold">Total Students</label>
-                    <input type="text" class="form-control" value="{{ total_students }} Students" disabled>
-                </div>
-            </div>
+            <select class="filter-select" id="filterStatus">
+                <option value="">All Status</option>
+                <option value="present">Present</option>
+                <option value="late">Late</option>
+                <option value="absent">Absent</option>
+                <option value="excused">Excused</option>
+                <option value="not-marked">Not Marked</option>
+            </select>
         </div>
 
         {% if attendance_taken %}
-        <div class="already-taken-warning">
+        <div class="alert-banner warning">
             <i class="fas fa-check-circle"></i>
             <div>
                 <strong>Attendance already taken for {{ today|date:"F d, Y" }}</strong>
                 <span class="text-muted">You can modify the status below and save again to update.</span>
             </div>
-            <span class="attendance-complete">
-                <i class="fas fa-check-circle"></i> Attendance Taken
-            </span>
         </div>
         {% endif %}
 
-        <div class="legend">
-            <span class="fw-bold me-2">Click to mark:</span>
-            <span class="legend-item"><span class="legend-dot present"></span> P = Present</span>
-            <span class="legend-item"><span class="legend-dot late"></span> L = Late</span>
-            <span class="legend-item"><span class="legend-dot absent"></span> A = Absent</span>
-            <span class="legend-item"><span class="legend-dot excused"></span> E = Excused</span>
-            <span class="text-muted ms-2 small"><i class="fas fa-info-circle"></i> Click buttons to toggle</span>
-        </div>
-
-        <div class="filter-section">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-7">
-                    <label class="form-label fw-bold">Search Student</label>
-                    <input type="text" class="form-control search-input" id="searchStudent"
-                        placeholder="Search by name or student ID...">
-                </div>
-                <div class="col-md-5">
-                    <label class="form-label fw-bold">Filter by Status</label>
-                    <select class="form-select" id="filterStatus">
-                        <option value="">All Students</option>
-                        <option value="present">Present</option>
-                        <option value="late">Late</option>
-                        <option value="absent">Absent</option>
-                        <option value="excused">Excused</option>
-                        <option value="not-marked">Not Marked</option>
-                    </select>
-                </div>
+        <!-- Metrics Strip -->
+        <div class="metrics-strip">
+            <div class="metric-item present">
+                <div class="metric-number" id="presentCount">0</div>
+                <div class="metric-label">Present</div>
+            </div>
+            <div class="metric-item late">
+                <div class="metric-number" id="lateCount">0</div>
+                <div class="metric-label">Late</div>
+            </div>
+            <div class="metric-item absent">
+                <div class="metric-number" id="absentCount">0</div>
+                <div class="metric-label">Absent</div>
+            </div>
+            <div class="metric-item excused">
+                <div class="metric-number" id="excusedCount">0</div>
+                <div class="metric-label">Excused</div>
+            </div>
+            <div class="metric-item total">
+                <div class="metric-number" id="totalCount">{{ students|length }}</div>
+                <div class="metric-label">Total</div>
             </div>
         </div>
 
         {% if students %}
-        <div class="alert alert-info d-flex justify-content-between align-items-center">
-            <div>
-                <i class="fas fa-info-circle me-2"></i>
-                Taking attendance for: <strong>{{ course.name }}</strong>
-                (<span id="visibleStudentCount">{{ students|length }}</span> students)
-            </div>
-        </div>
-
-        <div class="summary-stats mb-3">
-            <div class="stat-item present"><span class="stat-number" id="presentCount">0</span><span
-                    class="stat-label">Present</span></div>
-            <div class="stat-item late"><span class="stat-number" id="lateCount">0</span><span
-                    class="stat-label">Late</span></div>
-            <div class="stat-item absent"><span class="stat-number" id="absentCount">0</span><span
-                    class="stat-label">Absent</span></div>
-            <div class="stat-item excused"><span class="stat-number" id="excusedCount">0</span><span
-                    class="stat-label">Excused</span></div>
-            <div class="stat-item total"><span class="stat-number" id="totalCount">{{ students|length }}</span><span
-                    class="stat-label">Total</span></div>
-            <div class="stat-item rate"><span class="stat-number" id="attendanceRate">0%</span><span
-                    class="stat-label">Attendance Rate</span></div>
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th style="width: 45px;">#</th>
-                        <th>Student</th>
-                        <th style="width: 100px;">Student ID</th>
-                        <th style="text-align: center; min-width: 240px;">Attendance</th>
-                        <th style="width: 110px;">Status</th>
-                        <th style="width: 160px;">Remarks</th>
-                    </tr>
-                </thead>
-                <tbody id="studentTableBody">
-                    {% for student in students %}
-                    <tr class="student-row {% if student.attendance_status %}saved{% endif %}" id="row-{{ student.id }}"
-                        data-name="{{ student.get_full_name|lower }}" data-id="{{ student.student_id|lower }}"
-                        data-status="{{ student.attendance_status|default:'not-marked' }}">
-                        <td>{{ forloop.counter }}</td>
-                        <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="student-avatar {% cycle 'blue' 'green' 'orange' 'purple' %}">
-                                    {{ student.first_name|first|upper }}
+        <!-- Data Table -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>Student</th>
+                            <th>Student ID</th>
+                            <th style="width: 200px;">Attendance</th>
+                            <th style="width: 140px;">Status</th>
+                            <th style="width: 200px;">Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr class="student-row" id="row-{{ student.id }}" data-status="{{ student.attendance_status|default:'not-marked' }}">
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <div class="student-name-main">{{ student.get_full_name }}</div>
+                                <div class="student-email">{{ student.email }}</div>
+                            </td>
+                            <td>
+                                <span class="student-id-badge">{{ student.student_id }}</span>
+                            </td>
+                            <td>
+                                <div class="attendance-actions">
+                                    <button type="button" class="attendance-icon-btn" data-status="present" data-student="{{ student.id }}" title="Present" onclick="setAttendance({{ student.id }}, 'present')">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button type="button" class="attendance-icon-btn" data-status="late" data-student="{{ student.id }}" title="Late" onclick="setAttendance({{ student.id }}, 'late')">
+                                        <i class="fas fa-clock"></i>
+                                    </button>
+                                    <button type="button" class="attendance-icon-btn" data-status="absent" data-student="{{ student.id }}" title="Absent" onclick="setAttendance({{ student.id }}, 'absent')">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button type="button" class="attendance-icon-btn" data-status="excused" data-student="{{ student.id }}" title="Excused" onclick="setAttendance({{ student.id }}, 'excused')">
+                                        <i class="fas fa-file-alt"></i>
+                                    </button>
                                 </div>
-                                <div>
-                                    <div class="fw-bold">{{ student.get_full_name }}</div>
-                                    <small class="text-muted">{{ student.email }}</small>
+                                <input type="hidden" name="student_{{ student.id }}" id="status-{{ student.id }}" value="{{ student.attendance_status|default:'' }}">
+                            </td>
+                            <td>
+                                <span class="status-pill not-marked" id="label-{{ student.id }}">
+                                    <span class="status-dot"></span>
+                                    Not Marked
+                                </span>
+                            </td>
+                            <td>
+                                <div class="remarks-input-wrapper">
+                                    <input type="text" class="remarks-input" id="remarks-{{ student.id }}" name="remarks_{{ student.id }}" placeholder="Add remarks..." maxlength="200" value="{{ student.attendance_remarks|default:'' }}">
                                 </div>
-                            </div>
-                        </td>
-                        <td><span class="badge bg-secondary">{{ student.student_id }}</span></td>
-                        <td style="text-align: center;">
-                            <div class="attendance-btn-group">
-                                <button type="button"
-                                    class="attendance-btn {% if student.attendance_status == 'present' %}active-present{% else %}inactive{% endif %}"
-                                    onclick="setAttendance({{ student.id }}, 'present')"
-                                    id="btn-present-{{ student.id }}">
-                                    <i class="fas fa-check-circle"></i> P
-                                </button>
-                                <button type="button"
-                                    class="attendance-btn {% if student.attendance_status == 'late' %}active-late{% else %}inactive{% endif %}"
-                                    onclick="setAttendance({{ student.id }}, 'late')" id="btn-late-{{ student.id }}">
-                                    <i class="fas fa-clock"></i> L
-                                </button>
-                                <button type="button"
-                                    class="attendance-btn {% if student.attendance_status == 'absent' %}active-absent{% else %}inactive{% endif %}"
-                                    onclick="setAttendance({{ student.id }}, 'absent')"
-                                    id="btn-absent-{{ student.id }}">
-                                    <i class="fas fa-times-circle"></i> A
-                                </button>
-                                <button type="button"
-                                    class="attendance-btn {% if student.attendance_status == 'excused' %}active-excused{% else %}inactive{% endif %}"
-                                    onclick="setAttendance({{ student.id }}, 'excused')"
-                                    id="btn-excused-{{ student.id }}">
-                                    <i class="fas fa-check-circle"></i> E
-                                </button>
-                            </div>
-                            <input type="hidden" name="student_{{ student.id }}" id="status-{{ student.id }}"
-                                value="{{ student.attendance_status|default:'' }}">
-                        </td>
-                        <td>
-                            <span class="status-label 
-                                {% if student.attendance_status == 'present' %}present
-                                {% elif student.attendance_status == 'late' %}late
-                                {% elif student.attendance_status == 'absent' %}absent
-                                {% elif student.attendance_status == 'excused' %}excused
-                                {% else %}not-marked{% endif %}" id="label-{{ student.id }}">
-                                {% if student.attendance_status == 'present' %}✅ Present
-                                {% elif student.attendance_status == 'late' %}⏰ Late
-                                {% elif student.attendance_status == 'absent' %}❌ Absent
-                                {% elif student.attendance_status == 'excused' %}📝 Excused
-                                {% else %}❓ Not Marked{% endif %}
-                            </span>
-                            {% if student.attendance_status %}
-                            <span class="saved-indicator"><i class="fas fa-check-circle"></i> Saved</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <div class="remarks-container">
-                                <input type="text"
-                                    class="remarks-input {% if student.attendance_remarks %}has-remark{% endif %}"
-                                    id="remarks-{{ student.id }}" name="remarks_{{ student.id }}"
-                                    placeholder="Add remark..." maxlength="200"
-                                    value="{{ student.attendance_remarks|default:'' }}">
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mt-3 pt-3 border-top">
-            <div class="text-muted small">
-                Showing <span id="visibleCountDisplay">0</span> of <span id="totalCountDisplay">{{ students|length
-                    }}</span> students
-            </div>
-            <div class="d-flex gap-3">
-                <a href="{% url 'classes:teacher_course_attendance' %}" class="btn btn-secondary btn-submit">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </a>
-                <button type="submit" class="btn btn-success btn-submit">
-                    <i class="fas fa-save me-2"></i>Save Attendance
-                </button>
-            </div>
+        <!-- Actions -->
+        <div class="form-actions">
+            <a href="{% url 'classes:teacher_course_attendance' %}" class="btn-cancel">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-save"></i> Save Attendance
+            </button>
         </div>
         {% else %}
         <div class="empty-state">
             <i class="fas fa-user-graduate"></i>
-            <h5 class="text-muted">No Students Enrolled</h5>
-            <p class="text-muted">This course has no students enrolled yet.</p>
+            <h5>No Students Enrolled</h5>
+            <p>This course has no students enrolled yet.</p>
         </div>
         {% endif %}
-    </form>
-</div>
+    </div>
+</form>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Restore existing attendance statuses on page load
+        {% for student in students %}
+        const existingStatus{{ student.id }} = "{{ student.attendance_status|default:'' }}";
+        if (existingStatus{{ student.id }}) {
+            setAttendance({{ student.id }}, existingStatus{{ student.id }});
+        }
+        {% endfor %}
+
         updateSummary();
         filterStudents();
     });
 
+    // ===== SET ATTENDANCE =====
     function setAttendance(studentId, status) {
-        const buttons = document.querySelectorAll(`#btn-present-${studentId}, #btn-late-${studentId}, #btn-absent-${studentId}, #btn-excused-${studentId}`);
-        buttons.forEach(btn => { if (btn) btn.className = 'attendance-btn inactive'; });
-
+        const buttons = document.querySelectorAll(`.attendance-icon-btn[data-student="${studentId}"]`);
         const hiddenInput = document.getElementById(`status-${studentId}`);
         const statusLabel = document.getElementById(`label-${studentId}`);
         const remarksInput = document.getElementById(`remarks-${studentId}`);
-        const row = document.getElementById(`row-${studentId}`);
 
+        // Toggle off if same status clicked
         if (hiddenInput && hiddenInput.value === status) {
             hiddenInput.value = '';
-            if (statusLabel) { statusLabel.className = 'status-label not-marked'; statusLabel.innerHTML = '❓ Not Marked'; }
-            if (remarksInput) { remarksInput.value = ''; remarksInput.classList.remove('has-remark'); }
-            row.classList.remove('saved');
-            const savedIndicator = row.querySelector('.saved-indicator');
-            if (savedIndicator) savedIndicator.remove();
-            updateSummary(); filterStudents();
+            buttons.forEach(btn => btn.classList.remove('active-present', 'active-late', 'active-absent', 'active-excused'));
+
+            if (statusLabel) {
+                statusLabel.className = 'status-pill not-marked';
+                statusLabel.innerHTML = '<span class="status-dot"></span> Not Marked';
+            }
+
+            updateSummary();
+            filterStudents();
             return;
         }
 
-        if (hiddenInput) { hiddenInput.value = status; }
+        // Set new status
+        if (hiddenInput) {
+            hiddenInput.value = status;
+        }
 
-        const activeBtn = document.getElementById(`btn-${status}-${studentId}`);
-        if (activeBtn) { activeBtn.className = `attendance-btn active-${status}`; }
+        // Update button states
+        buttons.forEach(btn => {
+            btn.classList.remove('active-present', 'active-late', 'active-absent', 'active-excused');
+            if (btn.dataset.status === status) {
+                btn.classList.add(`active-${status}`);
+            }
+        });
 
-        const statusMap = {
-            'present': { class: 'present', label: '✅ Present' },
-            'late': { class: 'late', label: '⏰ Late' },
-            'absent': { class: 'absent', label: '❌ Absent' },
-            'excused': { class: 'excused', label: '📝 Excused' }
+        // Update status pill
+        const statusConfig = {
+            present: { class: 'present', label: '<span class="status-dot"></span> Present' },
+            late: { class: 'late', label: '<span class="status-dot"></span> Late' },
+            absent: { class: 'absent', label: '<span class="status-dot"></span> Absent' },
+            excused: { class: 'excused', label: '<span class="status-dot"></span> Excused' }
         };
 
-        const info = statusMap[status];
-        if (info && statusLabel) {
-            statusLabel.className = `status-label ${info.class}`;
-            statusLabel.innerHTML = info.label;
+        const config = statusConfig[status];
+        if (config && statusLabel) {
+            statusLabel.className = `status-pill ${config.class}`;
+            statusLabel.innerHTML = config.label;
         }
-
-        if (!row.querySelector('.saved-indicator')) {
-            const indicator = document.createElement('span');
-            indicator.className = 'saved-indicator';
-            indicator.innerHTML = '<i class="fas fa-check-circle"></i> Saved';
-            statusLabel.parentNode.appendChild(indicator);
-        }
-        row.classList.add('saved');
 
         updateSummary();
         filterStudents();
     }
 
+    // ===== UPDATE SUMMARY STATS =====
     function updateSummary() {
         let present = 0, late = 0, absent = 0, excused = 0;
+
         const inputs = document.querySelectorAll('input[name^="student_"]');
         inputs.forEach(input => {
             const status = input.value;
@@ -787,89 +800,68 @@
             else if (status === 'excused') excused++;
         });
 
-        const totalStudents = parseInt(document.getElementById('totalCount').textContent) || 0;
         document.getElementById('presentCount').textContent = present;
         document.getElementById('lateCount').textContent = late;
         document.getElementById('absentCount').textContent = absent;
         document.getElementById('excusedCount').textContent = excused;
-
-        let rate = 0;
-        if (totalStudents > 0) {
-            rate = Math.min(Math.round((present / totalStudents) * 100), 100);
-        }
-        document.getElementById('attendanceRate').textContent = rate + '%';
+        document.getElementById('totalCount').textContent = inputs.length;
     }
 
+    // ===== SEARCH & FILTER =====
+    const searchInput = document.getElementById('searchStudent');
+    const statusFilter = document.getElementById('filterStatus');
+    let searchTimeout;
+
     function filterStudents() {
-        const searchTerm = document.getElementById('searchStudent').value.toLowerCase().trim();
-        const filterStatus = document.getElementById('filterStatus').value;
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const statusFilterVal = statusFilter.value;
 
         const rows = document.querySelectorAll('.student-row');
         let visibleCount = 0;
 
         rows.forEach(row => {
-            const name = row.dataset.name || '';
-            const id = row.dataset.id || '';
-            const status = row.dataset.status || 'not-marked';
+            const name = row.querySelector('.student-name-main').textContent.toLowerCase();
+            const email = row.querySelector('.student-email').textContent.toLowerCase();
+            const studentId = row.querySelector('.student-id-badge').textContent.toLowerCase();
+            const rowStatus = row.dataset.status || '';
+
             let show = true;
-            if (searchTerm) { const match = name.includes(searchTerm) || id.includes(searchTerm); if (!match) show = false; }
-            if (filterStatus && status !== filterStatus) show = false;
+
+            if (searchTerm) {
+                if (!name.includes(searchTerm) && !email.includes(searchTerm) && !studentId.includes(searchTerm)) {
+                    show = false;
+                }
+            }
+
+            if (statusFilterVal && rowStatus !== statusFilterVal) {
+                show = false;
+            }
+
             row.style.display = show ? '' : 'none';
             if (show) visibleCount++;
         });
-
-        document.getElementById('visibleStudentCount').textContent = visibleCount;
-        document.getElementById('visibleCountDisplay').textContent = visibleCount;
-        document.getElementById('totalCountDisplay').textContent = rows.length;
     }
 
-    const searchInput = document.getElementById('searchStudent');
-    let searchTimeout;
-    searchInput.addEventListener('input', function () {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(filterStudents, 300);
-    });
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(filterStudents, 300);
+        });
+    }
 
-    document.getElementById('filterStatus').addEventListener('change', filterStudents);
+    if (statusFilter) {
+        statusFilter.addEventListener('change', filterStudents);
+    }
 
+    // ===== REMARK INPUT =====
     document.querySelectorAll('.remarks-input').forEach(input => {
         input.addEventListener('input', function () {
-            if (this.value.trim() !== '') { this.classList.add('has-remark'); }
-            else { this.classList.remove('has-remark'); }
+            if (this.value.trim() !== '') {
+                this.classList.add('has-remark');
+            } else {
+                this.classList.remove('has-remark');
+            }
         });
     });
-
-    function refreshCourseStudents() {
-        const courseId = {{ course.id }};
-        fetch(`/classes/ajax/course/${courseId}/students/`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(r => r.json())
-        .then(data => {
-            const students = data.students || [];
-            const tbody = document.getElementById('studentTableBody');
-            if (!tbody) return;
-
-            const currentIds = new Set();
-            const rows = tbody.querySelectorAll('.student-row');
-            rows.forEach(row => currentIds.add(row.id));
-
-            const newIds = new Set();
-            students.forEach(s => newIds.add('row-' + s.id));
-
-            if (currentIds.size !== newIds.size || ![...currentIds].every(id => newIds.has(id))) {
-                const info = document.querySelector('.alert-info');
-                if (info) {
-                    info.innerHTML = '<i class="fas fa-info-circle me-2"></i> Student list updated. refreshing...';
-                    info.classList.add('alert-warning');
-                    info.classList.remove('alert-info');
-                }
-                setTimeout(() => location.reload(), 1200);
-            }
-        })
-        .catch(err => console.error('Failed to refresh course students:', err));
-    }
-
-    setInterval(refreshCourseStudents, 60000);
 </script>
 {% endblock %}

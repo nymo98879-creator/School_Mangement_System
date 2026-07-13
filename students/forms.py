@@ -11,7 +11,8 @@ class StudentForm(forms.ModelForm):
     confirm_email = forms.EmailField(
         widget=forms.EmailInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Confirm Email Address'
+            'placeholder': 'Confirm Email Address',
+            'autocomplete': 'off'
         }),
         required=True,
         label="Confirm Email"
@@ -22,7 +23,8 @@ class StudentForm(forms.ModelForm):
         required=False,
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter password'
+            'placeholder': 'Enter password',
+            'autocomplete': 'new-password'
         }),
         help_text="Minimum 8 characters with at least one number"
     )
@@ -31,7 +33,8 @@ class StudentForm(forms.ModelForm):
         required=False,
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Confirm password'
+            'placeholder': 'Confirm password',
+            'autocomplete': 'new-password'
         })
     )
     
@@ -49,7 +52,7 @@ class StudentForm(forms.ModelForm):
             'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'gender': forms.Select(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., +1234567890'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'student@example.com'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'student@example.com', 'autocomplete': 'off'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter complete address'}),
             'guardian_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Guardian full name'}),
             'guardian_phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Guardian phone number'}),

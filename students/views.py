@@ -81,12 +81,21 @@ def student_list(request):
         elif qr_status == 'not_registered':
             students = students.filter(qr_registered=False)
     
-    paginator = Paginator(students, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(students, per_page)
     page_number = request.GET.get('page')
     students_page = paginator.get_page(page_number)
     
     context = {
         'students': students_page,
+        'per_page': per_page,
         'form': form,
         'total_students': Student.objects.count(),
         'active_students': Student.objects.filter(is_active=True).count(),

@@ -1,113 +1,86 @@
 {% extends 'Backend/layouts/admin_layout.html' %}
 {% load static %}
 
-{% block title %}Create Class{% endblock %}
-{% block page_title %}Create Class{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
 
 {% block extra_css %}
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap4-theme@1.0.0/dist/select2-bootstrap4.min.css"
-    rel="stylesheet" />
 <style>
-    .form-container {
-        max-width: 900px;
-        margin: 0 auto;
+    .form-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 28px;
+        box-shadow: none;
     }
 
-    .form-header {
-        margin-bottom: 30px;
-    }
-
-    .form-header h2 {
-        font-weight: 700;
-        color: #1a1a2e;
-        font-size: 28px;
-    }
-
-    .form-header p {
-        color: #6c757d;
-        font-size: 14px;
-        margin-top: 5px;
-    }
-
-    .form-section {
-        background: white;
-        border-radius: 16px;
-        padding: 28px 30px;
+    .form-card .form-header {
         margin-bottom: 24px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-        border: 1px solid #eef2f7;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #F1F5F9;
     }
 
-    .form-section .section-title {
-        font-weight: 600;
-        color: #1a1a2e;
-        font-size: 16px;
-        margin-bottom: 20px;
-        padding-bottom: 12px;
-        border-bottom: 2px solid #f0f2f8;
+    .form-card .form-header h3 {
+        font-weight: 700;
+        color: #0F172A;
+        font-size: 18px;
+        margin: 0;
         display: flex;
         align-items: center;
         gap: 10px;
     }
 
-    .form-section .section-title i {
-        color: #4f46e5;
+    .form-card .form-header h3 i {
+        color: #2563EB;
         font-size: 18px;
-        width: 24px;
     }
 
-    .form-section .section-subtitle {
+    .form-card .form-header .helper-text {
+        color: #94A3B8;
         font-size: 13px;
-        color: #6c757d;
-        margin-top: -10px;
-        margin-bottom: 18px;
+        margin-top: 6px;
+        font-weight: 500;
     }
 
     .form-label {
         font-weight: 600;
-        color: #1a1a2e;
-        font-size: 14px;
+        color: #475569;
+        font-size: 13.5px;
         margin-bottom: 6px;
     }
 
     .form-label .required {
-        color: #e74c3c;
-        margin-left: 3px;
-    }
-
-    .form-label .optional {
-        color: #adb5bd;
-        font-weight: 400;
-        font-size: 12px;
-        margin-left: 4px;
+        color: #DC2626;
+        margin-left: 2px;
     }
 
     .form-control,
     .form-select {
-        border: 1.5px solid #e2e8f0;
+        border: 1px solid #E2E8F0;
         border-radius: 10px;
         padding: 10px 14px;
         transition: all 0.2s;
         font-size: 14px;
-        background: #fafbfc;
+        background: #FAFBFC;
+        color: #1E293B;
     }
 
     .form-control:focus,
     .form-select:focus {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        background: white;
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        background: #FFFFFF;
+        outline: none;
     }
 
     .form-control.is-invalid,
     .form-select.is-invalid {
-        border-color: #e74c3c;
+        border-color: #DC2626;
     }
 
     .form-text {
         font-size: 12px;
-        color: #adb5bd;
+        color: #64748B;
         margin-top: 4px;
     }
 
@@ -115,926 +88,566 @@
         list-style: none;
         padding: 0;
         margin: 5px 0 0;
-        color: #e74c3c;
+        color: #DC2626;
         font-size: 13px;
     }
 
     .errorlist li {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    /* ===== SELECT2 CUSTOMIZATION ===== */
-    .select2-container .select2-selection--single {
-        height: 46px;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 5px 12px;
-        background: #fafbfc;
-    }
-
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
-        line-height: 34px;
-        color: #1a1a2e;
-        font-size: 14px;
-    }
-
-    .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 42px;
-    }
-
-    .select2-container--default.select2-container--focus .select2-selection--single {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    }
-
-    .select2-container--default .select2-selection--single .select2-selection__placeholder {
-        color: #adb5bd;
-    }
-
-    /* Multiple Select */
-    .select2-container .select2-selection--multiple {
-        min-height: 46px;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 5px 12px;
-        background: #fafbfc;
-    }
-
-    .select2-container--default.select2-container--focus .select2-selection--multiple {
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice {
-        background: #4f46e5;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 4px 12px;
-        margin: 2px 4px;
-        font-size: 13px;
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-        color: white;
-        margin-right: 6px;
-        font-size: 14px;
-    }
-
-    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-        color: #f87171;
-    }
-
-    .select2-dropdown {
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-    }
-
-    .select2-container--default .select2-results__option--highlighted[aria-selected] {
-        background: #4f46e5;
-    }
-
-    .select2-container--default .select2-results__option[aria-selected=true] {
-        background: #eef2ff;
-        color: #1a1a2e;
-    }
-
-    /* Custom option template */
-    .select2-result-slot {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 4px 0;
-        flex-wrap: wrap;
-    }
-
-    .select2-result-slot .slot-days-badge {
-        background: #eef2ff;
-        color: #4f46e5;
-        padding: 2px 12px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 600;
-        white-space: nowrap;
-    }
-
-    .select2-result-slot .slot-time-display {
-        font-family: 'Courier New', monospace;
-        font-weight: 500;
-        color: #1a1a2e;
-        font-size: 13px;
-        white-space: nowrap;
-    }
-
-    .select2-result-slot .slot-meta {
-        display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
-    }
-
-    .select2-result-slot .slot-type-tag {
-        font-size: 10px;
-        font-weight: 600;
-        padding: 1px 10px;
-        border-radius: 10px;
-        background: #f1f5f9;
-        color: #475569;
-        white-space: nowrap;
-    }
-
-    .select2-result-slot .slot-type-tag.weekday {
-        background: #dbeafe;
-        color: #2563eb;
-    }
-
-    .select2-result-slot .slot-type-tag.weekend {
-        background: #fce7f3;
-        color: #db2777;
-    }
-
-    .select2-result-slot .slot-availability {
-        font-size: 11px;
-        font-weight: 600;
-        padding: 1px 10px;
-        border-radius: 10px;
-        white-space: nowrap;
-    }
-
-    .select2-result-slot .slot-availability.available {
-        background: #dcfce7;
-        color: #16a34a;
-    }
-
-    .select2-result-slot .slot-availability.full {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    .select2-result-slot .slot-availability.limited {
-        background: #fef3c7;
-        color: #d97706;
-    }
-
-    /* ===== SELECTED SUMMARY ===== */
-    .selected-summary {
-        background: #f8fafc;
-        border-radius: 12px;
-        padding: 16px 20px;
-        border: 1.5px solid #e2e8f0;
-        margin-top: 16px;
-        display: none;
-    }
-
-    .selected-summary.show {
-        display: block;
-    }
-
-    .selected-summary .summary-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-
-    .selected-summary .summary-header .summary-count {
-        font-weight: 600;
-        color: #1a1a2e;
-        font-size: 14px;
-    }
-
-    .selected-summary .summary-header .summary-count span {
-        color: #4f46e5;
-    }
-
-    .selected-summary .summary-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .selected-summary .summary-item {
-        background: #eef2ff;
-        color: #4f46e5;
-        padding: 4px 14px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 500;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    /* ===== FORM ACTIONS ===== */
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-        padding-top: 10px;
-        border-top: 1px solid #eef2f7;
-        margin-top: 10px;
-    }
-
-    .btn-cancel {
-        padding: 10px 30px;
-        font-weight: 600;
-        border-radius: 10px;
-        border: 1.5px solid #e2e8f0;
-        background: white;
-        color: #4a5568;
-        transition: all 0.2s;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .btn-cancel:hover {
-        background: #f8fafc;
-        border-color: #cbd5e1;
-        text-decoration: none;
-        color: #4a5568;
+        margin-bottom: 3px;
     }
 
     .btn-submit {
-        padding: 10px 35px;
+        padding: 10px 28px;
         font-weight: 600;
         border-radius: 10px;
-        background: #4f46e5;
-        color: white;
+        background: #2563EB;
         border: none;
-        transition: all 0.2s;
+        color: white;
+        font-size: 14px;
         display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-submit:hover {
+        background: #1D4ED8;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-cancel {
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 10px;
+        background: transparent;
+        border: none;
+        color: #64748B;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+    .btn-cancel:hover {
+        background: #F1F5F9;
+        color: #334155;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid #F1F5F9;
+    }
+
+    /* ===== CASCADING LOCATION SELECTOR (Building -> Floor -> Room) ===== */
+    .cascade-field {
+        margin-bottom: 4px;
+    }
+
+    .cascade-select {
+        width: 100%;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 10px 38px 10px 14px;
+        font-size: 14px;
+        background-color: #FFFFFF;
+        color: #1E293B;
+        transition: all 0.2s;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%2394A3B8' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        background-size: 12px 12px;
+        cursor: pointer;
+    }
+
+    .cascade-select:focus {
+        outline: none;
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        background-color: #FFFFFF;
+    }
+
+    .cascade-select:disabled,
+    .cascade-select.is-locked {
+        background-color: #F1F5F9;
+        color: #94A3B8;
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 1;
+    }
+
+    /* ===== MULTI-SELECT DROPDOWN ===== */
+    .multi-select {
+        position: relative;
+    }
+
+    .multi-select-trigger {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-height: 42px;
+        padding: 6px 36px 6px 12px;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        background: #FAFBFC;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+    }
+
+    .multi-select-trigger:hover {
+        border-color: #CBD5E1;
+    }
+
+    .multi-select.open .multi-select-trigger {
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        background: #FFFFFF;
+    }
+
+    .multi-select-placeholder {
+        color: #94A3B8;
+        font-size: 14px;
+        user-select: none;
+    }
+
+    .multi-select-arrow {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 10px;
+        color: #94A3B8;
+        transition: transform 0.2s;
+        pointer-events: none;
+    }
+
+    .multi-select.open .multi-select-arrow {
+        transform: translateY(-50%) rotate(180deg);
+    }
+
+    .multi-select-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: #EFF6FF;
+        color: #1E40AF;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid #BFDBFE;
+    }
+
+    .multi-select-chip .chip-remove {
+        cursor: pointer;
+        font-size: 10px;
+        line-height: 1;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+        background: none;
+        border: none;
+        padding: 0;
+        color: inherit;
+    }
+
+    .multi-select-chip .chip-remove:hover {
+        opacity: 1;
+    }
+
+    .multi-select-dropdown {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        z-index: 1000;
+        display: none;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .multi-select.open .multi-select-dropdown {
+        display: block;
+    }
+
+    .multi-select-option {
+        padding: 10px 14px;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-size: 14px;
+        color: #334155;
+        display: flex;
         align-items: center;
         gap: 8px;
     }
 
-    .btn-submit:hover {
-        background: #4338ca;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
-        color: white;
+    .multi-select-option:hover {
+        background: #F8FAFC;
+        color: #2563EB;
     }
 
-    /* Status Badge */
-    .status-badge {
-        padding: 4px 14px;
-        border-radius: 20px;
-        font-size: 13px;
+    .multi-select-option.selected {
+        background: #EFF6FF;
+        color: #2563EB;
         font-weight: 600;
     }
 
-    .status-badge.active {
-        background: #d1fae5;
-        color: #065f46;
+    .multi-select-option .option-check {
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid #CBD5E1;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        flex-shrink: 0;
+        transition: all 0.2s;
     }
 
-    .status-badge.inactive {
-        background: #fee2e2;
-        color: #991b1b;
+    .multi-select-option.selected .option-check {
+        background: #2563EB;
+        border-color: #2563EB;
+        color: white;
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-        .form-section {
-            padding: 20px;
-        }
-
-        .form-container {
-            padding: 0 10px;
-        }
-
-        .form-actions {
-            flex-direction: column-reverse;
-        }
-
-        .form-actions .btn {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .selected-summary .summary-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .select2-result-slot {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 4px;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .form-header h2 {
-            font-size: 22px;
-        }
+    .hidden-select {
+        display: none !important;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="form-container">
-    <!-- Form Header -->
-    <div class="form-header">
-        <h2>
-            <i class="fas fa-plus-circle" style="color: #4f46e5; margin-right: 10px;"></i>
-            {% if is_edit %}Edit Class{% else %}Create Class{% endif %}
-        </h2>
-        <p>Fill in the details below to {% if is_edit %}update{% else %}create{% endif %} a new class.</p>
-    </div>
+<form method="POST" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
 
-    <!-- Form Errors -->
-    {% if form.errors %}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <h6><i class="fas fa-exclamation-triangle"></i> Please correct the following errors:</h6>
-        <ul class="mb-0">
-            {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-            <li><strong>{{ field|title }}:</strong> {{ error }}</li>
+    <div class="form-card">
+        <div class="form-header">
+            <h3><i class="fas fa-{% if 'student' in title|lower %}user-graduate{% elif 'teacher' in title|lower %}chalkboard-teacher{% elif 'course' in title|lower %}book{% elif 'class' in title|lower %}cubes{% elif 'faculty' in title|lower %}university{% elif 'department' in title|lower %}building{% elif 'major' in title|lower %}graduation-cap{% elif 'term' in title|lower %}calendar-alt{% elif 'timeslot' in title|lower %}clock{% elif 'building' in title|lower %}building{% elif 'floor' in title|lower %}layer-group{% elif 'room' in title|lower %}door-open{% else %}edit{% endif %}"></i>{{ title }}</h3>
+            <div class="helper-text">Fill in the details below to {% if is_edit %}update{% else %}create{% endif %} the record.</div>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} mb-3" style="border-radius: 10px; border: 1px solid #E2E8F0;">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="row g-3">
+            <!-- ===== CASCADING LOCATION (Building -> Floor -> Room) ===== -->
+            <div class="col-md-4 cascade-field">
+                <label class="form-label" for="id_building">Building <span class="required">*</span></label>
+                {{ form.building }}
+            </div>
+            <div class="col-md-4 cascade-field">
+                <label class="form-label" for="id_floor">Floor <span class="required">*</span></label>
+                {{ form.floor }}
+            </div>
+            <div class="col-md-4 cascade-field">
+                <label class="form-label" for="id_room">Room <span class="required">*</span></label>
+                {{ form.room }}
+            </div>
+
+            {% for field in form %}
+            {% if field.name == 'building' or field.name == 'floor' or field.name == 'room' %}
+                {# cascading location selectors are rendered above #}
+            {% elif field.name == 'time_slots' or field.name == 'courses' %}
+            <div class="col-md-4">
+                <label class="form-label" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                    {% if field.field.required %}<span class="required">*</span>{% endif %}
+                </label>
+                <div class="multi-select" id="multiSelect{{ field.name|capfirst }}" data-field-name="{{ field.name }}">
+                    <div class="multi-select-trigger" onclick="toggleMultiSelect(this)">
+                        <span class="multi-select-placeholder">Select {{ field.label|lower }}...</span>
+                        <span class="multi-select-arrow">▼</span>
+                    </div>
+                    <div class="multi-select-dropdown">
+                        {% for choice in field.field.choices %}
+                        <div class="multi-select-option{% if choice.0|stringformat:"s"|slice:":1" != ":" and choice.0|stringformat:"s" in field.value|default_if_none:""|join:"," %} selected{% endif %}" data-value="{{ choice.0 }}" data-label="{{ choice.1 }}" onclick="toggleOption(this)">
+                            <span class="option-check">{% if choice.0|stringformat:"s"|slice:":1" != ":" and choice.0|stringformat:"s" in field.value|default_if_none:""|join:"," %}✓{% endif %}</span>
+                            {{ choice.1 }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="hidden-select">{{ field }}</div>
+                {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+                {% if field.errors %}
+                <div class="errorlist">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% elif field.name != 'is_active' and field.name != 'password' and field.name != 'password_confirm' and field.name != 'days' and field.name != 'prerequisites' and field.name != 'students' and field.name != 'teachers' and field.name != 'class_obj' and field.name != 'building' and field.name != 'floor' and field.name != 'room' and field.name != 'parent' and field.name != 'head' and field.name != 'dean' %}
+            <div class="col-md-4">
+                <label class="form-label" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                    {% if field.field.required %}<span class="required">*</span>{% endif %}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+                {% if field.errors %}
+                <div class="errorlist">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% elif field.name == 'is_active' %}
+            <div class="col-md-4">
+                <div class="form-check" style="margin-top: 32px;">
+                    {{ field }}
+                    <label class="form-check-label" for="{{ field.id_for_label }}" style="color: #475569; font-weight: 600; font-size: 13.5px;">
+                        {{ field.label }}
+                    </label>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <label class="form-label" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                    {% if field.field.required %}<span class="required">*</span>{% endif %}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+                {% if field.errors %}
+                <div class="errorlist">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
             {% endfor %}
-            {% endfor %}
-        </ul>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endif %}
-
-    <!-- Main Form -->
-    <form method="POST" novalidate id="classForm">
-        {% csrf_token %}
-
-        <!-- ===== CLASS INFORMATION ===== -->
-        <div class="form-section">
-            <div class="section-title">
-                <i class="fas fa-info-circle"></i> Class Information
-            </div>
-            <div class="row g-4">
-                <div class="col-12">
-                    <label for="{{ form.name.id_for_label }}" class="form-label">
-                        Class Name <span class="required">*</span>
-                    </label>
-                    {{ form.name }}
-                    <div class="form-text">e.g. Introduction to Biology</div>
-                    {% if form.name.errors %}
-                    <div class="errorlist">
-                        {% for error in form.name.errors %}
-                        <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.courses.id_for_label }}" class="form-label">
-                        Courses <span class="optional">(Optional)</span>
-                    </label>
-                    {{ form.courses }}
-                    <div class="form-text">Hold Ctrl/Cmd to select multiple courses for this class</div>
-                    {% if form.courses.errors %}
-                    <div class="errorlist">
-                        {% for error in form.courses.errors %}
-                        <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="id_teacher" class="form-label">
-                        Instructor <span class="required">*</span>
-                    </label>
-                    {{ form.teacher }}
-                    <div class="form-text">Select the instructor for this class</div>
-                    {% if form.teacher.errors %}
-                    <div class="errorlist">
-                        {% for error in form.teacher.errors %}
-                        <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="col-12">
-                    <label for="{{ form.code.id_for_label }}" class="form-label">
-                        Class Code <span class="optional">(Optional)</span>
-                    </label>
-                    {{ form.code }}
-                    <div class="form-text">Enter a unique code for this class (auto-generated if left blank)</div>
-                    {% if form.code.errors %}
-                    <div class="errorlist">
-                        {% for error in form.code.errors %}
-                        <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
         </div>
 
-        <!-- ===== LOCATION ===== -->
-        <div class="form-section">
-            <div class="section-title">
-                <i class="fas fa-map-marker-alt"></i> Location
-            </div>
-            <div class="section-subtitle">Select the building, floor and room for this class.</div>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <label for="id_building" class="form-label">Building</label>
-                    {{ form.building }}
-                    <div class="form-text">Select the building</div>
-                    {% if form.building.errors %}
-                    <div class="errorlist">
-                        {% for error in form.building.errors %}
-                        <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="col-md-4">
-                    <label for="id_floor" class="form-label">Floor</label>
-                    {{ form.floor }}
-                    <div class="form-text">Select the floor</div>
-                    {% if form.floor.errors %}
-                    <div class="errorlist">
-                        {% for error in form.floor.errors %}
-                        <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="col-md-4">
-                    <label for="id_room" class="form-label">Room</label>
-                    {{ form.room }}
-                    <div class="form-text">Select the room</div>
-                    {% if form.room.errors %}
-                    <div class="errorlist">
-                        {% for error in form.room.errors %}
-                        <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== ACADEMIC TERM ===== -->
-        <div class="form-section">
-            <div class="section-title">
-                <i class="fas fa-calendar-alt"></i> Academic Term
-            </div>
-            <div class="section-subtitle">Select the term for this class.</div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="id_term" class="form-label">Term</label>
-                    {{ form.term }}
-                    <div class="form-text">Select the academic term</div>
-                    {% if form.term.errors %}
-                    <div class="errorlist">
-                        {% for error in form.term.errors %}
-                        <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.academic_year.id_for_label }}" class="form-label">Academic Year</label>
-                    {{ form.academic_year }}
-                    <div class="form-text">Auto-filled from term selection</div>
-                    {% if form.academic_year.errors %}
-                    <div class="errorlist">
-                        {% for error in form.academic_year.errors %}
-                        <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== TIME SLOT ===== -->
-        <div class="form-section">
-            <div class="section-title">
-                <i class="fas fa-clock"></i> Time Slot
-            </div>
-            <div class="section-subtitle">Select the time slot(s) for this class.</div>
-
-            <!-- Time Slot Dropdown -->
-            <div class="row g-3">
-                <div class="col-12">
-                    <label for="id_time_slots" class="form-label">
-                        Available Time Slots <span class="optional">(Optional)</span>
-                    </label>
-                    {{ form.time_slots }}
-                    <div class="form-text">
-                        <i class="fas fa-info-circle"></i>
-                        Select one or more time slots. Hold Ctrl/Cmd to select multiple.
-                    </div>
-                    {% if form.time_slots.errors %}
-                    <div class="errorlist">
-                        {% for error in form.time_slots.errors %}
-                        <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Selected Summary -->
-            <div class="selected-summary" id="selectedSummary">
-                <div class="summary-header">
-                    <div class="summary-count">
-                        <span id="selectedCount">0</span> time slot(s) selected
-                    </div>
-                </div>
-                <div class="summary-list" id="summaryList"></div>
-            </div>
-        </div>
-
-        <!-- ===== CAPACITY & STATUS ===== -->
-        <div class="form-section">
-            <div class="section-title">
-                <i class="fas fa-cog"></i> Capacity & Status
-            </div>
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <label for="{{ form.capacity.id_for_label }}" class="form-label">
-                        Student Capacity <span class="required">*</span>
-                    </label>
-                    {{ form.capacity }}
-                    <div class="form-text">Maximum number of students allowed (1-100)</div>
-                    {% if form.capacity.errors %}
-                    <div class="errorlist">
-                        {% for error in form.capacity.errors %}
-                        <li><i class="fas fa-exclamation-circle"></i>{{ error }}</li>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Status</label>
-                    <div class="d-flex align-items-center gap-3 pt-2">
-                        {{ form.is_active }}
-                        <label for="id_is_active" class="form-label mb-0" style="font-weight: 500;">
-                            Class is active
-                        </label>
-                        <span class="status-badge {% if form.is_active.value %}active{% else %}inactive{% endif %}"
-                            id="statusText">
-                            {% if form.is_active.value %}Active{% else %}Inactive{% endif %}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== FORM ACTIONS ===== -->
         <div class="form-actions">
-            <a href="{% url 'classes:class_list' %}" class="btn-cancel">
-                <i class="fas fa-times me-2"></i>Cancel
+            <a href="{% block cancel_url %}{% url 'classes:class_list' %}{% endblock %}" class="btn-cancel">
+                <i class="fas fa-times"></i> Cancel
             </a>
             <button type="submit" class="btn-submit">
-                <i class="fas {% if is_edit %}fa-save{% else %}fa-plus{% endif %}"></i>
-                {% if is_edit %}Update Class{% else %}Create Class{% endif %}
+                <i class="fas fa-save"></i> {% block submit_text %}Save Class{% endblock %}
             </button>
         </div>
-    </form>
-</div>
+    </div>
+</form>
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // ===== INITIALIZE SELECT2 =====
-        // Single select dropdowns
-        $('.select2').select2({
-            theme: 'bootstrap4',
-            width: '100%',
-            placeholder: 'Select an option',
-            allowClear: true
+    function toggleMultiSelect(trigger) {
+        const multiSelect = trigger.closest('.multi-select');
+        const wasOpen = multiSelect.classList.contains('open');
+
+        document.querySelectorAll('.multi-select.open').forEach(function(el) {
+            el.classList.remove('open');
         });
 
-        // Multiple select for time slots with custom template
-        $('.select2-multiple').select2({
-            theme: 'bootstrap4',
-            width: '100%',
-            placeholder: 'Search and select time slots...',
-            allowClear: true,
-            closeOnSelect: false,
-            templateResult: formatTimeSlotResult,
-            templateSelection: formatTimeSlotSelection,
-            escapeMarkup: function (markup) {
-                return markup;
-            }
+        if (!wasOpen) {
+            multiSelect.classList.add('open');
+        }
+    }
+
+    function toggleOption(option) {
+        const multiSelect = option.closest('.multi-select');
+        const trigger = multiSelect.querySelector('.multi-select-trigger');
+        const hiddenSelect = multiSelect.querySelector('.hidden-select select');
+        const optionValue = option.dataset.value;
+        const isSelected = option.classList.contains('selected');
+
+        if (isSelected) {
+            option.classList.remove('selected');
+            option.querySelector('.option-check').textContent = '';
+            hiddenSelect.querySelector('option[value="' + optionValue + '"]').selected = false;
+        } else {
+            option.classList.add('selected');
+            option.querySelector('.option-check').textContent = '✓';
+            hiddenSelect.querySelector('option[value="' + optionValue + '"]').selected = true;
+        }
+
+        updateChips(multiSelect);
+    }
+
+    function updateChips(multiSelect) {
+        const trigger = multiSelect.querySelector('.multi-select-trigger');
+        const hiddenSelect = multiSelect.querySelector('.hidden-select select');
+        const selectedOptions = multiSelect.querySelectorAll('.multi-select-option.selected');
+        const placeholder = trigger.querySelector('.multi-select-placeholder');
+        const arrow = trigger.querySelector('.multi-select-arrow');
+
+        trigger.querySelectorAll('.multi-select-chip').forEach(function(chip) {
+            chip.remove();
         });
 
-        // Custom template for time slot options
-        function formatTimeSlotResult(slot) {
-            if (!slot.id) return slot.text;
-
-            // Parse the slot text to extract details
-            const text = slot.text;
-
-            // Extract days (everything before the first colon)
-            let days = '';
-            let time = '';
-            let type = '';
-            let availability = '';
-
-            const daysMatch = text.match(/^([^:]+):/);
-            if (daysMatch) {
-                days = daysMatch[1].trim();
+        if (selectedOptions.length === 0) {
+            if (!placeholder) {
+                const ph = document.createElement('span');
+                ph.className = 'multi-select-placeholder';
+                ph.textContent = 'Select...';
+                trigger.insertBefore(ph, arrow);
             }
+        } else {
+            if (placeholder) placeholder.remove();
 
-            const timeMatch = text.match(/(\d{1,2}:\d{2}\s*[AP]M)\s*-\s*(\d{1,2}:\d{2}\s*[AP]M)/);
-            if (timeMatch) {
-                time = timeMatch[1] + ' - ' + timeMatch[2];
-            }
-
-            // Determine type
-            if (days.includes('Sat') || days.includes('Sun')) {
-                type = 'weekend';
-            } else {
-                type = 'weekday';
-            }
-
-            // Check if there's availability info in the text
-            if (text.includes('Available')) {
-                availability = 'available';
-            } else if (text.includes('Full')) {
-                availability = 'full';
-            } else if (text.includes('Limited')) {
-                availability = 'limited';
-            }
-
-            const typeLabel = type === 'weekend' ? 'Weekend' : 'Weekday';
-            const availabilityLabel = availability === 'available' ? 'Available' :
-                availability === 'full' ? 'Full' : 'Limited';
-
-            return $(`
-                <div class="select2-result-slot">
-                    <span class="slot-days-badge">${days}</span>
-                    <span class="slot-time-display">${time}</span>
-                    <span class="slot-type-tag ${type}">${typeLabel}</span>
-                    ${availability ? `<span class="slot-availability ${availability}">${availabilityLabel}</span>` : ''}
-                </div>
-            `);
-        }
-
-        function formatTimeSlotSelection(slot) {
-            if (!slot.id) return slot.text || 'Select time slots';
-
-            // Show a compact version in the selection
-            const text = slot.text;
-            const daysMatch = text.match(/^([^:]+):/);
-            const days = daysMatch ? daysMatch[1].trim() : '';
-            const timeMatch = text.match(/(\d{1,2}:\d{2}\s*[AP]M)\s*-\s*(\d{1,2}:\d{2}\s*[AP]M)/);
-            const time = timeMatch ? timeMatch[1] + '-' + timeMatch[2] : '';
-
-            return `${days} ${time}`;
-        }
-
-        // ===== TIME SLOT SELECTION DISPLAY =====
-        const timeSlotsSelect = document.getElementById('id_time_slots');
-        const selectedSummary = document.getElementById('selectedSummary');
-        const summaryList = document.getElementById('summaryList');
-        const selectedCount = document.getElementById('selectedCount');
-
-        function updateSelectedSummary() {
-            if (timeSlotsSelect && timeSlotsSelect.selectedOptions && timeSlotsSelect.selectedOptions.length > 0) {
-                const selected = [];
-                for (let option of timeSlotsSelect.selectedOptions) {
-                    const text = option.text;
-                    // Extract days and time for display
-                    const daysMatch = text.match(/^([^:]+):/);
-                    const days = daysMatch ? daysMatch[1].trim() : '';
-                    const timeMatch = text.match(/(\d{1,2}:\d{2}\s*[AP]M)\s*-\s*(\d{1,2}:\d{2}\s*[AP]M)/);
-                    const time = timeMatch ? timeMatch[1] + ' - ' + timeMatch[2] : '';
-
-                    selected.push({ days, time, value: option.value });
-                }
-
-                // Update count
-                selectedCount.textContent = selected.length;
-                selectedSummary.classList.add('show');
-
-                // Build summary list
-                let html = '';
-                selected.forEach(item => {
-                    html += `
-                        <span class="summary-item">
-                            ${item.days} ${item.time}
-                        </span>
-                    `;
-                });
-                summaryList.innerHTML = html;
-            } else {
-                selectedSummary.classList.remove('show');
-                selectedCount.textContent = '0';
-            }
-        }
-
-        if (timeSlotsSelect) {
-            // Update on change
-            $(timeSlotsSelect).on('change.select2', function () {
-                updateSelectedSummary();
-            });
-
-            // Initial update for edit mode
-            setTimeout(updateSelectedSummary, 200);
-        }
-
-        // ===== STATUS TOGGLE =====
-        const statusCheckbox = document.getElementById('id_is_active');
-        const statusText = document.getElementById('statusText');
-
-        if (statusCheckbox && statusText) {
-            statusCheckbox.addEventListener('change', function () {
-                if (this.checked) {
-                    statusText.textContent = 'Active';
-                    statusText.className = 'status-badge active';
-                } else {
-                    statusText.textContent = 'Inactive';
-                    statusText.className = 'status-badge inactive';
-                }
+            selectedOptions.forEach(function(option) {
+                const chip = document.createElement('span');
+                chip.className = 'multi-select-chip';
+                chip.dataset.value = option.dataset.value;
+                chip.innerHTML = option.dataset.label + ' <button type="button" class="chip-remove" onclick="removeChip(this, event)">×</button>';
+                trigger.insertBefore(chip, arrow);
             });
         }
+    }
 
-        // ===== TERM AUTO-FILL =====
-        const termSelect = document.getElementById('id_term');
-        const academicYearInput = document.getElementById('id_academic_year');
+    function removeChip(button, event) {
+        event.stopPropagation();
+        const chip = button.closest('.multi-select-chip');
+        const trigger = chip.closest('.multi-select-trigger');
+        const multiSelect = trigger.closest('.multi-select');
+        const hiddenSelect = multiSelect.querySelector('.hidden-select select');
+        const chipValue = chip.dataset.value;
 
-        if (termSelect) {
-            termSelect.addEventListener('change', function () {
-                const termId = this.value;
-                if (termId) {
-                    fetch(`/classes/api/get-term-details/${termId}/`, {
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (academicYearInput) {
-                                academicYearInput.value = data.academic_year;
-                            }
-                            // Re-filter courses whenever term (and thus academic year) changes
-                            refreshAvailableCourses();
-                        })
-                        .catch(error => console.error('Error loading term details:', error));
-                }
-            });
-
-            if (termSelect.value) {
-                termSelect.dispatchEvent(new Event('change'));
-            }
-        }
-
-        // ===== DYNAMIC COURSE FILTERING =====
-        // When time_slots or academic_year changes, highlight conflicting courses
-        const coursesSelect = document.getElementById('id_courses');
-        {% if is_edit and class %}
-        const currentClassPk = '{{ class.pk }}';
-        {% else %}
-        const currentClassPk = '';
-        {% endif %}
-
-        function getSelectedSlotIds() {
-            if (!timeSlotsSelect) return [];
-            return Array.from(timeSlotsSelect.selectedOptions).map(o => o.value).filter(Boolean);
-        }
-
-        function refreshCourseConflicts() {
-            if (!coursesSelect) return;
-            const slotIds = getSelectedSlotIds().join(',');
-            const year = academicYearInput ? academicYearInput.value.trim() : '';
-
-            if (!slotIds || !year) return;
-
-            const url = `/classes/api/get-available-courses/?time_slot_ids=${encodeURIComponent(slotIds)}&academic_year=${encodeURIComponent(year)}&exclude_class=${encodeURIComponent(currentClassPk)}`;
-
-            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-                .then(r => r.json())
-                .then(data => {
-                    const availableIds = new Set(data.results.map(c => String(c.id)));
-                    Array.from(coursesSelect.options).forEach(opt => {
-                        if (opt.value && !availableIds.has(String(opt.value))) {
-                            opt.style.color = '#dc2626';
-                            opt.title = 'Conflict: this course is already assigned to another class at the same time in the same academic year';
-                        } else {
-                            opt.style.color = '';
-                            opt.title = '';
-                        }
-                    });
-                })
-                .catch(err => console.error('Course conflict check error:', err));
-        }
-
-        if (timeSlotsSelect) {
-            $(timeSlotsSelect).on('change.select2', function () {
-                updateSelectedSummary();
-                refreshCourseConflicts();
-            });
-        }
-        if (academicYearInput) {
-            academicYearInput.addEventListener('input', refreshCourseConflicts);
-        }
-        setTimeout(refreshCourseConflicts, 400);
-
-        // ===== LOCATION DYNAMIC FILTERING =====
-        const buildingSelect = document.getElementById('id_building');
-        const floorSelect = document.getElementById('id_floor');
-        const roomSelect = document.getElementById('id_room');
-
-        if (buildingSelect) {
-            buildingSelect.addEventListener('change', function () {
-                const buildingId = this.value;
-                floorSelect.innerHTML = '<option value="">Select Floor</option>';
-                roomSelect.innerHTML = '<option value="">Select Room</option>';
-
-                if (buildingId) {
-                    fetch(`/classes/api/get-floors/${buildingId}/`, {
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            let html = '<option value="">Select Floor</option>';
-                            data.forEach(floor => {
-                                html += `<option value="${floor.id}">Floor ${floor.floor_number}</option>`;
-                            });
-                            floorSelect.innerHTML = html;
-                            if (floorSelect.value) {
-                                floorSelect.dispatchEvent(new Event('change'));
-                            }
-                        })
-                        .catch(error => console.error('Error loading floors:', error));
-                }
-            });
-
-            if (buildingSelect.value) {
-                buildingSelect.dispatchEvent(new Event('change'));
-            }
-        }
-
-        if (floorSelect) {
-            floorSelect.addEventListener('change', function () {
-                const floorId = this.value;
-                roomSelect.innerHTML = '<option value="">Select Room</option>';
-
-                if (floorId) {
-                    fetch(`/classes/api/get-rooms/${floorId}/`, {
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            let html = '<option value="">Select Room</option>';
-                            data.forEach(room => {
-                                html += `<option value="${room.id}">Room ${room.room_number}${room.name ? ` - ${room.name}` : ''}</option>`;
-                            });
-                            roomSelect.innerHTML = html;
-                        })
-                        .catch(error => console.error('Error loading rooms:', error));
-                }
-            });
-
-            if (floorSelect.value) {
-                floorSelect.dispatchEvent(new Event('change'));
-            }
-        }
-
-        // ===== FORM VALIDATION =====
-        const form = document.getElementById('classForm');
-
-        form.addEventListener('submit', function (e) {
-            let isValid = true;
-            const requiredFields = form.querySelectorAll('[required]');
-
-            requiredFields.forEach(function (field) {
-                if (!field.value || !field.value.trim()) {
-                    field.classList.add('is-invalid');
-                    isValid = false;
-                } else {
-                    field.classList.remove('is-invalid');
-                }
-            });
-
-            if (!isValid) {
-                e.preventDefault();
-                const firstError = form.querySelector('.is-invalid');
-                if (firstError) {
-                    firstError.focus();
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+        const allOptions = multiSelect.querySelectorAll('.multi-select-option');
+        allOptions.forEach(function(opt) {
+            if (opt.dataset.value === chipValue) {
+                opt.classList.remove('selected');
+                opt.querySelector('.option-check').textContent = '';
+                hiddenSelect.querySelector('option[value="' + chipValue + '"]').selected = false;
             }
         });
 
-        // ===== REMOVE IS-INVALID ON INPUT =====
-        form.querySelectorAll('input, select, textarea').forEach(function (input) {
-            input.addEventListener('input', function () {
-                this.classList.remove('is-invalid');
+        updateChips(multiSelect);
+    }
+
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.multi-select')) {
+            document.querySelectorAll('.multi-select.open').forEach(function(el) {
+                el.classList.remove('open');
             });
-            input.addEventListener('change', function () {
-                this.classList.remove('is-invalid');
-            });
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.multi-select').forEach(function(multiSelect) {
+            updateChips(multiSelect);
         });
     });
+</script>
+
+<script>
+    /* Cascading Building -> Floor -> Room selector */
+    (function () {
+        'use strict';
+        var building = document.getElementById('id_building');
+        var floor = document.getElementById('id_floor');
+        var room = document.getElementById('id_room');
+        if (!building || !floor || !room) return;
+
+        var FLOORS_URL = "{% url 'classes:get_floors' 0 %}";
+        var ROOMS_URL = "{% url 'classes:get_rooms' 0 %}";
+
+        function floorLabel(f) {
+            return f.name ? f.name : ('Floor ' + (f.floor_number || ''));
+        }
+
+        function roomLabel(r) {
+            return r.name ? r.name : ('Room ' + (r.room_number || ''));
+        }
+
+        function enable(select, placeholder) {
+            select.disabled = false;
+            select.classList.remove('is-locked');
+            select.dataset.placeholder = placeholder;
+            select.innerHTML = '<option value="" selected disabled>' + placeholder + '</option>';
+        }
+
+        function lock(select, placeholder) {
+            select.disabled = true;
+            select.classList.add('is-locked');
+            select.dataset.placeholder = placeholder;
+            select.innerHTML = '<option value="" selected disabled>' + placeholder + '</option>';
+        }
+
+        function fillOptions(select, items, labelFn) {
+            select.innerHTML = '<option value="" selected disabled>' + (select.dataset.placeholder || 'Select...') + '</option>';
+            items.forEach(function (it) {
+                var opt = document.createElement('option');
+                opt.value = it.id;
+                opt.textContent = labelFn(it);
+                select.appendChild(opt);
+            });
+        }
+
+        function loadFloors(buildingId, selectedFloorId, done) {
+            fetch(FLOORS_URL.replace(/0\/$/, buildingId + '/'))
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    enable(floor, 'Select floor...');
+                    fillOptions(floor, data, floorLabel);
+                    if (selectedFloorId) floor.value = String(selectedFloorId);
+                    if (typeof done === 'function') done();
+                })
+                .catch(function () { enable(floor, 'Select floor...'); });
+        }
+
+        function loadRooms(floorId, selectedRoomId) {
+            fetch(ROOMS_URL.replace(/0\/$/, floorId + '/'))
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    enable(room, 'Select room...');
+                    fillOptions(room, data, roomLabel);
+                    if (selectedRoomId) room.value = String(selectedRoomId);
+                })
+                .catch(function () { enable(room, 'Select room...'); });
+        }
+
+        // Initial locked state
+        lock(floor, 'Select building first...');
+        lock(room, 'Select building first...');
+
+        var initialBuilding = building.value;
+        var initialFloor = floor.value;
+        var initialRoom = room.value;
+
+        if (initialBuilding) {
+            loadFloors(initialBuilding, initialFloor || null, function () {
+                if (initialFloor) {
+                    loadRooms(initialFloor, initialRoom || null);
+                }
+            });
+        }
+
+        building.addEventListener('change', function () {
+            // Reset safeguards: clear dependent selections
+            lock(floor, 'Select floor...');
+            lock(room, 'Select building first...');
+            if (building.value) {
+                loadFloors(building.value, null, null);
+            }
+        });
+
+        floor.addEventListener('change', function () {
+            lock(room, 'Select floor first...');
+            if (floor.value) {
+                loadRooms(floor.value, null);
+            }
+        });
+    })();
 </script>
 {% endblock %}

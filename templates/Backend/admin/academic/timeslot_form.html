@@ -6,70 +6,144 @@
 
 {% block extra_css %}
 <style>
-    .form-section {
-        background: white;
+    .form-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
         border-radius: 12px;
-        padding: 25px;
-        margin-bottom: 25px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 28px;
+        box-shadow: none;
     }
 
-    .form-section .section-title {
-        font-weight: 600;
-        color: #2c3e50;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #e8f0fe;
-        margin-bottom: 20px;
-        font-size: 16px;
+    .form-card .form-header {
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #F1F5F9;
     }
 
-    .form-section .section-title i {
-        color: #9b59b6;
-        margin-right: 10px;
+    .form-card .form-header h3 {
+        font-weight: 700;
+        color: #0F172A;
+        font-size: 18px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-card .form-header h3 i {
+        color: #2563EB;
+        font-size: 18px;
+    }
+
+    .form-card .form-header .helper-text {
+        color: #94A3B8;
+        font-size: 13px;
+        margin-top: 6px;
+        font-weight: 500;
     }
 
     .form-label {
         font-weight: 600;
-        color: #2c3e50;
-        font-size: 14px;
+        color: #475569;
+        font-size: 13.5px;
+        margin-bottom: 6px;
     }
 
     .form-label .required {
-        color: #e74c3c;
-        margin-left: 3px;
-    }
-
-    .form-label .optional {
-        color: #7f8c8d;
-        font-weight: 400;
-        font-size: 12px;
+        color: #DC2626;
+        margin-left: 2px;
     }
 
     .form-control,
     .form-select {
-        border: 2px solid #e1e5eb;
-        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
         padding: 10px 14px;
-        transition: all 0.3s;
+        transition: all 0.2s;
         font-size: 14px;
+        background: #FAFBFC;
+        color: #1E293B;
     }
 
     .form-control:focus,
     .form-select:focus {
-        border-color: #9b59b6;
-        box-shadow: 0 0 0 0.2rem rgba(155, 89, 182, 0.25);
+        border-color: #2563EB;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        background: #FFFFFF;
         outline: none;
+    }
+
+    .form-control.is-invalid,
+    .form-select.is-invalid {
+        border-color: #DC2626;
     }
 
     .form-text {
         font-size: 12px;
-        color: #7f8c8d;
+        color: #64748B;
         margin-top: 4px;
     }
 
-    .form-text .help-icon {
-        color: #4263eb;
-        margin-right: 4px;
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 5px 0 0;
+        color: #DC2626;
+        font-size: 13px;
+    }
+
+    .errorlist li {
+        margin-bottom: 3px;
+    }
+
+    .btn-submit {
+        padding: 10px 28px;
+        font-weight: 600;
+        border-radius: 10px;
+        background: #2563EB;
+        border: none;
+        color: white;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+    }
+
+    .btn-submit:hover {
+        background: #1D4ED8;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-cancel {
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 10px;
+        background: transparent;
+        border: none;
+        color: #64748B;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+    .btn-cancel:hover {
+        background: #F1F5F9;
+        color: #334155;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid #F1F5F9;
     }
 
     .day-checkbox-group {
@@ -78,613 +152,64 @@
         gap: 10px;
         padding: 10px 0;
     }
-
-    .day-checkbox-group .form-check {
-        background: #f8f9fa;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        padding: 10px 15px;
-        margin: 0;
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-
-    .day-checkbox-group .form-check:hover {
-        border-color: #9b59b6;
-        background: #f8f0ff;
-    }
-
-    .day-checkbox-group .form-check-input:checked+.form-check-label {
-        color: #9b59b6;
-        font-weight: 600;
-    }
-
-    .day-checkbox-group .form-check-input {
-        margin-right: 8px;
-        cursor: pointer;
-    }
-
-    .day-checkbox-group .form-check-label {
-        cursor: pointer;
-        font-weight: 500;
-    }
-
-    .selected-days-preview {
-        background: #e8f0fe;
-        border-radius: 8px;
-        padding: 10px 15px;
-        margin-top: 10px;
-        display: none;
-    }
-
-    .selected-days-preview .badge {
-        font-size: 13px;
-        padding: 5px 12px;
-        margin: 3px;
-    }
-
-    .status-switch {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .status-switch .form-check-input {
-        width: 50px;
-        height: 26px;
-        cursor: pointer;
-    }
-
-    .status-switch .form-check-input:checked {
-        background-color: #27ae60;
-        border-color: #27ae60;
-    }
-
-    .status-switch .form-check-label {
-        font-weight: 600;
-        color: #2c3e50;
-        cursor: pointer;
-    }
-
-    .form-actions {
-        padding-top: 20px;
-        border-top: 2px solid #f0f2f8;
-        display: flex;
-        gap: 15px;
-        justify-content: flex-end;
-        flex-wrap: wrap;
-    }
-
-    .preset-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    .preset-card {
-        background: #f8f9fa;
-        border: 2px solid #e9ecef;
-        border-radius: 10px;
-        padding: 12px 15px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-    }
-
-    .preset-card:hover {
-        border-color: #9b59b6;
-        background: #f8f0ff;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.15);
-    }
-
-    .preset-card .preset-icon {
-        font-size: 24px;
-        display: block;
-        margin-bottom: 3px;
-    }
-
-    .preset-card .preset-title {
-        font-weight: 600;
-        font-size: 14px;
-        color: #2c3e50;
-    }
-
-    .preset-card .preset-time {
-        font-size: 12px;
-        color: #2c3e50;
-        margin-top: 2px;
-        font-weight: 600;
-    }
-
-    .preset-card .preset-days {
-        font-size: 10px;
-        color: #9b59b6;
-        margin-top: 2px;
-        font-weight: 500;
-    }
-
-    .preset-card .preset-break {
-        font-size: 10px;
-        color: #7f8c8d;
-        margin-top: 3px;
-        background: #fef9e7;
-        padding: 2px 8px;
-        border-radius: 4px;
-        display: inline-block;
-    }
-
-    .preset-card .preset-detail {
-        font-size: 10px;
-        color: #6c757d;
-        margin-top: 2px;
-    }
-
-    .preset-badge {
-        display: inline-block;
-        padding: 2px 8px;
-        border-radius: 10px;
-        font-size: 10px;
-        font-weight: 600;
-        margin: 1px;
-    }
-
-    .preset-badge.morning {
-        background: #fdebd0;
-        color: #e67e22;
-    }
-
-    .preset-badge.afternoon {
-        background: #d5f5e3;
-        color: #27ae60;
-    }
-
-    .preset-badge.evening {
-        background: #e8daef;
-        color: #8e44ad;
-    }
-
-    .preset-badge.full-day {
-        background: #e8f0fe;
-        color: #4263eb;
-    }
-
-    .preset-badge.weekend {
-        background: #fef9e7;
-        color: #f39c12;
-    }
-
-    .errorlist {
-        color: #dc3545;
-        font-size: 13px;
-        list-style: none;
-        padding: 5px 0;
-        margin: 0;
-    }
-
-    .errorlist li {
-        padding: 2px 0;
-    }
-
-    .errorlist.nonfield {
-        margin-bottom: 10px;
-        padding: 10px;
-        background: #f8d7da;
-        border-radius: 6px;
-        border-left: 4px solid #dc3545;
-    }
-
-    @media (max-width: 768px) {
-        .form-actions {
-            flex-direction: column;
-        }
-
-        .form-actions .btn {
-            width: 100%;
-        }
-
-        .day-checkbox-group {
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        }
-
-        .preset-grid {
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        }
-    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-10 mx-auto">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-clock me-2"></i>{{ title }}</h5>
-            </div>
-            <div class="card-body">
-                <!-- Display non-field errors -->
-                {% if form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {% for error in form.non_field_errors %}
-                    <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
-                    {% endfor %}
-                </div>
+<form method="POST" novalidate>
+    {% csrf_token %}
+
+    <div class="form-card">
+        <div class="form-header">
+            <h3><i class="fas fa-{% if 'student' in title|lower %}user-graduate{% elif 'teacher' in title|lower %}chalkboard-teacher{% elif 'course' in title|lower %}book{% elif 'class' in title|lower %}cubes{% elif 'faculty' in title|lower %}university{% elif 'department' in title|lower %}building{% elif 'major' in title|lower %}graduation-cap{% elif 'term' in title|lower %}calendar-alt{% elif 'timeslot' in title|lower %}clock{% elif 'building' in title|lower %}building{% elif 'floor' in title|lower %}layer-group{% elif 'room' in title|lower %}door-open{% else %}edit{% endif %}"></i>{{ title }}</h3>
+            <div class="helper-text">Fill in the details below to {% if is_edit %}update{% else %}create{% endif %} the record.</div>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} mb-3" style="border-radius: 10px; border: 1px solid #E2E8F0;">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="row g-3">
+            {% for field in form %}
+            {% if field.name != 'is_active' %}
+            <div class="col-md-4">
+                <label class="form-label" for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                    {% if field.field.required %}<span class="required">*</span>{% endif %}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
                 {% endif %}
-
-                <form method="POST" novalidate id="timeSlotForm">
-                    {% csrf_token %}
-
-                    <!-- ===== QUICK PRESETS ===== -->
-                    <div class="form-section">
-                        <h5 class="section-title">
-                            <i class="fas fa-bolt"></i>Quick Presets
-                        </h5>
-                        <div class="preset-grid">
-                            <!-- Morning Session -->
-                            <div class="preset-card" data-days="monday,tuesday,wednesday,thursday,friday"
-                                data-start="08:00" data-end="11:00" data-slot-type="morning">
-                                <span class="preset-icon">🌅</span>
-                                <div class="preset-title">Morning Session</div>
-                                <div class="preset-time">8:00 AM - 11:00 AM</div>
-                                <div class="preset-days"><span class="preset-badge morning">Mon-Fri</span></div>
-                                <div class="preset-break">☕ Break: 9:30 - 10:00</div>
-                            </div>
-
-                            <!-- Afternoon Session -->
-                            <div class="preset-card" data-days="monday,tuesday,wednesday,thursday,friday"
-                                data-start="14:00" data-end="17:00" data-slot-type="afternoon">
-                                <span class="preset-icon">☀️</span>
-                                <div class="preset-title">Afternoon Session</div>
-                                <div class="preset-time">2:00 PM - 5:00 PM</div>
-                                <div class="preset-days"><span class="preset-badge afternoon">Mon-Fri</span></div>
-                                <div class="preset-break">☕ Break: 3:00 - 3:30</div>
-                            </div>
-
-                            <!-- Evening Session -->
-                            <div class="preset-card" data-days="monday,tuesday,wednesday,thursday,friday"
-                                data-start="17:30" data-end="20:45" data-slot-type="evening">
-                                <span class="preset-icon">🌙</span>
-                                <div class="preset-title">Evening Session</div>
-                                <div class="preset-time">5:30 PM - 8:45 PM</div>
-                                <div class="preset-days"><span class="preset-badge evening">Mon-Fri</span></div>
-                                <div class="preset-break">☕ Break: 7:00 - 7:30</div>
-                            </div>
-
-                            <!-- Weekend Full Day -->
-                            <div class="preset-card" data-days="saturday,sunday" data-start="08:00" data-end="17:00"
-                                data-slot-type="weekend_full">
-                                <span class="preset-icon">🎯</span>
-                                <div class="preset-title">Weekend Full Day</div>
-                                <div class="preset-time">8:00 AM - 5:00 PM</div>
-                                <div class="preset-days"><span class="preset-badge weekend">Sat & Sun</span></div>
-                                <div class="preset-break">🍽️ Lunch: 12:00 - 1:00</div>
-                            </div>
-                        </div>
-                        <div class="form-text mt-2">
-                            <i class="fas fa-info-circle help-icon"></i>
-                            Click a preset to auto-fill the form
-                        </div>
-                    </div>
-
-                    <!-- ===== DAYS SELECTION ===== -->
-                    <div class="form-section">
-                        <h5 class="section-title">
-                            <i class="fas fa-calendar-day"></i>Select Days <span class="required">*</span>
-                        </h5>
-
-                        <!-- Days field with Django's checkbox rendering -->
-                        <div class="day-checkbox-group" id="dayCheckboxGroup">
-                            {% for choice in form.days.field.choices %}
-                            <div class="form-check">
-                                <input class="form-check-input day-checkbox" type="checkbox" name="days"
-                                    value="{{ choice.0 }}" id="day_{{ choice.0 }}" {% if choice.0 in selected_days %}checked{% endif %}>
-                                <label class="form-check-label" for="day_{{ choice.0 }}">
-                                    <i
-                                        class="fas fa-{% if choice.0 == 'monday' %}monday{% elif choice.0 == 'tuesday' %}tuesday{% elif choice.0 == 'wednesday' %}wednesday{% elif choice.0 == 'thursday' %}thursday{% elif choice.0 == 'friday' %}friday{% elif choice.0 == 'saturday' %}saturday{% else %}sunday{% endif %} me-1"></i>
-                                    {{ choice.1 }}
-                                </label>
-                            </div>
-                            {% endfor %}
-                        </div>
-
-                        {% if form.days.errors %}
-                        <div class="errorlist">{{ form.days.errors }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Selected Days Preview -->
-                    <div id="selectedDaysPreview" class="selected-days-preview">
-                        <strong><i class="fas fa-check-circle text-success me-2"></i>Selected Days:</strong>
-                        <span id="selectedDaysList"></span>
-                    </div>
-
-                    <!-- ===== TIME SELECTION ===== -->
-                    <div class="form-section">
-                        <h5 class="section-title">
-                            <i class="fas fa-clock"></i>Time <span class="required">*</span>
-                        </h5>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="{{ form.start_time.id_for_label }}" class="form-label">
-                                    Start Time <span class="required">*</span>
-                                </label>
-                                {{ form.start_time }}
-                                {% if form.start_time.errors %}
-                                <div class="errorlist">{{ form.start_time.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="{{ form.end_time.id_for_label }}" class="form-label">
-                                    End Time <span class="required">*</span>
-                                </label>
-                                {{ form.end_time }}
-                                <div class="form-text">
-                                    <i class="fas fa-info-circle help-icon"></i>
-                                    Must be after start time
-                                </div>
-                                {% if form.end_time.errors %}
-                                <div class="errorlist">{{ form.end_time.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ===== ADDITIONAL INFO ===== -->
-                    <div class="form-section">
-                        <h5 class="section-title">
-                            <i class="fas fa-info-circle"></i>Additional Information
-                        </h5>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="{{ form.slot_type.id_for_label }}" class="form-label">
-                                    Slot Type <span class="optional">(Optional)</span>
-                                </label>
-                                {{ form.slot_type }}
-                                <div class="form-text">
-                                    <i class="fas fa-info-circle help-icon"></i>
-                                    Categorize this time slot
-                                </div>
-                                {% if form.slot_type.errors %}
-                                <div class="errorlist">{{ form.slot_type.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="{{ form.name.id_for_label }}" class="form-label">
-                                    Name <span class="optional">(Optional)</span>
-                                </label>
-                                {{ form.name }}
-                                <div class="form-text">
-                                    <i class="fas fa-info-circle help-icon"></i>
-                                    e.g., Morning Session
-                                </div>
-                                {% if form.name.errors %}
-                                <div class="errorlist">{{ form.name.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-12">
-                                <label for="{{ form.description.id_for_label }}" class="form-label">
-                                    Description <span class="optional">(Optional)</span>
-                                </label>
-                                {{ form.description }}
-                                {% if form.description.errors %}
-                                <div class="errorlist">{{ form.description.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ===== ACTIVE STATUS ===== -->
-                    <div class="form-section">
-                        <h5 class="section-title">
-                            <i class="fas fa-cog"></i>Status
-                        </h5>
-                        <div class="status-switch">
-                            {{ form.is_active }}
-                            <label for="{{ form.is_active.id_for_label }}" class="form-check-label fw-bold">
-                                Active Status
-                            </label>
-                        </div>
-                        <div class="form-text">
-                            <i class="fas fa-info-circle help-icon"></i>
-                            Inactive time slots won't be available for class scheduling
-                        </div>
-                    </div>
-
-                    <!-- ===== FORM ACTIONS ===== -->
-                    <div class="form-actions">
-                        <a href="{% url 'classes:timeslot_list' %}" class="btn btn-secondary">
-                            <i class="fas fa-times me-2"></i>Cancel
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-2"></i>
-                            {% if is_edit %}Update Time Slot{% else %}Save Time Slot{% endif %}
-                        </button>
-                    </div>
-                </form>
+                {% if field.errors %}
+                <div class="errorlist">{{ field.errors }}</div>
+                {% endif %}
             </div>
+            {% elif field.name == 'is_active' %}
+            <div class="col-md-4">
+                <div class="form-check" style="margin-top: 32px;">
+                    {{ field }}
+                    <label class="form-check-label" for="{{ field.id_for_label }}" style="color: #475569; font-weight: 600; font-size: 13.5px;">
+                        {{ field.label }}
+                    </label>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="form-actions">
+            <a href="{% block cancel_url %}{% url 'accounts:dashboard' %}{% endblock %}" class="btn-cancel">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-save"></i> {% block submit_text %}Save{% endblock %}
+            </button>
         </div>
     </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // ===== PRESET CARDS =====
-        const presetCards = document.querySelectorAll('.preset-card');
-        const dayCheckboxes = document.querySelectorAll('input[name="days"]');
-        const startTimeInput = document.querySelector('#id_start_time');
-        const endTimeInput = document.querySelector('#id_end_time');
-        const slotTypeSelect = document.querySelector('#id_slot_type');
-        const selectedDaysPreview = document.getElementById('selectedDaysPreview');
-        const selectedDaysList = document.getElementById('selectedDaysList');
-
-        const dayLabels = {
-            'monday': 'Monday',
-            'tuesday': 'Tuesday',
-            'wednesday': 'Wednesday',
-            'thursday': 'Thursday',
-            'friday': 'Friday',
-            'saturday': 'Saturday',
-            'sunday': 'Sunday'
-        };
-
-        // Function to update selected days display
-        function updateSelectedDays() {
-            const selected = [];
-            dayCheckboxes.forEach(function (checkbox) {
-                const parentDiv = checkbox.closest('.form-check');
-                if (checkbox.checked) {
-                    const label = checkbox.nextElementSibling;
-                    selected.push(label ? label.textContent.trim() : checkbox.value);
-                    if (parentDiv) {
-                        parentDiv.style.borderColor = '#9b59b6';
-                        parentDiv.style.background = '#f0e6ff';
-                    }
-                } else {
-                    if (parentDiv) {
-                        parentDiv.style.borderColor = '#e9ecef';
-                        parentDiv.style.background = '#f8f9fa';
-                    }
-                }
-            });
-
-            if (selected.length > 0) {
-                if (selectedDaysPreview) {
-                    selectedDaysPreview.style.display = 'block';
-                }
-                if (selectedDaysList) {
-                    let html = '';
-                    selected.forEach(function (day) {
-                        html += '<span class="badge bg-primary">' + day + '</span> ';
-                    });
-                    selectedDaysList.innerHTML = html;
-                }
-            } else {
-                if (selectedDaysPreview) {
-                    selectedDaysPreview.style.display = 'none';
-                }
-            }
-        }
-
-        // Preset card click handler
-        presetCards.forEach(function (card) {
-            card.addEventListener('click', function () {
-                const days = this.dataset.days.split(',');
-                const startTime = this.dataset.start;
-                const endTime = this.dataset.end;
-                const slotType = this.dataset.slotType;
-
-                // Uncheck all days first
-                dayCheckboxes.forEach(function (checkbox) {
-                    checkbox.checked = false;
-                });
-
-                // Check selected days
-                dayCheckboxes.forEach(function (checkbox) {
-                    if (days.indexOf(checkbox.value) !== -1) {
-                        checkbox.checked = true;
-                    }
-                });
-
-                // Set times
-                if (startTimeInput) {
-                    startTimeInput.value = startTime;
-                }
-                if (endTimeInput) {
-                    endTimeInput.value = endTime;
-                }
-
-                // Set slot type
-                if (slotTypeSelect && slotType) {
-                    for (let option of slotTypeSelect.options) {
-                        if (option.value === slotType) {
-                            option.selected = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Update display
-                updateSelectedDays();
-
-                // Highlight selected preset
-                presetCards.forEach(function (p) {
-                    p.style.borderColor = '#e9ecef';
-                    p.style.background = '#f8f9fa';
-                });
-                this.style.borderColor = '#9b59b6';
-                this.style.background = '#f0e6ff';
-            });
-        });
-
-        // Day checkbox change handler
-        dayCheckboxes.forEach(function (checkbox) {
-            checkbox.addEventListener('change', function () {
-                updateSelectedDays();
-                // Reset preset highlighting
-                presetCards.forEach(function (card) {
-                    card.style.borderColor = '#e9ecef';
-                    card.style.background = '#f8f9fa';
-                });
-            });
-        });
-
-        // Initial update
-        updateSelectedDays();
-
-        // ===== VALIDATION =====
-        const form = document.getElementById('timeSlotForm');
-
-        form.addEventListener('submit', function (e) {
-            // Check if at least one day is selected
-            const selectedDays = document.querySelectorAll('input[name="days"]:checked');
-            if (selectedDays.length === 0) {
-                e.preventDefault();
-                alert('⚠️ Please select at least one day.');
-                return false;
-            }
-
-            // Validate time
-            const startTime = document.querySelector('#id_start_time').value;
-            const endTime = document.querySelector('#id_end_time').value;
-
-            if (startTime && endTime) {
-                if (startTime >= endTime) {
-                    e.preventDefault();
-                    alert('⚠️ End time must be after start time.');
-                    document.querySelector('#id_end_time').focus();
-                    return false;
-                }
-            }
-
-            return true;
-        });
-
-        // Real-time time validation
-        function validateTimes() {
-            const startTime = startTimeInput.value;
-            const endTime = endTimeInput.value;
-            if (startTime && endTime) {
-                if (startTime >= endTime) {
-                    endTimeInput.style.borderColor = '#dc3545';
-                    endTimeInput.style.borderWidth = '2px';
-                } else {
-                    endTimeInput.style.borderColor = '#28a745';
-                    endTimeInput.style.borderWidth = '2px';
-                }
-            }
-        }
-
-        if (startTimeInput) {
-            startTimeInput.addEventListener('change', validateTimes);
-            startTimeInput.addEventListener('input', validateTimes);
-        }
-        if (endTimeInput) {
-            endTimeInput.addEventListener('change', validateTimes);
-            endTimeInput.addEventListener('input', validateTimes);
-        }
-    });
-</script>
+</form>
 {% endblock %}

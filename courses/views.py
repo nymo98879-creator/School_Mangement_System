@@ -34,12 +34,21 @@ def faculty_list(request):
         if status:
             faculties = faculties.filter(is_active=(status == 'active'))
     
-    paginator = Paginator(faculties, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(faculties, per_page)
     page = request.GET.get('page')
     faculties_page = paginator.get_page(page)
     
     context = {
         'faculties': faculties_page,
+        'per_page': per_page,
         'form': form,
         'total': Faculty.objects.count(),
         'active': Faculty.objects.filter(is_active=True).count(),
@@ -120,13 +129,23 @@ def department_list(request):
         if status:
             departments = departments.filter(is_active=(status == 'active'))
     
-    paginator = Paginator(departments, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(departments, per_page)
     page = request.GET.get('page')
     departments_page = paginator.get_page(page)
     
     context = {
         'departments': departments_page,
+        'per_page': per_page,
         'form': form,
+        'faculties': Faculty.objects.filter(is_active=True).order_by('name'),
         'total': Department.objects.count(),
         'active': Department.objects.filter(is_active=True).count(),
         'inactive': Department.objects.filter(is_active=False).count(),
@@ -209,13 +228,23 @@ def major_list(request):
         if status:
             majors = majors.filter(is_active=(status == 'active'))
     
-    paginator = Paginator(majors, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(majors, per_page)
     page = request.GET.get('page')
     majors_page = paginator.get_page(page)
     
     context = {
         'majors': majors_page,
+        'per_page': per_page,
         'form': form,
+        'departments': Department.objects.filter(is_active=True).order_by('name'),
         'total': Major.objects.count(),
         'active': Major.objects.filter(is_active=True).count(),
         'inactive': Major.objects.filter(is_active=False).count(),
@@ -311,12 +340,21 @@ def course_list(request):
     active_courses = Course.objects.filter(is_active=True).count()
     inactive_courses = Course.objects.filter(is_active=False).count()
     
-    paginator = Paginator(courses, 10)
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(courses, per_page)
     page = request.GET.get('page')
     courses_page = paginator.get_page(page)
     
     context = {
         'courses': courses_page,
+        'per_page': per_page,
         'form': form,
         'total_courses': total_courses,
         'active_courses': active_courses,

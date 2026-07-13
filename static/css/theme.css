@@ -1,0 +1,964 @@
+/* ============================================================
+   School Management System — Universal Dark / Light Theme
+   ------------------------------------------------------------
+   The active theme is controlled by a single `.dark` class on
+   the <html> root element plus Bootstrap's native
+   `data-bs-theme="dark"` attribute (Bootstrap 5.3+).
+
+   Light mode values are defined inside each layout template's
+   inline <style>. This file only supplies the DARK overrides and
+   the optional smooth-transition layer, using the exact design
+   tokens requested by the spec.
+   ============================================================ */
+
+/* ===== DARK MODE TOKENS (CSS variables) ===== */
+.dark {
+    --bg: #0F172A;            /* main viewport background        */
+    --surface: #1E293B;       /* cards, sidebars, tables, forms  */
+    --field-bg: #0F172A;      /* form input / select tray        */
+    --border: #334155;        /* hairline dividers / gridlines   */
+    --border-soft: #334155;   /* softer dividers                 */
+    --text: #F8FAFC;          /* primary typography              */
+    --text-muted: #94A3B8;    /* secondary text / labels         */
+    --accent: #3B82F6;        /* primary blue accent             */
+    --accent-soft: #60A5FA;   /* lighter blue for active text    */
+    --nav-active-bg: rgba(59, 130, 246, 0.18); /* deep low-opacity blue */
+    --hover-bg: rgba(255, 255, 255, 0.04);
+}
+
+/* ============================================================
+   GLOBAL SURFACES
+   ============================================================ */
+.dark body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.dark .sidebar {
+    background: var(--surface);
+    color: var(--text-muted);
+    border-right-color: var(--border);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.35);
+}
+
+.dark .sidebar-brand {
+    border-bottom-color: var(--border-soft);
+}
+
+.dark .sidebar-brand .brand-icon {
+    background: rgba(59, 130, 246, 0.14);
+    border-color: var(--border);
+    color: var(--accent-soft);
+}
+
+.dark .sidebar-brand h3 {
+    color: var(--text);
+}
+
+.dark .sidebar-brand small {
+    color: var(--text-muted);
+}
+
+.dark .sidebar-user {
+    border-bottom-color: var(--border-soft);
+}
+
+.dark .sidebar-user .avatar {
+    background: var(--field-bg);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.dark .sidebar-user .user-info .name {
+    color: var(--text);
+}
+
+.dark .sidebar-user .user-info .role {
+    color: var(--text-muted);
+}
+
+.dark .sidebar-user .user-info .role i {
+    color: var(--accent-soft);
+}
+
+.dark .sidebar-menu .menu-header {
+    color: var(--text-muted);
+}
+
+/* ----- Unselected / hover / active navigation links ----- */
+.dark .sidebar-menu .menu-link,
+.dark .sidebar-menu .dropdown-toggle {
+    color: #94A3B8;                 /* soft blue-gray */
+}
+
+.dark .sidebar-menu .menu-link:hover,
+.dark .sidebar-menu .dropdown-toggle:hover,
+.dark .sidebar-menu .dropdown-menu-custom li a:hover {
+    background: var(--hover-bg);
+    color: var(--text);
+    border-left-color: var(--accent);
+}
+
+.dark .sidebar-menu .menu-link.active,
+.dark .sidebar-menu .dropdown-toggle.active {
+    background: var(--nav-active-bg);
+    color: var(--accent-soft);
+    border-left-color: var(--accent);
+}
+
+.dark .sidebar-menu .menu-link i,
+.dark .sidebar-menu .dropdown-toggle i,
+.dark .sidebar-menu .dropdown-menu-custom li a i {
+    color: #94A3B8;
+}
+
+.dark .sidebar-menu .menu-link.active i,
+.dark .sidebar-menu .dropdown-toggle.active i,
+.dark .sidebar-menu .dropdown-menu-custom li a.active i {
+    color: var(--accent);
+}
+
+.dark .sidebar-menu .dropdown-toggle .arrow {
+    color: var(--text-muted);
+}
+
+.dark .sidebar-menu .dropdown-menu-custom li a {
+    color: #94A3B8;
+}
+
+.dark .sidebar-menu .dropdown-menu-custom li a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+}
+
+.dark .sidebar-menu .menu-link .badge-notification {
+    background: var(--field-bg);
+    color: var(--text-muted);
+    border-color: var(--border);
+}
+
+.dark .sidebar-menu .logout-section {
+    border-top-color: var(--border-soft);
+}
+
+.dark .sidebar-menu .logout-section .menu-link {
+    color: #94A3B8;
+}
+
+.dark .sidebar-menu .logout-section .menu-link:hover {
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.10);
+    border-left-color: #ef4444;
+}
+
+/* ============================================================
+   MAIN CONTENT & TOP NAV
+   ============================================================ */
+.dark .main-content {
+    background: var(--bg);
+}
+
+.dark .main-content::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+.dark .main-content::-webkit-scrollbar-thumb {
+    background: #334155;
+}
+
+.dark .top-nav {
+    background: var(--surface);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.dark .top-nav .left-section .menu-toggle {
+    color: var(--text);
+}
+
+.dark .top-nav .left-section .menu-toggle:hover {
+    background: var(--hover-bg);
+}
+
+.dark .top-nav .page-title {
+    color: var(--text);
+}
+
+.dark .top-nav .page-title span {
+    color: var(--accent);
+}
+
+.dark .top-nav .right-section .notification-btn {
+    color: var(--text-muted);
+}
+
+.dark .top-nav .right-section .notification-btn:hover {
+    background: var(--hover-bg);
+    color: var(--text);
+}
+
+.dark .top-nav .right-section .notification-btn .badge-dot {
+    border-color: var(--surface);
+}
+
+.dark .top-nav .right-section .user-dropdown .user-info-display {
+    color: var(--text);
+}
+
+.dark .top-nav .right-section .user-dropdown .user-info-display:hover {
+    background: var(--hover-bg);
+}
+
+.dark .top-nav .right-section .user-dropdown .user-info-display .user-name small {
+    color: var(--text-muted);
+}
+
+/* ============================================================
+   SHARED COMPONENTS (stats, filters, tables, badges…)
+   ============================================================ */
+
+/* ----- Stats cards ----- */
+.dark .stats-card {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.30);
+}
+
+.dark .stats-card:hover {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+
+.dark .stats-card .stats-number {
+    color: var(--text);
+}
+
+.dark .stats-card .stats-label {
+    color: var(--text-muted);
+}
+
+.dark .stats-card .stats-trend.up {
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.15);
+}
+
+.dark .stats-card .stats-trend.down {
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.15);
+}
+
+.dark .stats-card .stats-trend.neutral {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.15);
+}
+
+/* ----- Search & filter bar ----- */
+.dark .search-filters {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.30);
+}
+
+.dark .search-filters .form-label {
+    color: var(--text-muted);
+}
+
+.dark .search-filters .search-input,
+.dark .search-filters .form-select,
+.dark .search-filters .form-control {
+    background: var(--field-bg);
+    border-color: var(--field-border);
+    color: var(--text);
+}
+
+.dark .search-filters .search-input:focus,
+.dark .search-filters .form-select:focus,
+.dark .search-filters .form-control:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    background: var(--field-bg);
+}
+
+.dark .search-filters .search-input::placeholder {
+    color: #64748b;
+}
+
+/* ----- Action buttons ----- */
+.dark .btn-refresh {
+    background: var(--surface);
+    color: var(--text-muted);
+    border-color: var(--border);
+}
+
+.dark .btn-refresh:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(59, 130, 246, 0.12);
+}
+
+/* ----- Data tables ----- */
+.dark .data-table thead th {
+    background: var(--field-bg);
+    color: var(--text-muted);
+    border-bottom-color: var(--border);
+}
+
+.dark .data-table tbody tr:hover {
+    background: var(--hover-bg);
+}
+
+.dark .data-table tbody td {
+    color: var(--text);
+    border-bottom-color: var(--border);
+}
+
+/* ----- Table action buttons (desaturated, no glare) ----- */
+.dark .table-action-btn.view   { background: rgba(59, 130, 246, 0.15);  color: #60A5FA; }
+.dark .table-action-btn.edit   { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+.dark .table-action-btn.toggle { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.dark .table-action-btn.delete { background: rgba(239, 68, 68, 0.15);  color: #f87171; }
+
+.dark .table-action-btn.view:hover   { background: #3B82F6; color: #fff; }
+.dark .table-action-btn.edit:hover   { background: #f59e0b; color: #1a1205; }
+.dark .table-action-btn.toggle:hover { background: #10b981; color: #04130d; }
+.dark .table-action-btn.delete:hover { background: #ef4444; color: #fff; }
+
+/* ----- Status badges (deeper, desaturated) ----- */
+.dark .status-badge.active   { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+.dark .status-badge.active::before { background: #34d399; }
+.dark .status-badge.inactive { background: rgba(239, 68, 68, 0.16); color: #f87171; }
+.dark .status-badge.inactive::before { background: #f87171; }
+.dark .status-badge.pending  { background: rgba(245, 158, 11, 0.16); color: #fbbf24; }
+.dark .status-badge.pending::before { background: #fbbf24; }
+.dark .status-badge.warning,
+.dark .status-badge.unassigned { background: rgba(245, 158, 11, 0.16); color: #fbbf24; }
+.dark .status-badge.warning::before,
+.dark .status-badge.unassigned::before { background: #fbbf24; }
+
+/* ----- Empty / no-results states ----- */
+.dark .empty-state i { color: #475569; }
+.dark .empty-state h6 { color: var(--text); }
+.dark .empty-state p { color: var(--text-muted); }
+
+.dark .no-results i { color: #334155; }
+.dark .no-results h5 { color: var(--text); }
+.dark .no-results p { color: var(--text-muted); }
+
+/* ----- Page card container ----- */
+.dark .page-card {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.30);
+}
+
+/* ----- Badge pills (academic / course / role chips) ----- */
+.dark .course-id-badge    { background: rgba(59, 130, 246, 0.16);  color: #93C5FD; }
+.dark .credit-badge       { background: rgba(245, 158, 11, 0.16); color: #fbbf24; border-color: var(--border); }
+.dark .badge-teacher      { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+.dark .level-badge        { background: rgba(168, 85, 247, 0.16); color: #c4b5fd; }
+.dark .major-badge        { background: rgba(59, 130, 246, 0.16); color: #93C5FD; }
+.dark .prereq-badge       { background: rgba(234, 88, 12, 0.16);  color: #fb923c; }
+.dark .specialization-tag { background: rgba(59, 130, 246, 0.16); color: #93C5FD; }
+
+.dark .degree-badge.bachelor  { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+.dark .degree-badge.master    { background: rgba(59, 130, 246, 0.16); color: #93C5FD; }
+.dark .degree-badge.phd       { background: rgba(245, 158, 11, 0.16); color: #fbbf24; }
+.dark .degree-badge.diploma   { background: rgba(168, 85, 247, 0.16); color: #c4b5fd; }
+
+.dark .position-badge.dean                { background: rgba(245, 158, 11, 0.16); color: #fbbf24; }
+.dark .position-badge.department_head     { background: rgba(59, 130, 246, 0.16); color: #93C5FD; }
+.dark .position-badge.professor           { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+.dark .position-badge.associate_professor { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+.dark .position-badge.assistant_professor { background: rgba(168, 85, 247, 0.16); color: #c4b5fd; }
+.dark .position-badge.lecturer            { background: rgba(245, 158, 11, 0.16); color: #fbbf24; }
+.dark .position-badge.instructor          { background: rgba(239, 68, 68, 0.16);  color: #f87171; }
+.dark .position-badge.teaching_assistant  { background: rgba(148, 163, 184, 0.18); color: #cbd5e1; }
+
+/* ============================================================
+   BOOTSTRAP FORM FIELDS — exact token mapping
+   (data-bs-theme="dark" handles the rest of Bootstrap)
+   ============================================================ */
+.dark .form-control,
+.dark .form-select,
+.dark .input-group-text {
+    background-color: var(--field-bg);
+    border-color: var(--field-border);
+    color: var(--text);
+}
+
+.dark .form-control:focus,
+.dark .form-select:focus {
+    background-color: var(--field-bg);
+    border-color: var(--accent);
+    color: var(--text);
+    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+}
+
+.dark .form-control::placeholder {
+    color: #64748b;
+}
+
+.dark .form-control:disabled,
+.dark .form-control[readonly] {
+    background-color: #0b1220;
+    opacity: 0.7;
+}
+
+/* Multi-select tag chips (soft dark / deep blue pills) */
+.dark .form-control .badge,
+.dark .choice-chip,
+.dark .tag-pill,
+.dark .select2-selection__choice,
+.dark .multiselect-chip {
+    background: rgba(59, 130, 246, 0.18) !important;
+    color: #cbd5e1 !important;
+    border: 1px solid var(--border) !important;
+}
+
+/* ============================================================
+   STUDENT MANAGEMENT LIST VIEW (student_list.html)
+   These classes are defined locally inside the template's
+   extra_css block, so they need explicit dark overrides here.
+   ============================================================ */
+
+/* ----- Page header title ----- */
+.dark .page-header h2 {
+    color: var(--text);
+}
+
+/* ----- KPI / metric cards ----- */
+.dark .kpi-card {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+.dark .kpi-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.dark .kpi-card .kpi-number {
+    color: var(--text);
+}
+
+.dark .kpi-card .kpi-label {
+    color: var(--text-muted);
+}
+
+.dark .kpi-card .kpi-badge.blue   { background: rgba(59, 130, 246, 0.16);  color: #93C5FD; }
+.dark .kpi-card .kpi-badge.green  { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+.dark .kpi-card .kpi-badge.red    { background: rgba(239, 68, 68, 0.16);  color: #f87171; }
+.dark .kpi-card .kpi-badge.orange { background: rgba(245, 158, 11, 0.16); color: #fbbf24; }
+
+/* ----- Filter / search bar ----- */
+.dark .filter-bar {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+.dark .filter-bar .search-input,
+.dark .filter-bar .filter-select {
+    background: var(--field-bg);
+    border-color: var(--field-border);
+    color: #FFFFFF;
+}
+
+.dark .filter-bar .search-input:focus,
+.dark .filter-bar .filter-select:focus {
+    border-color: var(--accent);
+    background: var(--field-bg);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    outline: none;
+}
+
+.dark .filter-bar .search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.dark .filter-bar .btn-clear {
+    background: var(--field-bg);
+    border-color: var(--field-border);
+    color: var(--text-muted);
+}
+
+.dark .filter-bar .btn-clear:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: #475569;
+    color: var(--text);
+}
+
+/* ----- Data table frame ----- */
+.dark .table-container {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+/* Header strip -> lighter slate, high-contrast label text */
+.dark .data-table thead {
+    background: #334155;
+}
+
+.dark .data-table thead th {
+    background: transparent;
+    color: var(--text-muted);
+    border-bottom-color: var(--border);
+}
+
+/* Row separators + content */
+.dark .data-table tbody td {
+    color: var(--text);
+    border-bottom-color: var(--border);
+}
+
+.dark .data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* ----- Cell typography tokens ----- */
+.dark .student-name-main {
+    color: var(--text);
+}
+
+.dark .student-meta {
+    color: var(--text-muted);
+}
+
+.dark .cell-id {
+    color: var(--text);
+}
+
+.dark .cell-class {
+    color: var(--text);
+}
+
+.dark .cell-gender {
+    color: var(--text-muted);
+}
+
+.dark .cell-guardian-name {
+    color: var(--text);
+}
+
+.dark .cell-guardian-phone {
+    color: var(--text-muted);
+}
+
+/* Muted / unassigned -> desaturated amber-gray (no glare) */
+.dark .cell-unassigned {
+    color: #d4a373;
+    font-style: normal;
+}
+
+.dark .instructor-cell {
+    color: #cbd5e1;
+}
+
+.dark .instructor-cell i {
+    color: var(--text-muted);
+}
+
+.dark .instructor-cell.unassigned {
+    color: #d4a373;
+}
+
+.dark .instructor-cell.unassigned i {
+    color: #d4a373;
+}
+
+/* ----- Status text ----- */
+.dark .status-text {
+    color: #cbd5e1;
+}
+
+/* ----- Minimal action icons -> light gray, boosted opacity ----- */
+.dark .action-icon {
+    color: #cbd5e1;
+    background: transparent;
+}
+
+.dark .action-icon:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text);
+}
+
+.dark .action-icon.edit:hover {
+    background: rgba(59, 130, 246, 0.18);
+    color: #93C5FD;
+}
+
+.dark .action-icon.toggle:hover {
+    background: rgba(16, 185, 129, 0.18);
+    color: #34d399;
+}
+
+.dark .action-icon.delete:hover {
+    background: rgba(239, 68, 68, 0.18);
+    color: #f87171;
+}
+
+/* ----- Pagination ----- */
+.dark .page-btn {
+    background: var(--surface);
+    color: var(--text-muted);
+    border-color: var(--border);
+}
+
+.dark .page-btn:hover {
+    border-color: var(--accent);
+    color: #93C5FD;
+    background: rgba(59, 130, 246, 0.12);
+}
+
+.dark .page-btn.active {
+    background: var(--accent);
+    color: #FFFFFF;
+    border-color: var(--accent);
+}
+
+.dark .page-btn.disabled {
+    opacity: 0.4;
+}
+
+/* ----- Empty / no-results states ----- */
+.dark .empty-state i { color: #475569; }
+.dark .empty-state h5 { color: var(--text); }
+.dark .empty-state p { color: var(--text-muted); }
+
+.dark .no-results i { color: #334155; }
+.dark .no-results h5 { color: var(--text); }
+.dark .no-results p { color: var(--text-muted); }
+
+/* ============================================================
+   DASHBOARD VIEWS (admin / teacher / student dashboards)
+   ============================================================ */
+
+/* ----- Bento KPI cards (admin + teacher) ----- */
+.dark .bento-card {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+.dark .bento-card .bento-icon {
+    background: var(--field-bg);
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+
+.dark .bento-card .bento-trend {
+    background: rgba(16, 185, 129, 0.16);
+    color: #34d399;
+}
+
+.dark .bento-card .bento-number {
+    color: var(--text);
+}
+
+.dark .bento-card .bento-label {
+    color: var(--text-muted);
+}
+
+/* ----- Mini metric cards ----- */
+.dark .mini-card {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+.dark .mini-card .mini-text .mini-label {
+    color: var(--text-muted);
+}
+
+.dark .mini-card .mini-text .mini-value {
+    color: var(--text);
+}
+
+.dark .mini-card .mini-badge {
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--text-muted);
+    border-color: var(--border);
+}
+
+/* ----- Module action cards ----- */
+.dark .module-card {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.30);
+    color: var(--text);
+}
+
+.dark .module-card .module-title {
+    color: var(--text);
+}
+
+.dark .module-card .module-desc {
+    color: var(--text-muted);
+}
+
+.dark .module-card .module-menu a {
+    background: var(--field-bg);
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+
+.dark .module-card .module-menu a:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: #93C5FD;
+}
+
+/* ----- Card header strip ----- */
+.dark .card-header-clean {
+    border-bottom-color: var(--border);
+}
+
+.dark .card-header-clean h5 {
+    color: var(--text);
+}
+
+.dark .card-header-clean .badge-count {
+    background: var(--border);
+    color: var(--text-muted);
+    border-color: var(--border);
+}
+
+/* ----- Custom inner card ----- */
+.dark .custom-card {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.30);
+}
+
+/* ----- Activity timeline (admin + teacher) ----- */
+.dark .timeline::before {
+    background: var(--border);
+}
+
+.dark .timeline-item::before {
+    background: #94a3b8;
+    border-color: var(--surface);
+    box-shadow: 0 0 0 2px var(--border);
+}
+
+.dark .timeline-item .timeline-time {
+    color: var(--text-muted);
+}
+
+.dark .timeline-item .timeline-content {
+    color: #cbd5e1;
+}
+
+.dark .timeline-item .timeline-content strong {
+    color: var(--text);
+}
+
+/* ----- Student dashboard: stats + class cards ----- */
+.dark .stats-card {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.30);
+}
+
+.dark .stats-card .number {
+    color: var(--text);
+}
+
+.dark .stats-card .label {
+    color: var(--text-muted);
+}
+
+.dark .class-card {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.30);
+}
+
+.dark .class-card .class-title {
+    color: var(--text);
+}
+
+.dark .class-card .class-info {
+    color: var(--text-muted);
+}
+
+.dark .class-card .class-info i {
+    color: #34d399;
+}
+
+.dark .status-badge.active {
+    background: rgba(16, 185, 129, 0.16);
+    color: #34d399;
+}
+
+.dark .status-badge.upcoming {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fbbf24;
+}
+
+.dark .status-badge.completed {
+    background: rgba(59, 130, 246, 0.16);
+    color: #93C5FD;
+}
+
+/* ----- Student dashboard timeline ----- */
+.dark .timeline::before {
+    background: var(--border);
+}
+
+.dark .timeline-item::before {
+    border-color: var(--surface);
+    box-shadow: 0 0 0 3px var(--border);
+}
+
+.dark .timeline-item .timeline-time {
+    color: var(--text-muted);
+}
+
+.dark .timeline-item .timeline-content {
+    color: #cbd5e1;
+}
+
+.dark .timeline-item .timeline-content strong {
+    color: var(--text);
+}
+
+/* ============================================================
+   ROWS-PER-PAGE SELECTOR
+   ============================================================ */
+.per-page-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #475569;
+    margin-top: 16px;
+}
+
+.per-page-selector label {
+    font-weight: 600;
+}
+
+.per-page-selector #perPageSelect {
+    padding: 8px 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    background: #f8fafc;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 72px;
+}
+
+.per-page-selector #perPageSelect:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.dark .per-page-selector {
+    color: var(--text-muted);
+}
+
+.dark .per-page-selector #perPageSelect {
+    background: var(--field-bg);
+    border-color: var(--field-border);
+    color: #FFFFFF;
+}
+
+.dark .per-page-selector #perPageSelect:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+/* ============================================================
+   CASCADING SELECTOR (Building -> Floor -> Room)
+   ============================================================ */
+.dark .cascade-select,
+.dark .filter-bar .cascade-select {
+    background-color: var(--field-bg);
+    border-color: var(--field-border);
+    color: #FFFFFF;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%2394A3B8' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.dark .cascade-select:focus,
+.dark .filter-bar .cascade-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    background-color: var(--field-bg);
+}
+
+.dark .cascade-select:disabled,
+.dark .filter-bar .cascade-select:disabled {
+    background-color: #0b1220;
+    color: var(--text-muted);
+    border-color: var(--field-border);
+}
+
+/* ============================================================
+   THEME TOGGLE BUTTON
+   ============================================================ */
+.theme-toggle-btn {
+    position: relative;
+    background: none;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.theme-toggle-btn:hover {
+    background: #f0f2f8;
+    color: #4263eb;
+    border-color: #4263eb;
+}
+
+.dark .theme-toggle-btn {
+    border-color: var(--border);
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.dark .theme-toggle-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(59, 130, 246, 0.12);
+}
+
+/* Icon swap: moon in light mode, sun in dark mode */
+.theme-toggle-btn .fa-sun {
+    display: none;
+}
+
+.dark .theme-toggle-btn .fa-sun {
+    display: inline-block;
+}
+
+.dark .theme-toggle-btn .fa-moon {
+    display: none;
+}
+
+/* ============================================================
+   SMOOTH THEME TRANSITION (the extra "polish" feature)
+   Applied only after first paint to avoid load-time flicker.
+   ============================================================ */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+    transition: background-color 0.3s ease, border-color 0.3s ease,
+                color 0.3s ease, box-shadow 0.3s ease, fill 0.3s ease !important;
+    transition-delay: 0s !important;
+}
