@@ -916,12 +916,26 @@ def teacher_class_list(request):
     """Teacher's view of their classes - ONLY classes assigned to this teacher"""
     try:
         teacher = Teacher.objects.get(user=request.user)
-        classes = Class.objects.filter(teacher=teacher, is_active=True)
-        
+        classes_qs = Class.objects.filter(teacher=teacher, is_active=True)
+
+        # ===== PAGINATION (unified footer) =====
+        per_page = request.GET.get('per_page', '10')
+        try:
+            per_page = int(per_page)
+        except (TypeError, ValueError):
+            per_page = 10
+        if per_page not in (5, 10, 20):
+            per_page = 10
+
+        paginator = Paginator(classes_qs, per_page)
+        page_number = request.GET.get('page')
+        classes_page = paginator.get_page(page_number)
+
         context = {
-            'classes': classes,
+            'classes': classes_page,
+            'per_page': per_page,
             'teacher': teacher,
-            'total_classes': classes.count(),
+            'total_classes': classes_qs.count(),
         }
         return render(request, 'Backend/teacher/class/teacher_class_list.html', context)
     except Teacher.DoesNotExist:
@@ -981,9 +995,23 @@ def class_courses_view(request, class_id):
                 'present_today': min(present_today_count, student_count_all),
             })
         
+        # ===== PAGINATION (unified footer) =====
+        per_page = request.GET.get('per_page', '10')
+        try:
+            per_page = int(per_page)
+        except (TypeError, ValueError):
+            per_page = 10
+        if per_page not in (5, 10, 20):
+            per_page = 10
+
+        paginator = Paginator(course_data, per_page)
+        page_number = request.GET.get('page')
+        courses_page = paginator.get_page(page_number)
+
         context = {
             'class': class_obj,
-            'courses': course_data,  # ← ONLY courses for THIS class
+            'courses': courses_page,  # ← ONLY courses for THIS class
+            'per_page': per_page,
             'students': all_students,
             'total_students': student_count_all,
             'today': today,
@@ -1047,8 +1075,22 @@ def teacher_course_attendance_view(request):
                 'is_class_course': is_class_course,
             })
         
+        # ===== PAGINATION (unified footer) =====
+        per_page = request.GET.get('per_page', '10')
+        try:
+            per_page = int(per_page)
+        except (TypeError, ValueError):
+            per_page = 10
+        if per_page not in (5, 10, 20):
+            per_page = 10
+
+        paginator = Paginator(course_data, per_page)
+        page_number = request.GET.get('page')
+        courses_page = paginator.get_page(page_number)
+
         context = {
-            'courses': course_data,
+            'courses': courses_page,
+            'per_page': per_page,
             'teacher': teacher,
             'today': today,
             'total_courses': len(course_data),

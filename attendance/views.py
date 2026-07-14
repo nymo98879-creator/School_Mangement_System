@@ -568,11 +568,26 @@ def teacher_attendance_view(request):
         )
         attendance_rate = attendance_rate_percent(present_today, total_students_count)
     
+    # ===== PAGINATION (unified footer) =====
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    courses = list(courses)
+    paginator = Paginator(courses, per_page)
+    page_number = request.GET.get('page')
+    courses_page = paginator.get_page(page_number)
+
     context = {
         'classes': classes,
-        'courses': courses,
+        'courses': courses_page,
+        'per_page': per_page,
         'total_classes': classes.count(),
-        'total_courses': courses.count(),
+        'total_courses': len(courses),
         'today_attendance': today_attendance_count,
         'total_students': total_students_count,
         'attendance_rate': f"{attendance_rate}%",
@@ -693,10 +708,24 @@ def teacher_attendance_history(request, class_id):
     # Handle CSV export
     if request.GET.get('export') == 'csv':
         return export_attendance_csv(attendances, class_obj)
-    
+
+    # ===== PAGINATION (unified footer) =====
+    per_page = request.GET.get('per_page', '20')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 20
+    if per_page not in (5, 10, 20):
+        per_page = 20
+
+    paginator = Paginator(attendances, per_page)
+    page_number = request.GET.get('page')
+    attendances_page = paginator.get_page(page_number)
+
     context = {
         'class': class_obj,
-        'attendances': attendances,
+        'attendances': attendances_page,
+        'per_page': per_page,
         'total_records': total_records,
         'present_count': present_count,
         'absent_count': absent_count,
@@ -762,10 +791,24 @@ def teacher_student_attendance(request, student_id):
     attendance_rate = 0
     if total > 0:
         attendance_rate = attendance_rate_percent(present, total)
+
+    # ===== PAGINATION (unified footer) =====
+    per_page = request.GET.get('per_page', '20')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 20
+    if per_page not in (5, 10, 20):
+        per_page = 20
+
+    paginator = Paginator(attendances, per_page)
+    page_number = request.GET.get('page')
+    attendances_page = paginator.get_page(page_number)
     
     context = {
         'student': student,
-        'attendances': attendances,
+        'attendances': attendances_page,
+        'per_page': per_page,
         'total': total,
         'present': present,
         'absent': absent,

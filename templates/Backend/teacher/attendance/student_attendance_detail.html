@@ -291,7 +291,7 @@
 <div class="card">
     <div class="card-header-custom">
         <h5><i class="fas fa-calendar-check"></i> Attendance History</h5>
-        <span class="badge bg-secondary">{{ attendances|length }} records</span>
+        <span class="badge bg-secondary">{{ total }} records</span>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -310,7 +310,7 @@
                 <tbody>
                     {% for attendance in attendances %}
                     <tr>
-                        <td>{{ forloop.counter }}</td>
+                        <td>{{ attendances.start_index|add:forloop.counter0 }}</td>
                         <td>{{ attendance.date|date:"M d, Y" }}</td>
                         <td>{{ attendance.class_obj.name|default:"N/A" }}</td>
                         <td>
@@ -337,6 +337,9 @@
             </table>
         </div>
     </div>
+
+    <!-- ===== UNIFIED PAGINATION FOOTER ===== -->
+    {% include "Backend/includes/pagination.html" with page_obj=attendances per_page=per_page footer_id="pagination" %}
 </div>
 
 <div class="mt-3">

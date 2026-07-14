@@ -333,7 +333,7 @@
             <i class="fas fa-users"></i>
         </div>
         <div class="kpi-number">
-            {% with total=0 %}{% for item in courses %}{% with total=total|add:item.student_count %}{% endwith %}{% endfor %}{{ total }}</div>
+            {% with total=0 %}{% for item in courses %}{% with total=total|add:item.student_count %}{% endwith %}{% endfor %}{{ total }}{% endwith %}</div>
         <div class="kpi-label">Total Students</div>
     </div>
     <div class="kpi-card">
@@ -341,7 +341,7 @@
             <i class="fas fa-calendar-check"></i>
         </div>
         <div class="kpi-number">
-            {% with taken=0 %}{% for item in courses %}{% if item.attendance_taken %}{% with taken=taken|add:1 %}{% endwith %}{% endif %}{% endfor %}{{ taken }}</div>
+            {% with taken=0 %}{% for item in courses %}{% if item.attendance_taken %}{% with taken=taken|add:1 %}{% endwith %}{% endif %}{% endfor %}{{ taken }}{% endwith %}</div>
         <div class="kpi-label">Attendance Taken Today</div>
     </div>
     <div class="kpi-card">
@@ -382,7 +382,7 @@
                     data-name="{{ item.course.name|lower|default:'' }}"
                     data-code="{{ item.course.code|lower|default:'' }}"
                     data-status="{% if item.attendance_taken %}taken{% else %}pending{% endif %}">
-                    <td>{{ forloop.counter }}</td>
+                    <td>{{ courses.start_index|add:forloop.counter0 }}</td>
                     <td>
                         <div class="course-name-main">{{ item.course.name }}</div>
                         <div class="course-meta">
@@ -460,6 +460,9 @@
             </tbody>
         </table>
     </div>
+
+    <!-- ===== UNIFIED PAGINATION FOOTER ===== -->
+    {% include "Backend/includes/pagination.html" with page_obj=courses per_page=per_page footer_id="pagination" %}
 </div>
 
 {% endblock %}

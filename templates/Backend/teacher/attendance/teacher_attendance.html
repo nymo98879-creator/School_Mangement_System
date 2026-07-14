@@ -520,7 +520,7 @@
                     data-name="{{ item.course.name|lower|default:'' }}"
                     data-code="{{ item.course.code|lower|default:'' }}"
                     data-status="{% if item.attendance_taken %}taken{% else %}pending{% endif %}">
-                    <td>{{ forloop.counter }}</td>
+                    <td>{{ courses.start_index|add:forloop.counter0 }}</td>
                     <td>
                         <div class="course-name-main">{{ item.course.name }}</div>
                         <div class="course-meta">
@@ -597,7 +597,11 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
     </div>
+
+    <!-- ===== UNIFIED PAGINATION FOOTER ===== -->
+    {% include "Backend/includes/pagination.html" with page_obj=courses per_page=per_page footer_id="pagination" %}
 </div>
 
 <!-- No Results Message -->

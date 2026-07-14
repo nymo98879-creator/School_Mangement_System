@@ -580,51 +580,6 @@
         background: linear-gradient(135deg, #2563eb, #1d4ed8);
     }
 
-    /* ===== PAGINATION ===== */
-    .pagination-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 6px;
-        margin-top: 24px;
-        padding-bottom: 10px;
-    }
-
-    .page-btn {
-        min-width: 36px;
-        height: 36px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #475569;
-        background: white;
-        border: 1.5px solid #e2e8f0;
-        text-decoration: none;
-        transition: all 0.2s;
-    }
-
-    .page-btn:hover {
-        border-color: #2563eb;
-        color: #2563eb;
-        background: #eff6ff;
-        text-decoration: none;
-    }
-
-    .page-btn.active {
-        background: #2563eb;
-        color: white;
-        border-color: #2563eb;
-    }
-
-    .page-btn.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        pointer-events: none;
-    }
-
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1200px) {
         .kpi-grid {
@@ -699,10 +654,10 @@
 <!-- ===== PAGE HEADER ===== -->
 <div class="page-header">
     <h2>My Classes</h2>
-    <span class="badge-count px-3 py-2 rounded-pill fw-bold"
-        style="font-size: 0.95rem; background: rgba(37, 99, 235, 0.1); color: #2563eb; border: 1px solid rgba(37, 99, 235, 0.2);">
-        {{ classes|length }} Class{{ classes|length|pluralize }}
-    </span>
+        <span class="badge-count px-3 py-2 rounded-pill fw-bold"
+            style="font-size: 0.95rem; background: rgba(37, 99, 235, 0.1); color: #2563eb; border: 1px solid rgba(37, 99, 235, 0.2);">
+            {{ total_classes }} Class{{ total_classes|pluralize }}
+        </span>
 </div>
 
 <!-- ===== KPI CARDS ===== -->
@@ -718,7 +673,7 @@
         <div class="kpi-badge green">
             <i class="fas fa-check"></i>
         </div>
-        <div class="kpi-number">{{ classes|length|default:0 }}</div>
+        <div class="kpi-number">{{ total_classes }}</div>
         <div class="kpi-label">Active Classes</div>
     </div>
     <div class="kpi-card">
@@ -784,7 +739,7 @@
                         data-name="{{ class.name|lower|default:'' }}"
                         data-subject="{% for c in class.courses.all %}{{ c.name|lower|default:'' }}{% if not forloop.last %},{% endif %}{% endfor %}"
                         data-code="{{ class.code|lower|default:'' }}">
-                        <td>{{ forloop.counter }}</td>
+                        <td>{{ classes.start_index|add:forloop.counter0 }}</td>
                         <td>
                             <div class="class-name-main">{{ class.name }}</div>
                             <div class="class-meta">
@@ -977,50 +932,8 @@
     </div>
 </div>
 
-<!-- ===== PAGINATION ===== -->
-{% if classes.has_other_pages %}
-<div class="pagination-wrapper" id="pagination">
-    {% if classes.has_previous %}
-    <a href="?page=1" class="page-btn">
-        <i class="fas fa-angle-double-left"></i>
-    </a>
-    <a href="?page={{ classes.previous_page_number }}" class="page-btn">
-        <i class="fas fa-angle-left"></i>
-    </a>
-    {% else %}
-    <span class="page-btn disabled">
-        <i class="fas fa-angle-double-left"></i>
-    </span>
-    <span class="page-btn disabled">
-        <i class="fas fa-angle-left"></i>
-    </span>
-    {% endif %}
-
-    {% for num in classes.paginator.page_range %}
-    {% if classes.number == num %}
-    <span class="page-btn active">{{ num }}</span>
-    {% elif num > classes.number|add:'-3' and num < classes.number|add:'3' %}
-    <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
-    {% endif %}
-    {% endfor %}
-
-    {% if classes.has_next %}
-    <a href="?page={{ classes.next_page_number }}" class="page-btn">
-        <i class="fas fa-angle-right"></i>
-    </a>
-    <a href="?page={{ classes.paginator.num_pages }}" class="page-btn">
-        <i class="fas fa-angle-double-right"></i>
-    </a>
-    {% else %}
-    <span class="page-btn disabled">
-        <i class="fas fa-angle-right"></i>
-    </span>
-    <span class="page-btn disabled">
-        <i class="fas fa-angle-double-right"></i>
-    </span>
-    {% endif %}
-</div>
-{% endif %}
+<!-- ===== UNIFIED PAGINATION FOOTER ===== -->
+{% include "Backend/includes/pagination.html" with page_obj=classes per_page=per_page footer_id="pagination" %}
 
 {% endblock %}
 

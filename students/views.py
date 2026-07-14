@@ -102,6 +102,7 @@ def student_list(request):
         'inactive_students': Student.objects.filter(is_active=False).count(),
         'qr_not_registered': Student.objects.filter(qr_registered=False).count(),
         'qr_registered_count': Student.objects.filter(qr_registered=True).count(),
+        'per_page_params': 'per_page=' + str(per_page),
     }
     return render(request, 'Backend/admin/student/student_list.html', context)
 

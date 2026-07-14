@@ -5,193 +5,545 @@
 {% block page_title %}System Development Team{% endblock %}
 
 {% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
 <style>
-    /* ===== SECTION WRAPPER ===== */
+    /* ============================================================
+       SYSTEM DEVELOPMENT TEAM — "control panel" exhibition
+       Signature: bracketed scan-frame avatars + conic sweep glow
+       on hover + live mono status readouts (built + animate count).
+       GPU-accelerated (transform/opacity only), expo-out easing.
+       ============================================================ */
     .team-section {
-        padding: 60px 0;
-        background: #f8fafc;
+        --auto-blue: #2563eb;
+        --auto-blue-light: #60a5fa;
+        --auto-violet: #7c3aed;
+        --auto-teal: #0d9488;
+        --auto-amber: #d97706;
+        --auto-online: #10b981;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+        padding: 64px 0;
+        background:
+            radial-gradient(circle at 15% 8%, rgba(37, 99, 235, 0.05), transparent 45%),
+            radial-gradient(circle at 85% 92%, rgba(124, 58, 237, 0.04), transparent 45%),
+            #f6f8fb;
         overflow-x: hidden;
+        font-family: 'Inter', -apple-system, sans-serif;
+    }
+
+    .team-section .mono {
+        font-family: 'JetBrains Mono', 'SFMono-Regular', monospace;
     }
 
     /* ===== HEADER ===== */
     .team-header {
         text-align: center;
-        margin-bottom: 70px;
+        margin-bottom: 64px;
         position: relative;
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+        will-change: opacity, transform;
+    }
+
+    .team-header.in-view {
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .team-header .subtitle {
-        display: inline-block;
-        background: linear-gradient(135deg, #0f172a, #334155);
-        color: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #0f172a;
+        color: #cbd5e1;
+        font-family: 'JetBrains Mono', monospace;
         font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 4px;
-        padding: 8px 28px;
-        border-radius: 50px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+        font-weight: 500;
+        letter-spacing: 2px;
+        padding: 7px 18px 7px 14px;
+        border-radius: 5px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+    }
+
+    .team-header .subtitle .pulse-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--auto-online);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+        animation: pulse-ring 1.8s ease-out infinite;
+        flex-shrink: 0;
+    }
+
+    @keyframes pulse-ring {
+        0% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55);
+        }
+
+        70% {
+            box-shadow: 0 0 0 7px rgba(16, 185, 129, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+        }
     }
 
     .team-header h2 {
-        font-weight: 800;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
         color: #0f172a;
-        font-size: 44px;
+        font-size: 42px;
         margin-bottom: 14px;
-        letter-spacing: -1.5px;
+        letter-spacing: -1px;
     }
 
-    .team-header h2 span {
-        color: #2563eb;
-        position: relative;
+    .team-header h2 .typewriter-word {
+        background: linear-gradient(120deg, var(--auto-blue), var(--auto-violet));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        display: inline-block;
+        white-space: nowrap;
     }
 
-    .team-header h2 span::after {
-        content: '';
-        position: absolute;
-        bottom: 4px;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #2563eb, #3b82f6);
-        border-radius: 2px;
-        opacity: 0.3;
+    .team-header h2 .typewriter-cursor {
+        display: inline-block;
+        color: var(--auto-blue);
+        font-weight: 400;
+        margin-left: 2px;
+        animation: cursor-blink 0.9s step-end infinite;
+    }
+
+    @keyframes cursor-blink {
+
+        0%,
+        45% {
+            opacity: 1;
+        }
+
+        46%,
+        100% {
+            opacity: 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .team-header h2 .typewriter-cursor {
+            animation: none;
+            opacity: 1;
+        }
     }
 
     .team-header p {
         color: #64748b;
-        font-size: 18px;
-        max-width: 600px;
-        margin: 0 auto 24px;
-        line-height: 1.6;
-    }
-
-    .team-header .header-line {
-        width: 80px;
-        height: 4px;
-        background: linear-gradient(90deg, #2563eb, #3b82f6, #60a5fa);
+        font-size: 16.5px;
+        max-width: 560px;
         margin: 0 auto;
-        border-radius: 10px;
+        line-height: 1.65;
     }
 
-    /* ===== TEAM CONTAINER ===== */
-    .team-container {
+    /* ===== STAGE ===== */
+    .team-stage {
+        position: relative;
         max-width: 1140px;
         margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        gap: 35px;
         padding: 0 20px;
     }
 
-    .team-member {
+    .team-stage .team-container {
+        display: flex;
+        flex-direction: column;
+        gap: 26px;
+        opacity: 0;
+        transition: opacity 0.6s ease;
+    }
+
+    .team-stage.is-loading .team-container {
+        pointer-events: none;
+    }
+
+    .team-stage.is-ready .team-container {
+        opacity: 1;
+    }
+
+    /* ===== SKELETON LOADERS ===== */
+    .team-skeleton {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 26px;
+        opacity: 0;
+        z-index: 2;
+    }
+
+    .team-stage.is-loading .team-skeleton {
+        opacity: 1;
+    }
+
+    .team-stage.is-ready .team-skeleton {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+    }
+
+    .skeleton-card {
         background: #ffffff;
-        padding: 45px 40px;
+        padding: 40px 38px;
         display: flex;
         align-items: center;
-        gap: 60px;
-        border-radius: 24px;
-        border: 1px solid rgba(226, 232, 240, 0.8);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01);
+        gap: 52px;
+        border-radius: 18px;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .sk-block {
+        background: linear-gradient(100deg, #eef2f7 30%, #e2e8f0 50%, #eef2f7 70%);
+        background-size: 200% 100%;
+        border-radius: 6px;
+        animation: sk-pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes sk-pulse {
+        0% {
+            background-position: 200% 0;
+        }
+
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    .sk-avatar {
+        flex-shrink: 0;
+        width: 128px;
+        height: 128px;
+        border-radius: 16px;
+    }
+
+    .sk-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .sk-line {
+        height: 14px;
+    }
+
+    .sk-line--name {
+        width: 220px;
+        height: 24px;
+        border-radius: 6px;
+    }
+
+    .sk-line--role {
+        width: 140px;
+        height: 12px;
+    }
+
+    .sk-line--meta {
+        width: 300px;
+        height: 12px;
+    }
+
+    .sk-line--bio {
+        width: 100%;
+        height: 12px;
+    }
+
+    .sk-line--bio2 {
+        width: 78%;
+        height: 12px;
+    }
+
+    .sk-bar {
+        width: 110px;
+        height: 6px;
+        border-radius: 10px;
+    }
+
+    .sk-social {
+        display: flex;
+        gap: 10px;
+        margin-top: 4px;
+    }
+
+    .sk-pill {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+    }
+
+    /* ===== TEAM MEMBER CARD (system panel) ===== */
+    .team-member {
+        position: relative;
+        background: #ffffff;
+        padding: 40px 38px;
+        display: flex;
+        align-items: center;
+        gap: 52px;
+        border-radius: 18px;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+        isolation: isolate;
         opacity: 0;
-        transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-            opacity 0.6s ease,
-            border-color 0.3s ease,
-            box-shadow 0.3s ease,
-            background-color 0.4s ease;
+        transform: translateY(28px);
+        transition:
+            opacity 0.9s var(--ease-out-expo),
+            transform 0.8s var(--ease-out-expo),
+            box-shadow 0.7s var(--ease-out-expo);
+        will-change: opacity, transform;
+        backface-visibility: hidden;
+    }
+
+    .team-member.in-view {
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .team-member:nth-child(even) {
         flex-direction: row-reverse;
     }
 
-    .team-member.auto-focus {
-        border-color: rgba(37, 99, 235, 0.3);
-        box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.06);
-        background-color: #f8fafc;
+    /* conic sweep glow ring — sits behind the card, revealed on hover */
+    .team-member::before {
+        content: '';
+        position: absolute;
+        inset: -1.5px;
+        border-radius: 19px;
+        padding: 1.5px;
+        background: conic-gradient(from var(--angle, 0deg),
+                var(--role-color, #2563eb), transparent 28%, transparent 72%, var(--role-color, #2563eb));
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.45s ease;
+        z-index: -1;
+        animation: rotate-sweep 3.2s linear infinite paused;
+    }
+
+    .team-member:hover::before {
+        opacity: 1;
+        animation-play-state: running;
+    }
+
+    @property --angle {
+        syntax: '<angle>';
+        initial-value: 0deg;
+        inherits: false;
+    }
+
+    @keyframes rotate-sweep {
+        to {
+            --angle: 360deg;
+        }
     }
 
     .team-member:hover {
-        transform: translateY(-6px) scale(1.01) !important;
-        border-color: rgba(37, 99, 235, 0.25);
-        box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.06);
+        transform: translateY(-5px);
+        box-shadow: 0 22px 44px -18px rgba(15, 23, 42, 0.22);
     }
 
-    /* ===== AVATAR ===== */
+    /* faint grid texture, revealed on hover for a "system panel" feel */
+    .team-member::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 18px;
+        background-image:
+            linear-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(37, 99, 235, 0.05) 1px, transparent 1px);
+        background-size: 22px 22px;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
+        z-index: -1;
+        -webkit-mask-image: radial-gradient(circle at 12% 50%, black, transparent 65%);
+        mask-image: radial-gradient(circle at 12% 50%, black, transparent 65%);
+    }
+
+    .team-member:hover::after {
+        opacity: 1;
+    }
+
+    .team-member.director {
+        --role-color: #2563eb;
+    }
+
+    .team-member.pm {
+        --role-color: #0d9488;
+    }
+
+    .team-member.developer {
+        --role-color: #0284c7;
+    }
+
+    .team-member.database {
+        --role-color: #d97706;
+    }
+
+    .team-member.qa {
+        --role-color: #7c3aed;
+    }
+
+    /* ===== AVATAR — bracketed scan frame ===== */
     .team-member .member-avatar {
         flex-shrink: 0;
         position: relative;
+        width: 128px;
+        height: 128px;
     }
 
     .team-member .member-avatar .avatar-img {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
+        width: 128px;
+        height: 128px;
+        border-radius: 14px;
         object-fit: cover;
-        border: 4px solid #f1f5f9;
-        transition: all 0.4s ease;
         background: #f8fafc;
+        display: block;
+        transition: transform 0.7s var(--ease-out-expo), filter 0.6s ease;
     }
 
-    .team-member:hover .member-avatar .avatar-img,
-    .team-member.auto-focus .member-avatar .avatar-img {
-        border-color: #2563eb;
+    .team-member:hover .member-avatar .avatar-img {
+        transform: scale(1.045);
+        filter: saturate(1.08);
+    }
+
+    /* corner brackets — draw in on hover */
+    .member-avatar .bracket {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 2.5px solid var(--role-color, #2563eb);
+        opacity: 0;
+        transition: opacity 0.55s ease, transform 0.65s var(--ease-out-expo);
+    }
+
+    .member-avatar .bracket.tl {
+        top: -6px;
+        left: -6px;
+        border-right: 0;
+        border-bottom: 0;
+        border-radius: 6px 0 0 0;
+        transform: translate(4px, 4px);
+    }
+
+    .member-avatar .bracket.tr {
+        top: -6px;
+        right: -6px;
+        border-left: 0;
+        border-bottom: 0;
+        border-radius: 0 6px 0 0;
+        transform: translate(-4px, 4px);
+    }
+
+    .member-avatar .bracket.bl {
+        bottom: -6px;
+        left: -6px;
+        border-right: 0;
+        border-top: 0;
+        border-radius: 0 0 0 6px;
+        transform: translate(4px, -4px);
+    }
+
+    .member-avatar .bracket.br {
+        bottom: -6px;
+        right: -6px;
+        border-left: 0;
+        border-top: 0;
+        border-radius: 0 0 6px 0;
+        transform: translate(-4px, -4px);
+    }
+
+    .team-member:hover .member-avatar .bracket {
+        opacity: 1;
+        transform: translate(0, 0);
     }
 
     .team-member .member-avatar .avatar-badge {
         position: absolute;
-        bottom: 4px;
-        right: 4px;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
+        bottom: -8px;
+        right: -8px;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 14px;
-        border: 3px solid white;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        font-size: 13px;
+        border: 3px solid #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14);
         color: white;
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transition: transform 0.55s var(--ease-out-expo);
     }
 
-    .team-member:hover .member-avatar .avatar-badge,
-    .team-member.auto-focus .member-avatar .avatar-badge {
-        transform: scale(1.15);
+    .team-member:hover .member-avatar .avatar-badge {
+        transform: scale(1.12) rotate(-4deg);
     }
 
-    .team-member .member-avatar .avatar-badge.director {
+    .avatar-badge.director {
         background: linear-gradient(135deg, #1e3a8a, #2563eb);
     }
 
-    .team-member .member-avatar .avatar-badge.pm {
+    .avatar-badge.pm {
         background: linear-gradient(135deg, #0f766e, #0d9488);
     }
 
-    .team-member .member-avatar .avatar-badge.developer {
+    .avatar-badge.developer {
         background: linear-gradient(135deg, #0369a1, #0284c7);
     }
 
-    .team-member .member-avatar .avatar-badge.database {
+    .avatar-badge.database {
         background: linear-gradient(135deg, #b45309, #d97706);
     }
 
-    .team-member .member-avatar .avatar-badge.qa {
+    .avatar-badge.qa {
         background: linear-gradient(135deg, #6d28d9, #7c3aed);
+    }
+
+    /* status readout beneath avatar */
+    .status-readout {
+        margin-top: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 10.5px;
+        letter-spacing: 1px;
+        color: #94a3b8;
+    }
+
+    .status-readout .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--auto-online);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+        animation: pulse-ring 2.2s ease-out infinite;
     }
 
     /* ===== MEMBER INFO ===== */
     .team-member .member-info {
         flex: 1;
+        min-width: 0;
     }
 
     .team-member .member-info .member-header {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 14px;
         flex-wrap: wrap;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
 
     .team-member:nth-child(even) .member-header {
@@ -209,59 +561,71 @@
         margin-left: auto;
     }
 
+    .team-member:nth-child(even) .status-readout {
+        justify-content: flex-end;
+    }
+
     .team-member .member-info .member-name {
-        font-weight: 800;
-        color: #1e293b;
-        font-size: 26px;
-        letter-spacing: -0.5px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 23px;
+        letter-spacing: -0.3px;
         margin: 0;
     }
 
     .team-member .member-info .member-role {
-        font-size: 11px;
-        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10.5px;
+        font-weight: 500;
         display: inline-block;
-        padding: 4px 14px;
-        border-radius: 6px;
+        padding: 4px 10px;
+        border-radius: 5px;
         text-transform: uppercase;
         letter-spacing: 1px;
+        border: 1px solid transparent;
     }
 
-    .team-member .member-info .member-role.director {
+    .member-role.director {
         background: #eff6ff;
         color: #1e40af;
+        border-color: #dbeafe;
     }
 
-    .team-member .member-info .member-role.pm {
-        background: #f0fdf4;
-        color: #166534;
+    .member-role.pm {
+        background: #f0fdfa;
+        color: #0f766e;
+        border-color: #ccfbf1;
     }
 
-    .team-member .member-info .member-role.developer {
+    .member-role.developer {
         background: #f0f9ff;
         color: #0369a1;
+        border-color: #e0f2fe;
     }
 
-    .team-member .member-info .member-role.database {
+    .member-role.database {
         background: #fffbeb;
         color: #92400e;
+        border-color: #fef3c7;
     }
 
-    .team-member .member-info .member-role.qa {
+    .member-role.qa {
         background: #f5f3ff;
         color: #5b21b6;
+        border-color: #ede9fe;
     }
 
     .team-member .member-info .member-meta {
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 18px;
         flex-wrap: wrap;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
     }
 
     .team-member .member-info .member-meta .meta-item {
-        font-size: 13px;
+        font-size: 12.5px;
         color: #64748b;
         display: flex;
         align-items: center;
@@ -269,27 +633,34 @@
     }
 
     .team-member .member-info .member-meta .meta-item i {
-        color: #64748b;
-        font-size: 13px;
+        color: #94a3b8;
+        font-size: 12px;
     }
 
     .team-member .member-info .member-meta .meta-item .meta-number {
-        font-weight: 700;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 600;
         color: #334155;
     }
 
-    /* ===== SKILL BARS ===== */
+    /* ===== METRIC BAR + live mono readout ===== */
     .automation-metrics {
         display: flex;
-        gap: 15px;
-        margin-bottom: 12px;
+        gap: 12px;
         align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .automation-metrics .metric-label {
+        font-size: 11px;
+        color: #94a3b8;
+        letter-spacing: 0.3px;
     }
 
     .metric-bar-container {
-        width: 120px;
-        height: 6px;
-        background: #e2e8f0;
+        width: 110px;
+        height: 5px;
+        background: #e9edf3;
         border-radius: 10px;
         overflow: hidden;
         position: relative;
@@ -299,102 +670,83 @@
         height: 100%;
         width: 0%;
         border-radius: 10px;
-        transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--role-color, #2563eb);
+        transition: width 1.5s var(--ease-out-expo);
     }
 
-    .director .metric-bar-fill {
-        background: #2563eb;
-    }
-
-    .pm .metric-bar-fill {
-        background: #0d9488;
-    }
-
-    .developer .metric-bar-fill {
-        background: #0284c7;
-    }
-
-    .database .metric-bar-fill {
-        background: #d97706;
-    }
-
-    .qa .metric-bar-fill {
-        background: #7c3aed;
+    .metric-value {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--role-color, #2563eb);
+        min-width: 34px;
     }
 
     .team-member .member-info .member-bio {
-        font-size: 14.5px;
-        color: #475569;
+        font-size: 14px;
+        color: #55647a;
         line-height: 1.75;
-        margin: 12px 0 20px;
-        max-width: 820px;
+        margin: 10px 0 18px;
+        max-width: 800px;
     }
 
     /* ===== SOCIAL LINKS ===== */
     .team-member .member-info .member-social {
         display: flex;
-        gap: 12px;
+        gap: 10px;
     }
 
     .team-member .member-info .member-social .social-link {
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
-        display: flex;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
         background: #f1f5f9;
         color: #64748b;
-        transition: all 0.2s ease;
         text-decoration: none;
-        font-size: 14px;
+        font-size: 13px;
+        transition: transform 0.45s var(--ease-out-expo), background-color 0.4s ease, color 0.4s ease;
     }
 
     .team-member .member-info .member-social .social-link:hover {
-        transform: translateY(-2px);
-    }
-
-    .team-member .member-info .member-social .social-link.linkedin:hover {
-        background: #0a66c2;
-        color: white;
-    }
-
-    .team-member .member-info .member-social .social-link.github:hover {
-        background: #1f2328;
-        color: white;
-    }
-
-    .team-member .member-info .member-social .social-link.email:hover {
-        background: #2563eb;
-        color: white;
+        transform: translateY(-3px);
+        background: var(--role-color, #2563eb);
+        color: #ffffff;
     }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 992px) {
-        .team-member {
-            gap: 40px;
-            padding: 35px 30px;
+
+        .team-member,
+        .skeleton-card {
+            gap: 36px;
+            padding: 32px 26px;
         }
 
-        .team-member .member-avatar .avatar-img {
-            width: 130px;
-            height: 130px;
+        .team-member .member-avatar,
+        .team-member .member-avatar .avatar-img,
+        .sk-avatar {
+            width: 112px;
+            height: 112px;
         }
 
         .team-header h2 {
-            font-size: 36px;
+            font-size: 34px;
         }
     }
 
     @media (max-width: 768px) {
 
         .team-member,
+        .skeleton-card,
         .team-member:nth-child(even) {
             flex-direction: column !important;
             align-items: center;
             text-align: center;
-            gap: 25px;
-            padding: 35px 25px;
+            gap: 22px;
+            padding: 32px 22px;
         }
 
         .team-member .member-info .member-header,
@@ -407,14 +759,109 @@
         .team-member:nth-child(even) .member-meta,
         .team-member .member-info .member-social,
         .team-member:nth-child(even) .member-social,
-        .automation-metrics {
+        .automation-metrics,
+        .team-member:nth-child(even) .automation-metrics,
+        .status-readout,
+        .team-member:nth-child(even) .status-readout {
             justify-content: center;
         }
 
         .team-member .member-info .member-bio,
         .team-member:nth-child(even) .member-bio {
             text-align: center;
+            margin-left: 0;
         }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .team-header,
+        .team-member,
+        .sk-block,
+        .pulse-dot,
+        .status-readout .dot,
+        .team-member::before {
+            transition: none !important;
+            animation: none !important;
+        }
+
+        .team-header,
+        .team-member {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        .team-member::before {
+            display: none;
+        }
+    }
+
+    /* ===== DARK THEME ===== */
+    .dark .team-section {
+        background:
+            radial-gradient(circle at 15% 8%, rgba(37, 99, 235, 0.09), transparent 45%),
+            radial-gradient(circle at 85% 92%, rgba(124, 58, 237, 0.08), transparent 45%),
+            #0a0e1a;
+    }
+
+    .dark .team-header h2 {
+        color: #f1f5f9;
+    }
+
+    .dark .team-header p {
+        color: #8b99b3;
+    }
+
+    .dark .team-member,
+    .dark .skeleton-card {
+        background: #121a2b;
+        border-color: #1e293b;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    .dark .team-member:hover {
+        box-shadow: 0 22px 44px -18px rgba(0, 0, 0, 0.55);
+    }
+
+    .dark .member-name {
+        color: #f1f5f9;
+    }
+
+    .dark .member-bio {
+        color: #a7b3c9;
+    }
+
+    .dark .member-meta .meta-item {
+        color: #8b99b3;
+    }
+
+    .dark .member-meta .meta-item .meta-number {
+        color: #dbe4f3;
+    }
+
+    .dark .metric-bar-container {
+        background: #1e293b;
+    }
+
+    .dark .automation-metrics .metric-label {
+        color: #64748b;
+    }
+
+    .dark .status-readout {
+        color: #64748b;
+    }
+
+    .dark .sk-block {
+        background: linear-gradient(100deg, #121a2b 30%, #1e293b 50%, #121a2b 70%);
+    }
+
+    .dark .social-link {
+        background: #1e293b;
+        color: #8b99b3;
+    }
+
+    .dark .avatar-img {
+        background: #0f172a;
     }
 </style>
 {% endblock %}
@@ -423,194 +870,227 @@
 <div class="team-section">
     <!-- ===== HEADER ===== -->
     <div class="team-header">
-        <span class="subtitle">Core Architecture</span>
-        <h2>SMS Project <span>Engineers</span></h2>
+        <span class="subtitle"><span class="pulse-dot"></span>Core Architecture — Live</span>
+        <h2>SMS Project <span id="typewriterWord" class="typewriter-word">Engineers</span><span
+                class="typewriter-cursor">|</span></h2>
         <p>The specialized product and engineering team behind our next-generation School Management System application.
         </p>
-        <div class="header-line"></div>
     </div>
 
-    <!-- ===== TEAM CONTAINER ===== -->
-    <div class="team-container">
-
-        <!-- Member 1 - Chantha Mony -->
-        <div class="team-member" data-skill="94">
-            <div class="member-avatar">
-                <img src="{% static 'images/AI_Generate.jpg' %}" alt="Chantha Mony" class="avatar-img">
-                <div class="avatar-badge director">
-                    <i class="fas fa-layer-group"></i>
-                </div>
-            </div>
-            <div class="member-info director">
-                <div class="member-header">
-                    <h3 class="member-name">CHANTHA MONY</h3>
-                    <span class="member-role director">System Architect</span>
-                </div>
-                <div class="automation-metrics">
-                    <span class="meta-item" style="font-size:12px; color:#64748b;">Architecture Stability</span>
-                    <div class="metric-bar-container">
-                        <div class="metric-bar-fill"></div>
+    <!-- ===== STAGE (skeleton -> content morph) ===== -->
+    <div class="team-stage is-loading" id="teamStage">
+        <!-- Skeleton loaders -->
+        <div class="team-skeleton" aria-hidden="true">
+            {% for i in "12345" %}
+            <div class="skeleton-card">
+                <div class="sk-avatar sk-block"></div>
+                <div class="sk-info">
+                    <div class="sk-line sk-line--name sk-block"></div>
+                    <div class="sk-line sk-line--role sk-block"></div>
+                    <div class="sk-bar sk-block"></div>
+                    <div class="sk-line sk-line--meta sk-block"></div>
+                    <div class="sk-line sk-line--bio sk-block"></div>
+                    <div class="sk-line sk-line--bio2 sk-block"></div>
+                    <div class="sk-social"><span class="sk-pill sk-block"></span><span class="sk-pill sk-block"></span>
                     </div>
                 </div>
-                <div class="member-meta">
-                    <span class="meta-item"><i class="fas fa-sitemap"></i> <span class="meta-number">v2.4</span> Module
-                        Mapping</span>
-                    <span class="meta-item"><i class="fas fa-shield-alt"></i> RBAC Secured</span>
-                </div>
-                <p class="member-bio">
-                    Chantha leads the core operational schema blueprints for our School Management System. He
-                    orchestrates multi-tenant structures, custom roles and routing permissions configurations, ensuring
-                    fast dashboard processing speeds even during high peak concurrent access sequences.
-                </p>
-                <div class="member-social">
-                    <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="social-link email"><i class="fas fa-envelope"></i></a>
-                </div>
             </div>
+            {% endfor %}
         </div>
 
-        <!-- Member 2 - Chea Sokhhim -->
-        <div class="team-member" data-skill="88">
-            <div class="member-avatar">
-                <img src="{% static 'images/sokkhim.jpg' %}" alt="Chea Sokhhim" class="avatar-img">
-                <div class="avatar-badge pm">
-                    <i class="fas fa-tasks"></i>
+        <!-- ===== REAL TEAM CONTAINER ===== -->
+        <div class="team-container">
+
+            <!-- Member 1 - Chantha Mony -->
+            <div class="team-member director" data-skill="94">
+                <div class="member-avatar">
+                    <img src="{% static 'images/AI_Generate.jpg' %}" alt="Chantha Mony" class="avatar-img">
+                    <span class="bracket tl"></span><span class="bracket tr"></span>
+                    <span class="bracket bl"></span><span class="bracket br"></span>
+                    <div class="avatar-badge director"><i class="fas fa-layer-group"></i></div>
                 </div>
-            </div>
-            <div class="member-info pm">
-                <div class="member-header">
-                    <h3 class="member-name">CHEA SOKHHIM</h3>
-                    <span class="member-role pm">Product Owner</span>
-                </div>
-                <div class="automation-metrics">
-                    <span class="meta-item" style="font-size:12px; color:#64748b;">Sprint Velocity</span>
-                    <div class="metric-bar-container">
-                        <div class="metric-bar-fill"></div>
+                <div class="member-info">
+                    <div class="member-header">
+                        <h3 class="member-name">CHANTHA MONY</h3>
+                        <span class="member-role director">System Architect</span>
+                    </div>
+                    <div class="automation-metrics">
+                        <span class="metric-label">Architecture Stability</span>
+                        <div class="metric-bar-container">
+                            <div class="metric-bar-fill"></div>
+                        </div>
+                        <span class="metric-value mono">0%</span>
+                    </div>
+                    <div class="member-meta">
+                        <span class="meta-item"><i class="fas fa-sitemap"></i> <span class="meta-number">v2.4</span>
+                            Module Mapping</span>
+                        <span class="meta-item"><i class="fas fa-shield-alt"></i> RBAC Secured</span>
+                    </div>
+                    <p class="member-bio">
+                        Chantha leads the core operational schema blueprints for our School Management System. He
+                        orchestrates multi-tenant structures, custom roles and routing permissions configurations,
+                        ensuring
+                        fast dashboard processing speeds even during high peak concurrent access sequences.
+                    </p>
+                    <div class="member-social">
+                        <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link email"><i class="fas fa-envelope"></i></a>
                     </div>
                 </div>
-                <div class="member-meta">
-                    <span class="meta-item"><i class="fas fa-history"></i> <span class="meta-number">40+</span> Sprints
-                        Closed</span>
-                    <span class="meta-item"><i class="fas fa-check-double"></i> Scope Finalized</span>
-                </div>
-                <p class="member-bio">
-                    Chea works directly with academic institutions to gather criteria and translate institutional
-                    requirements into system workflows. He manages technical documentation pipelines and maps feature
-                    releases for cross-functional registration systems and grading operations.
-                </p>
-                <div class="member-social">
-                    <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="social-link github"><i class="fab fa-github"></i></a>
-                </div>
             </div>
-        </div>
 
-        <!-- Member 3 - Norn Rothana -->
-        <div class="team-member" data-skill="96">
-            <div class="member-avatar">
-                <img src="{% static 'images/rathana.png' %}" alt="Norn Rothana" class="avatar-img">
-                <div class="avatar-badge developer">
-                    <i class="fas fa-code"></i>
+            <!-- Member 2 - Chea Sokhim -->
+            <div class="team-member pm" data-skill="88">
+                <div class="member-avatar">
+                    <img src="{% static 'images/sokkhim.jpg' %}" alt="Chea Sokhim" class="avatar-img">
+                    <span class="bracket tl"></span><span class="bracket tr"></span>
+                    <span class="bracket bl"></span><span class="bracket br"></span>
+                    <div class="avatar-badge pm"><i class="fas fa-tasks"></i></div>
                 </div>
-            </div>
-            <div class="member-info developer">
-                <div class="member-header">
-                    <h3 class="member-name">NORN RATHANA</h3>
-                    <span class="member-role developer">Lead Full-Stack Dev</span>
-                </div>
-                <div class="automation-metrics">
-                    <span class="meta-item" style="font-size:12px; color:#64748b;">Code Optimization</span>
-                    <div class="metric-bar-container">
-                        <div class="metric-bar-fill"></div>
+                <div class="member-info">
+                    <div class="member-header">
+                        <h3 class="member-name">CHEA SOKHIM</h3>
+                        <span class="member-role pm">Product Owner</span>
+                    </div>
+                    <div class="automation-metrics">
+                        <span class="metric-label">Sprint Velocity</span>
+                        <div class="metric-bar-container">
+                            <div class="metric-bar-fill"></div>
+                        </div>
+                        <span class="metric-value mono">0%</span>
+                    </div>
+                    <div class="member-meta">
+                        <span class="meta-item"><i class="fas fa-history"></i> <span class="meta-number">40+</span>
+                            Sprints Closed</span>
+                        <span class="meta-item"><i class="fas fa-check-double"></i> Scope Finalized</span>
+                    </div>
+                    <p class="member-bio">
+                        Chea works directly with academic institutions to gather criteria and translate institutional
+                        requirements into system workflows. He manages technical documentation pipelines and maps
+                        feature
+                        releases for cross-functional registration systems and grading operations.
+                    </p>
+                    <div class="member-social">
+                        <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link github"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
-                <div class="member-meta">
-                    <span class="meta-item"><i class="fas fa-laptop-code"></i> <span class="meta-number">12+</span>
-                        Modules Built</span>
-                    <span class="meta-item"><i class="fas fa-bolt"></i> Vue.js / Pinia / Axios</span>
-                </div>
-                <p class="member-bio">
-                    Norn is responsible for building stateful interfaces for attendance processing metrics, real-time
-                    assignment grading portals, and data services integrations. He specializes in designing components
-                    with asynchronous APIs to minimize server workloads.
-                </p>
-                <div class="member-social">
-                    <a href="#" class="social-link github"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-link email"><i class="fas fa-envelope"></i></a>
-                </div>
             </div>
-        </div>
 
-        <!-- Member 4 - Thon Vantha -->
-        <div class="team-member" data-skill="91">
-            <div class="member-avatar">
-                <img src="{% static 'images/kakada.jpg' %}" alt="Thon Vantha" class="avatar-img">
-                <div class="avatar-badge database">
-                    <i class="fas fa-database"></i>
+            <!-- Member 3 - Norn Rathana -->
+            <div class="team-member developer" data-skill="96">
+                <div class="member-avatar">
+                    <img src="{% static 'images/rathana.png' %}" alt="Norn Rathana" class="avatar-img">
+                    <span class="bracket tl"></span><span class="bracket tr"></span>
+                    <span class="bracket bl"></span><span class="bracket br"></span>
+                    <div class="avatar-badge developer"><i class="fas fa-code"></i></div>
                 </div>
-            </div>
-            <div class="member-info database">
-                <div class="member-header">
-                    <h3 class="member-name">THON VANTHA</h3>
-                    <span class="member-role database">Database Specialist</span>
-                </div>
-                <div class="automation-metrics">
-                    <span class="meta-item" style="font-size:12px; color:#64748b;">Query Index Efficiency</span>
-                    <div class="metric-bar-container">
-                        <div class="metric-bar-fill"></div>
+                <div class="member-info">
+                    <div class="member-header">
+                        <h3 class="member-name">NORN RATHANA</h3>
+                        <span class="member-role developer">Lead Full-Stack Dev</span>
+                    </div>
+                    <div class="automation-metrics">
+                        <span class="metric-label">Code Optimization</span>
+                        <div class="metric-bar-container">
+                            <div class="metric-bar-fill"></div>
+                        </div>
+                        <span class="metric-value mono">0%</span>
+                    </div>
+                    <div class="member-meta">
+                        <span class="meta-item"><i class="fas fa-laptop-code"></i> <span class="meta-number">12+</span>
+                            Modules Built</span>
+                        <span class="meta-item"><i class="fas fa-bolt"></i> Vue.js / Pinia / Axios</span>
+                    </div>
+                    <p class="member-bio">
+                        Norn is responsible for building stateful interfaces for attendance processing metrics,
+                        real-time
+                        assignment grading portals, and data services integrations. He specializes in designing
+                        components
+                        with asynchronous APIs to minimize server workloads.
+                    </p>
+                    <div class="member-social">
+                        <a href="#" class="social-link github"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link email"><i class="fas fa-envelope"></i></a>
                     </div>
                 </div>
-                <div class="member-meta">
-                    <span class="meta-item"><i class="fas fa-table"></i> SQL Optimize</span>
-                    <span class="meta-item"><i class="fas fa-key"></i> Migrations Completed</span>
-                </div>
-                <p class="member-bio">
-                    Thon structures database schemas for deep historical relational tracking records. He writes highly
-                    optimized queries for complex student analytics reports, tracking GPA transformations, course
-                    prerequisite paths, and data exports.
-                </p>
-                <div class="member-social">
-                    <a href="#" class="social-link github"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
-                </div>
             </div>
-        </div>
 
-        <!-- Member 5 - Nai Kakada -->
-        <div class="team-member" data-skill="98">
-            <div class="member-avatar">
-                <img src="{% static 'images/kakada.jpg' %}" alt="Nai Kakada" class="avatar-img">
-                <div class="avatar-badge qa">
-                    <i class="fas fa-vial"></i>
+            <!-- Member 4 - Thon Vantha -->
+            <div class="team-member database" data-skill="91">
+                <div class="member-avatar">
+                    <img src="{% static 'images/kakada.jpg' %}" alt="Thon Vantha" class="avatar-img">
+                    <span class="bracket tl"></span><span class="bracket tr"></span>
+                    <span class="bracket bl"></span><span class="bracket br"></span>
+                    <div class="avatar-badge database"><i class="fas fa-database"></i></div>
                 </div>
-            </div>
-            <div class="member-info qa">
-                <div class="member-header">
-                    <h3 class="member-name">NAY KAKADA</h3>
-                    <span class="member-role qa">QA Engineer</span>
-                </div>
-                <div class="automation-metrics">
-                    <span class="meta-item" style="font-size:12px; color:#64748b;">CI/CD Test Coverage</span>
-                    <div class="metric-bar-container">
-                        <div class="metric-bar-fill"></div>
+                <div class="member-info">
+                    <div class="member-header">
+                        <h3 class="member-name">THON VANTHA</h3>
+                        <span class="member-role database">Database Specialist</span>
+                    </div>
+                    <div class="automation-metrics">
+                        <span class="metric-label">Query Index Efficiency</span>
+                        <div class="metric-bar-container">
+                            <div class="metric-bar-fill"></div>
+                        </div>
+                        <span class="metric-value mono">0%</span>
+                    </div>
+                    <div class="member-meta">
+                        <span class="meta-item"><i class="fas fa-table"></i> SQL Optimize</span>
+                        <span class="meta-item"><i class="fas fa-key"></i> Migrations Completed</span>
+                    </div>
+                    <p class="member-bio">
+                        Thon structures database schemas for deep historical relational tracking records. He writes
+                        highly
+                        optimized queries for complex student analytics reports, tracking GPA transformations, course
+                        prerequisite paths, and data exports.
+                    </p>
+                    <div class="member-social">
+                        <a href="#" class="social-link github"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
-                <div class="member-meta">
-                    <span class="meta-item"><i class="fas fa-bug"></i> Zero Bugs Target</span>
-                    <span class="meta-item"><i class="fas fa-vials"></i> E2E Test Coverage</span>
+            </div>
+
+            <!-- Member 5 - Nai Kakada -->
+            <div class="team-member qa" data-skill="98">
+                <div class="member-avatar">
+                    <img src="{% static 'images/kakada.jpg' %}" alt="Nai Kakada" class="avatar-img">
+                    <span class="bracket tl"></span><span class="bracket tr"></span>
+                    <span class="bracket bl"></span><span class="bracket br"></span>
+                    <div class="avatar-badge qa"><i class="fas fa-vial"></i></div>
                 </div>
-                <p class="member-bio">
-                    Nai orchestrates comprehensive end-to-end integration and automated regression tests on critical
-                    platform areas, such as online tuition collections and multi-file report builders, preventing data
-                    leaks across environments.
-                </p>
-                <div class="member-social">
-                    <a href="#" class="social-link github"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-link email"><i class="fas fa-envelope"></i></a>
+                <div class="member-info">
+                    <div class="member-header">
+                        <h3 class="member-name">NAY KAKADA</h3>
+                        <span class="member-role qa">QA Engineer</span>
+                    </div>
+                    <div class="automation-metrics">
+                        <span class="metric-label">CI/CD Test Coverage</span>
+                        <div class="metric-bar-container">
+                            <div class="metric-bar-fill"></div>
+                        </div>
+                        <span class="metric-value mono">0%</span>
+                    </div>
+                    <div class="member-meta">
+                        <span class="meta-item"><i class="fas fa-bug"></i> Zero Bugs Target</span>
+                        <span class="meta-item"><i class="fas fa-vials"></i> E2E Test Coverage</span>
+                    </div>
+                    <p class="member-bio">
+                        Nai orchestrates comprehensive end-to-end integration and automated regression tests on critical
+                        platform areas, such as online tuition collections and multi-file report builders, preventing
+                        data
+                        leaks across environments.
+                    </p>
+                    <div class="member-social">
+                        <a href="#" class="social-link github"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link email"><i class="fas fa-envelope"></i></a>
+                    </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -618,53 +1098,119 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const members = document.querySelectorAll('.team-member');
+        const stage = document.getElementById('teamStage');
+        const header = document.querySelector('.team-header');
+        const cards = Array.prototype.slice.call(document.querySelectorAll('.team-member'));
 
-        // 1. SCROLL AUTOMATION (Intersection Observer for alternate sliding entry)
-        const observerOptions = {
-            threshold: 0.15,
-            rootMargin: "0px 0px -50px 0px"
-        };
+        // 1. HEADER fade/drift in
+        requestAnimationFrame(function () { header.classList.add('in-view'); });
 
-        const appearanceObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const card = entry.target;
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateX(0)';
+        // 1b. AUTO TYPEWRITER — cycles the heading word, deleting/typing one char at a time
+        (function typewriter() {
+            const el = document.getElementById('typewriterWord');
+            if (!el) return;
 
-                    // Trigger skill bar automation load inside visible card
-                    const fillBar = card.querySelector('.metric-bar-fill');
-                    const targetPercentage = card.getAttribute('data-skill');
-                    if (fillBar) {
-                        fillBar.style.width = targetPercentage + '%';
+            const words = ['Engineers', 'Architects', 'Automators', 'Innovators'];
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reduceMotion) return; // leave the static default word in place
+
+            const TYPE_SPEED = 90;
+            const DELETE_SPEED = 45;
+            const HOLD_FULL = 1900;
+            const HOLD_EMPTY = 350;
+
+            let wordIndex = 0;
+            let charIndex = words[0].length;
+            let deleting = false;
+
+            function step() {
+                const current = words[wordIndex];
+
+                if (!deleting) {
+                    charIndex++;
+                    el.textContent = current.slice(0, charIndex);
+                    if (charIndex >= current.length) {
+                        deleting = true;
+                        window.setTimeout(step, HOLD_FULL);
+                        return;
                     }
-                    observer.unobserve(card);
+                    window.setTimeout(step, TYPE_SPEED);
+                } else {
+                    charIndex--;
+                    el.textContent = current.slice(0, charIndex);
+                    if (charIndex <= 0) {
+                        deleting = false;
+                        wordIndex = (wordIndex + 1) % words.length;
+                        window.setTimeout(step, HOLD_EMPTY);
+                        return;
+                    }
+                    window.setTimeout(step, DELETE_SPEED);
                 }
-            });
-        }, observerOptions);
-
-        members.forEach((member, index) => {
-            const isEven = index % 2 !== 0;
-            member.style.opacity = '0';
-            member.style.transform = isEven ? 'translateX(60px)' : 'translateX(-60px)';
-            appearanceObserver.observe(member);
-        });
-
-        // 2. TIMED ACTIVE CYCLE AUTOMATION (Auto-loops through highlights down the team layout)
-        let activeIndex = 0;
-        function autoHighlightNextMember() {
-            members.forEach(m => m.classList.remove('auto-focus'));
-
-            const currentCard = members[activeIndex];
-            if (currentCard && !currentCard.matches(':hover')) {
-                currentCard.classList.add('auto-focus');
             }
 
-            activeIndex = (activeIndex + 1) % members.length;
+            // begin the cycle after the initial word has held on screen for a moment
+            window.setTimeout(function () {
+                deleting = true;
+                step();
+            }, HOLD_FULL);
+        })();
+
+        // 2. SKELETON -> CONTENT morph
+        const settle = function () {
+            if (!stage) return;
+            stage.classList.remove('is-loading');
+            stage.classList.add('is-ready');
+        };
+        window.setTimeout(settle, 850);
+
+        // helper: animate a numeric readout from 0 -> target over duration
+        function animateCount(el, target, duration) {
+            const start = performance.now();
+            function tick(now) {
+                const p = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - p, 3); // ease-out-cubic
+                el.textContent = Math.round(target * eased) + '%';
+                if (p < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
         }
 
-        setInterval(autoHighlightNextMember, 4000);
+        // 3. STAGGERED CARD entrance + metric bar growth + count-up
+        if (!('IntersectionObserver' in window)) {
+            cards.forEach(function (card) {
+                card.classList.add('in-view');
+                const fill = card.querySelector('.metric-bar-fill');
+                const value = card.querySelector('.metric-value');
+                const target = parseInt(card.getAttribute('data-skill'), 10);
+                if (fill) fill.style.width = target + '%';
+                if (value) value.textContent = target + '%';
+            });
+            return;
+        }
+
+        const observer = new IntersectionObserver(function (entries, obs) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                const card = entry.target;
+                const index = cards.indexOf(card);
+
+                card.style.transitionDelay = (index * 90) + 'ms';
+                card.classList.add('in-view');
+
+                const fill = card.querySelector('.metric-bar-fill');
+                const value = card.querySelector('.metric-value');
+                const target = parseInt(card.getAttribute('data-skill'), 10);
+                if (fill && !isNaN(target)) fill.style.width = target + '%';
+                if (value && !isNaN(target)) animateCount(value, target, 1100);
+
+                window.setTimeout(function () { card.style.transitionDelay = ''; }, 650 + index * 90);
+                obs.unobserve(card);
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+        window.setTimeout(function () {
+            cards.forEach(function (card) { observer.observe(card); });
+        }, 900);
     });
 </script>
 {% endblock %}

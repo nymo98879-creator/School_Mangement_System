@@ -655,6 +655,62 @@
             font-size: 10px;
         }
     }
+
+    /* ===== VIEW TOGGLE (Table / Card) ===== */
+    .view-toggle { display: inline-flex; align-items: center; gap: 2px; background: #FFFFFF; border: 1px solid #e2e8f0; border-radius: 10px; padding: 3px; flex-shrink: 0; }
+    .view-toggle .toggle-btn { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 34px; border: none; background: transparent; color: #64748b; border-radius: 8px; cursor: pointer; font-size: 15px; transition: all 0.2s; }
+    .view-toggle .toggle-btn:hover { color: #334155; background: #f8fafc; }
+    .view-toggle .toggle-btn.active { background: #eff6ff; color: #3b82f6; }
+
+    /* ===== VIEW HOST (drives which layout is visible) ===== */
+    .view-host[data-view="table"] .card-grid { display: none; }
+    .view-host[data-view="card"] .table-container { display: none; }
+
+    /* ===== CARD GRID VIEW ===== */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .class-card { position: relative; background: #FFFFFF; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); transition: all 0.2s; display: flex; flex-direction: column; gap: 16px; }
+    .class-card:hover { box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); transform: translateY(-2px); border-color: #dbeafe; }
+    .class-card .cc-header { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .class-card .cc-icon { width: 44px; height: 44px; border-radius: 50%; background: #eff6ff; color: #3b82f6; display: inline-flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .class-card .cc-heading { min-width: 0; }
+    .class-card .cc-title { font-weight: 700; font-size: 16px; color: #0f172a; letter-spacing: -0.2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .class-card .cc-sub { font-size: 12px; color: #64748b; font-weight: 500; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .class-card .cc-meta { display: flex; flex-direction: column; gap: 10px; }
+    .class-card .cc-meta-item { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: #475569; }
+    .class-card .cc-meta-item > i { width: 16px; text-align: center; color: #94a3b8; font-size: 13px; flex-shrink: 0; }
+    .class-card .cc-meta-item .cc-meta-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .class-card .cc-meta-item.unassigned { color: #d97706; }
+    .class-card .cc-meta-item.unassigned > i { color: #d97706; }
+    .class-card .cc-schedule { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .class-card .cc-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 14px; border-top: 1px solid #f1f5f9; }
+
+    .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 50px; font-size: 12.5px; font-weight: 600; }
+    .status-pill::before { content: ''; width: 7px; height: 7px; border-radius: 50%; }
+    .status-pill.active { background: #dcfce7; color: #16a34a; }
+    .status-pill.active::before { background: #16a34a; }
+    .status-pill.inactive { background: #f1f5f9; color: #64748b; }
+    .status-pill.inactive::before { background: #94a3b8; }
+
+    @media (max-width: 576px) { .card-grid { grid-template-columns: 1fr; } }
+
+    /* ===== DARK THEME ===== */
+    .dark .view-toggle { background: var(--field-bg); border-color: var(--border); }
+    .dark .view-toggle .toggle-btn { color: var(--text-muted); }
+    .dark .view-toggle .toggle-btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); }
+    .dark .view-toggle .toggle-btn.active { background: rgba(59, 130, 246, 0.15); color: var(--accent-soft); }
+
+    .dark .class-card { background: var(--surface); border-color: var(--border); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.30); }
+    .dark .class-card:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45); border-color: rgba(59, 130, 246, 0.35); }
+    .dark .class-card .cc-icon { background: rgba(59, 130, 246, 0.15); color: var(--accent-soft); }
+    .dark .class-card .cc-title { color: var(--text); }
+    .dark .class-card .cc-sub { color: var(--text-muted); }
+    .dark .class-card .cc-meta-item { color: #cbd5e1; }
+    .dark .class-card .cc-meta-item > i { color: var(--text-muted); }
+    .dark .class-card .cc-footer { border-top-color: var(--border); }
+    .dark .status-pill.active { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+    .dark .status-pill.active::before { background: #34d399; }
+    .dark .status-pill.inactive { background: rgba(148, 163, 184, 0.16); color: #94a3b8; }
+    .dark .status-pill.inactive::before { background: #94a3b8; }
 </style>
 {% endblock %}
 
@@ -727,9 +783,18 @@
     <button class="btn-clear" id="clearFiltersBtn">
         <i class="fas fa-times"></i> Clear Filters
     </button>
+    <div class="view-toggle" role="group" aria-label="View mode">
+        <button type="button" class="toggle-btn active" id="viewTableBtn" title="Table View" data-bs-toggle="tooltip" aria-label="Table View">
+            <i class="fas fa-table-list"></i>
+        </button>
+        <button type="button" class="toggle-btn" id="viewCardBtn" title="Card View" data-bs-toggle="tooltip" aria-label="Card View">
+            <i class="fas fa-table-cells-large"></i>
+        </button>
+    </div>
 </div>
 
-<!-- ===== DATA TABLE ===== -->
+<!-- ===== DATA VIEWS (Table + Card) ===== -->
+<div class="view-host" id="viewHost" data-view="table">
 <div class="table-container">
     <div class="table-responsive">
         <table class="data-table">
@@ -864,6 +929,102 @@
     </div>
 </div>
 
+<!-- ===== CARD GRID VIEW ===== -->
+<div class="card-grid" id="cardView">
+    {% for class in classes %}
+    <div class="class-card" data-teacher="{{ class.teacher.id|default_if_none:'' }}"
+        data-building="{{ class.building.id|default_if_none:'' }}"
+        data-status="{% if class.is_active %}active{% else %}inactive{% endif %}"
+        data-name="{{ class.name|lower|default:'' }}"
+        data-subject="{% for c in class.courses.all %}{{ c.name|lower|default:'' }}{% if not forloop.last %},{% endif %}{% endfor %}"
+        data-code="{{ class.code|lower|default:'' }}">
+        <div class="cc-header">
+            <div class="cc-icon"><i class="fas fa-cubes"></i></div>
+            <div class="cc-heading">
+                <div class="cc-title" title="{{ class.name }}">{{ class.name }}</div>
+                <div class="cc-sub">
+                    {% if class.courses.exists %}{% for c in class.courses.all %}{{ c.code }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}No Subject{% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="cc-meta">
+            {% if class.teacher %}
+            <div class="cc-meta-item">
+                <i class="fas fa-user"></i>
+                <span class="cc-meta-text">{{ class.teacher.get_full_name }}</span>
+            </div>
+            {% else %}
+            <div class="cc-meta-item unassigned">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span class="cc-meta-text">Unassigned</span>
+            </div>
+            {% endif %}
+            <div class="cc-meta-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span class="cc-meta-text">
+                    {% if class.building and class.room %}{{ class.building.code }}, Room {{ class.room.room_number }}
+                    {% elif class.room %}Room {{ class.room.room_number }}
+                    {% else %}TBD{% endif %}
+                </span>
+            </div>
+            <div class="cc-meta-item">
+                <i class="fas fa-clock"></i>
+                <div class="cc-schedule">
+                    {% if class.time_slots.exists %}
+                    <div class="schedule-badges">
+                        {% for slot in class.time_slots.all %}
+                        {% if 'M' in slot.get_days_display %}<span class="day-badge active">M</span>{% endif %}
+                        {% if 'T' in slot.get_days_display and 'Th' not in slot.get_days_display %}<span class="day-badge active">T</span>{% endif %}
+                        {% if 'W' in slot.get_days_display %}<span class="day-badge active">W</span>{% endif %}
+                        {% if 'Th' in slot.get_days_display %}<span class="day-badge active">Th</span>{% endif %}
+                        {% if 'F' in slot.get_days_display %}<span class="day-badge active">F</span>{% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="schedule-time">
+                        {% for slot in class.time_slots.all %}{{ slot.start_time|time:"h:i A" }} – {{ slot.end_time|time:"h:i A" }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+                    </div>
+                    {% elif class.schedule %}
+                    <span class="cc-meta-text">{{ class.schedule }}</span>
+                    {% else %}
+                    <span class="cc-meta-text">Schedule TBD</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="cc-meta-item">
+                <i class="fas fa-users"></i>
+                <span class="cc-meta-text">{% with student_count=class.get_student_count %}{{ student_count }}/{{ class.capacity|default:30 }} Students{% endwith %}</span>
+            </div>
+        </div>
+        <div class="cc-footer">
+            <span class="status-pill {% if class.is_active %}active{% else %}inactive{% endif %}">
+                {% if class.is_active %}Active{% else %}Inactive{% endif %}
+            </span>
+            <div class="action-icons">
+                <a href="{% url 'classes:class_edit' class.pk %}" class="action-icon edit" title="Edit" data-bs-toggle="tooltip">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="{% url 'classes:class_toggle_status' class.pk %}" class="action-icon toggle" title="{% if class.is_active %}Deactivate{% else %}Activate{% endif %}" data-bs-toggle="tooltip" onclick="return confirm('Are you sure?')">
+                    <i class="fas {% if class.is_active %}fa-pause{% else %}fa-play{% endif %}"></i>
+                </a>
+                <a href="{% url 'classes:class_delete' class.pk %}" class="action-icon delete" title="Delete" data-bs-toggle="tooltip" onclick="return confirm('Are you sure you want to delete this class?')">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-state" style="grid-column: 1 / -1;">
+        <i class="fas fa-cubes"></i>
+        <h5>No Classes Found</h5>
+        <p>Click "Add Class" to create your first class.</p>
+        <a href="{% url 'classes:class_create' %}" class="btn-add-class" style="display: inline-flex; margin-top: 8px;">
+            <i class="fas fa-plus"></i> Add Class
+        </a>
+    </div>
+    {% endfor %}
+</div>
+</div>
+
 <!-- No Results Message -->
 <div class="no-results" id="noResults">
     <i class="fas fa-search"></i>
@@ -881,7 +1042,7 @@
         <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
     </select>
 </div>
-<script src="{% static 'js/per-page.js' %}"></script>
+<script src="{% static 'js/per-page.js' %}?v=20260714f"></script>
 
 {% if classes.has_other_pages %}
 <div class="pagination-wrapper" id="pagination">
@@ -939,6 +1100,23 @@
         });
 
         // ===== SEARCH AND FILTER FUNCTION =====
+        function itemMatches(data, searchTerm, teacherFilter, buildingFilter, statusFilter) {
+            const name = data.name || '';
+            const subject = data.subject || '';
+            const code = data.code || '';
+            const teacher = data.teacher || '';
+            const building = data.building || '';
+            const status = data.status || '';
+
+            if (searchTerm) {
+                if (!(name.includes(searchTerm) || subject.includes(searchTerm) || code.includes(searchTerm))) return false;
+            }
+            if (teacherFilter && teacher !== teacherFilter) return false;
+            if (buildingFilter && building !== buildingFilter) return false;
+            if (statusFilter && status !== statusFilter) return false;
+            return true;
+        }
+
         function filterClasses() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             const teacherFilter = document.getElementById('teacherFilter').value;
@@ -946,29 +1124,19 @@
             const statusFilter = document.getElementById('statusFilter').value;
 
             const rows = document.querySelectorAll('.class-row');
+            const cards = document.querySelectorAll('.class-card');
             let visibleCount = 0;
 
             rows.forEach(function (row) {
-                const name = row.dataset.name || '';
-                const subject = row.dataset.subject || '';
-                const code = row.dataset.code || '';
-                const teacher = row.dataset.teacher || '';
-                const building = row.dataset.building || '';
-                const status = row.dataset.status || '';
-
-                let show = true;
-
-                if (searchTerm) {
-                    const match = name.includes(searchTerm) || subject.includes(searchTerm) || code.includes(searchTerm);
-                    if (!match) show = false;
-                }
-
-                if (teacherFilter && teacher !== teacherFilter) show = false;
-                if (buildingFilter && building !== buildingFilter) show = false;
-                if (statusFilter && status !== statusFilter) show = false;
-
+                const show = itemMatches(row.dataset, searchTerm, teacherFilter, buildingFilter, statusFilter);
                 row.style.display = show ? '' : 'none';
                 if (show) visibleCount++;
+            });
+
+            // Mirror the same visibility onto the card grid.
+            cards.forEach(function (card) {
+                const show = itemMatches(card.dataset, searchTerm, teacherFilter, buildingFilter, statusFilter);
+                card.style.display = show ? '' : 'none';
             });
 
             document.getElementById('visibleCount') && (document.getElementById('visibleCount').textContent = visibleCount);
@@ -980,6 +1148,29 @@
                 noResults.classList.remove('show');
             }
         }
+
+        // ===== VIEW TOGGLE (Table / Card) =====
+        (function () {
+            const host = document.getElementById('viewHost');
+            const btnTable = document.getElementById('viewTableBtn');
+            const btnCard = document.getElementById('viewCardBtn');
+            if (!host || !btnTable || !btnCard) return;
+
+            function setView(mode) {
+                const isCard = mode === 'card';
+                host.dataset.view = isCard ? 'card' : 'table';
+                btnTable.classList.toggle('active', !isCard);
+                btnCard.classList.toggle('active', isCard);
+                try { localStorage.setItem('classView', host.dataset.view); } catch (e) {}
+            }
+
+            btnTable.addEventListener('click', function () { setView('table'); });
+            btnCard.addEventListener('click', function () { setView('card'); });
+
+            let saved = 'table';
+            try { saved = localStorage.getItem('classView') || 'table'; } catch (e) {}
+            setView(saved);
+        })();
 
         // ===== EVENT LISTENERS =====
         const searchInput = document.getElementById('searchInput');
@@ -1011,6 +1202,9 @@
                 filterClasses();
             }
         });
+
+        // Re-apply filters after the rows-per-page AJAX refresh (table + cards).
+        document.addEventListener('list:refreshed', function () { filterClasses(); });
 
         // ===== INITIAL FILTER =====
         filterClasses();

@@ -363,50 +363,58 @@
         color: #64748b;
     }
 
-    /* ===== PAGINATION ===== */
-    .pagination-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 6px;
-        margin-top: 24px;
-        padding-bottom: 10px;
-    }
+    /* ===== VIEW TOGGLE (Table / Card) ===== */
+    .view-toggle { display: inline-flex; align-items: center; gap: 2px; background: #FFFFFF; border: 1px solid #e2e8f0; border-radius: 10px; padding: 3px; flex-shrink: 0; }
+    .view-toggle .toggle-btn { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 34px; border: none; background: transparent; color: #64748b; border-radius: 8px; cursor: pointer; font-size: 15px; transition: all 0.2s; }
+    .view-toggle .toggle-btn:hover { color: #334155; background: #f8fafc; }
+    .view-toggle .toggle-btn.active { background: #eff6ff; color: #3b82f6; }
 
-    .page-btn {
-        min-width: 36px;
-        height: 36px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #475569;
-        background: white;
-        border: 1.5px solid #e2e8f0;
-        text-decoration: none;
-        transition: all 0.2s;
-    }
+    /* ===== VIEW HOST (drives which layout is visible) ===== */
+    .view-host[data-view="table"] .card-grid { display: none; }
+    .view-host[data-view="card"] .table-container { display: none; }
 
-    .page-btn:hover {
-        border-color: #2563eb;
-        color: #2563eb;
-        background: #eff6ff;
-        text-decoration: none;
-    }
+    /* ===== CARD GRID VIEW ===== */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .student-card { position: relative; background: #FFFFFF; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); transition: all 0.2s; display: flex; flex-direction: column; gap: 16px; }
+    .student-card:hover { box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); transform: translateY(-2px); border-color: #dbeafe; }
+    .student-card .sc-header { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .student-card .sc-icon { width: 44px; height: 44px; border-radius: 50%; background: #eff6ff; color: #3b82f6; display: inline-flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .student-card .sc-heading { min-width: 0; }
+    .student-card .sc-title { font-weight: 700; font-size: 16px; color: #0f172a; letter-spacing: -0.2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .student-card .sc-sub { font-size: 12px; color: #64748b; font-weight: 500; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .student-card .sc-meta { display: flex; flex-direction: column; gap: 10px; }
+    .student-card .sc-meta-item { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: #475569; }
+    .student-card .sc-meta-item > i { width: 16px; text-align: center; color: #94a3b8; font-size: 13px; flex-shrink: 0; }
+    .student-card .sc-meta-item .sc-meta-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .student-card .sc-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 14px; border-top: 1px solid #f1f5f9; }
 
-    .page-btn.active {
-        background: #2563eb;
-        color: white;
-        border-color: #2563eb;
-    }
+    .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 50px; font-size: 12.5px; font-weight: 600; }
+    .status-pill::before { content: ''; width: 7px; height: 7px; border-radius: 50%; }
+    .status-pill.active { background: #dcfce7; color: #16a34a; }
+    .status-pill.active::before { background: #16a34a; }
+    .status-pill.inactive { background: #f1f5f9; color: #64748b; }
+    .status-pill.inactive::before { background: #94a3b8; }
 
-    .page-btn.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        pointer-events: none;
-    }
+    @media (max-width: 576px) { .card-grid { grid-template-columns: 1fr; } }
+
+    /* ===== DARK THEME ===== */
+    .dark .view-toggle { background: var(--field-bg); border-color: var(--border); }
+    .dark .view-toggle .toggle-btn { color: var(--text-muted); }
+    .dark .view-toggle .toggle-btn:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); }
+    .dark .view-toggle .toggle-btn.active { background: rgba(59, 130, 246, 0.15); color: var(--accent-soft); }
+
+    .dark .student-card { background: var(--surface); border-color: var(--border); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.30); }
+    .dark .student-card:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45); border-color: rgba(59, 130, 246, 0.35); }
+    .dark .student-card .sc-icon { background: rgba(59, 130, 246, 0.15); color: var(--accent-soft); }
+    .dark .student-card .sc-title { color: var(--text); }
+    .dark .student-card .sc-sub { color: var(--text-muted); }
+    .dark .student-card .sc-meta-item { color: #cbd5e1; }
+    .dark .student-card .sc-meta-item > i { color: var(--text-muted); }
+    .dark .student-card .sc-footer { border-top-color: var(--border); }
+    .dark .status-pill.active { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+    .dark .status-pill.active::before { background: #34d399; }
+    .dark .status-pill.inactive { background: rgba(148, 163, 184, 0.16); color: #94a3b8; }
+    .dark .status-pill.inactive::before { background: #94a3b8; }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 1200px) {
@@ -527,9 +535,18 @@
     <button class="btn-clear" id="clearFiltersBtn">
         <i class="fas fa-times"></i> Clear Filters
     </button>
+    <div class="view-toggle" role="group" aria-label="View mode">
+        <button type="button" class="toggle-btn active" id="viewTableBtn" title="Table View" data-bs-toggle="tooltip" aria-label="Table View">
+            <i class="fas fa-table-list"></i>
+        </button>
+        <button type="button" class="toggle-btn" id="viewCardBtn" title="Card View" data-bs-toggle="tooltip" aria-label="Card View">
+            <i class="fas fa-table-cells-large"></i>
+        </button>
+    </div>
 </div>
 
-<!-- ===== DATA TABLE ===== -->
+<!-- ===== DATA VIEWS (Table + Card) ===== -->
+<div class="view-host" id="viewHost" data-view="table">
 <div class="table-container">
     <div class="table-responsive">
         <table class="data-table">
@@ -554,7 +571,7 @@
                     data-classes="{{ student.classes_enrolled.all|join:' '|lower }}"
                     data-gender="{{ student.gender|default:'' }}"
                     data-status="{% if student.is_active %}active{% else %}inactive{% endif %}">
-                    <td>{{ forloop.counter }}</td>
+                    <td>{{ students.start_index|add:forloop.counter0 }}</td>
                     <td>
                         <div>
                             <div class="student-name-main">{{ student.get_full_name }}</div>
@@ -610,6 +627,58 @@
     </div>
 </div>
 
+<!-- ===== CARD GRID VIEW ===== -->
+<div class="card-grid" id="cardView">
+    {% for student in students %}
+    <div class="student-card"
+        data-name="{{ student.get_full_name|lower }}"
+        data-email="{{ student.email|lower }}"
+        data-id="{{ student.student_id|lower }}"
+        data-classes="{{ student.classes_enrolled.all|join:' '|lower }}"
+        data-gender="{{ student.gender|default:'' }}"
+        data-status="{% if student.is_active %}active{% else %}inactive{% endif %}">
+        <div class="sc-header">
+            <div class="sc-icon"><i class="fas fa-user-graduate"></i></div>
+            <div class="sc-heading">
+                <div class="sc-title" title="{{ student.get_full_name }}">{{ student.get_full_name }}</div>
+                <div class="sc-sub">{{ student.student_id }}</div>
+            </div>
+        </div>
+        <div class="sc-meta">
+            <div class="sc-meta-item">
+                <i class="fas fa-chalkboard"></i>
+                <span class="sc-meta-text">
+                    {% if student.classes_enrolled.exists %}{% for cls in student.classes_enrolled.all %}{{ cls.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Not Assigned{% endif %}
+                </span>
+            </div>
+            <div class="sc-meta-item">
+                <i class="fas fa-venus-mars"></i>
+                <span class="sc-meta-text">{{ student.get_gender_display|default:"-" }}</span>
+            </div>
+            <div class="sc-meta-item">
+                <i class="fas fa-user-shield"></i>
+                <span class="sc-meta-text">{{ student.guardian_name|default:"-" }}</span>
+            </div>
+        </div>
+        <div class="sc-footer">
+            <span class="status-pill {% if student.is_active %}active{% else %}inactive{% endif %}">
+                {% if student.is_active %}Active{% else %}Inactive{% endif %}
+            </span>
+            <a href="{% url 'attendance:teacher_student_attendance' student.id %}" class="action-icon attendance" title="Attendance" data-bs-toggle="tooltip">
+                <i class="fas fa-calendar-check"></i>
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-state" style="grid-column: 1 / -1;">
+        <i class="fas fa-users"></i>
+        <h5>No Students Found</h5>
+        <p>You don't have any students assigned to your classes.</p>
+    </div>
+    {% endfor %}
+</div>
+</div>
+
 <!-- No Results Message -->
 <div class="no-results" id="noResults">
     <i class="fas fa-search"></i>
@@ -617,50 +686,8 @@
     <p>Try adjusting your search or filter criteria.</p>
 </div>
 
-<!-- ===== PAGINATION ===== -->
-{% if students.has_other_pages %}
-<div class="pagination-wrapper" id="pagination">
-    {% if students.has_previous %}
-    <a href="?page=1&search={{ search_query }}&class_filter={{ class_filter }}&course_filter={{ course_filter }}" class="page-btn">
-        <i class="fas fa-angle-double-left"></i>
-    </a>
-    <a href="?page={{ students.previous_page_number }}&search={{ search_query }}&class_filter={{ class_filter }}&course_filter={{ course_filter }}" class="page-btn">
-        <i class="fas fa-angle-left"></i>
-    </a>
-    {% else %}
-    <span class="page-btn disabled">
-        <i class="fas fa-angle-double-left"></i>
-    </span>
-    <span class="page-btn disabled">
-        <i class="fas fa-angle-left"></i>
-    </span>
-    {% endif %}
-
-    {% for num in students.paginator.page_range %}
-    {% if students.number == num %}
-    <span class="page-btn active">{{ num }}</span>
-    {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}
-    <a href="?page={{ num }}&search={{ search_query }}&class_filter={{ class_filter }}&course_filter={{ course_filter }}" class="page-btn">{{ num }}</a>
-    {% endif %}
-    {% endfor %}
-
-    {% if students.has_next %}
-    <a href="?page={{ students.next_page_number }}&search={{ search_query }}&class_filter={{ class_filter }}&course_filter={{ course_filter }}" class="page-btn">
-        <i class="fas fa-angle-right"></i>
-    </a>
-    <a href="?page={{ students.paginator.num_pages }}&search={{ search_query }}&class_filter={{ class_filter }}&course_filter={{ course_filter }}" class="page-btn">
-        <i class="fas fa-angle-double-right"></i>
-    </a>
-    {% else %}
-    <span class="page-btn disabled">
-        <i class="fas fa-angle-right"></i>
-    </span>
-    <span class="page-btn disabled">
-        <i class="fas fa-angle-double-right"></i>
-    </span>
-    {% endif %}
-</div>
-{% endif %}
+<!-- ===== UNIFIED PAGINATION FOOTER ===== -->
+{% include "Backend/includes/pagination.html" with page_obj=students per_page=per_page footer_id="pagination" %}
 
 {% endblock %}
 
@@ -672,34 +699,40 @@
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
 
+        function itemMatches(data, searchTerm, classFilter, courseFilter) {
+            const name = data.name || '';
+            const email = data.email || '';
+            const id = data.id || '';
+            const classes = data.classes || '';
+            const course = data.course || '';
+
+            if (searchTerm) {
+                if (!(name.includes(searchTerm) || email.includes(searchTerm) || id.includes(searchTerm) || classes.includes(searchTerm))) return false;
+            }
+            if (classFilter && !classes.includes(classFilter)) return false;
+            if (courseFilter && !course.includes(courseFilter)) return false;
+            return true;
+        }
+
         function filterStudents() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             const classFilter = document.getElementById('classFilter').value;
             const courseFilter = document.getElementById('courseFilter').value;
 
             const rows = document.querySelectorAll('.student-row');
+            const cards = document.querySelectorAll('.student-card');
             let visibleCount = 0;
 
             rows.forEach(function (row) {
-                const name = row.dataset.name || '';
-                const email = row.dataset.email || '';
-                const id = row.dataset.id || '';
-                const classes = row.dataset.classes || '';
-                const gender = row.dataset.gender || '';
-                const status = row.dataset.status || '';
-
-                let show = true;
-
-                if (searchTerm) {
-                    const match = name.includes(searchTerm) || email.includes(searchTerm) || id.includes(searchTerm) || classes.includes(searchTerm);
-                    if (!match) show = false;
-                }
-
-                if (classFilter && !classes.includes(classFilter)) show = false;
-                if (courseFilter) show = false;
-
+                const show = itemMatches(row.dataset, searchTerm, classFilter, courseFilter);
                 row.style.display = show ? '' : 'none';
                 if (show) visibleCount++;
+            });
+
+            // Mirror the same visibility onto the card grid.
+            cards.forEach(function (card) {
+                const show = itemMatches(card.dataset, searchTerm, classFilter, courseFilter);
+                card.style.display = show ? '' : 'none';
             });
 
             const noResults = document.getElementById('noResults');
@@ -714,6 +747,29 @@
                 visibleCountCard.textContent = visibleCount;
             }
         }
+
+        // ===== VIEW TOGGLE (Table / Card) =====
+        (function () {
+            const host = document.getElementById('viewHost');
+            const btnTable = document.getElementById('viewTableBtn');
+            const btnCard = document.getElementById('viewCardBtn');
+            if (!host || !btnTable || !btnCard) return;
+
+            function setView(mode) {
+                const isCard = mode === 'card';
+                host.dataset.view = isCard ? 'card' : 'table';
+                btnTable.classList.toggle('active', !isCard);
+                btnCard.classList.toggle('active', isCard);
+                try { localStorage.setItem('teacherStudentView', host.dataset.view); } catch (e) {}
+            }
+
+            btnTable.addEventListener('click', function () { setView('table'); });
+            btnCard.addEventListener('click', function () { setView('card'); });
+
+            let saved = 'table';
+            try { saved = localStorage.getItem('teacherStudentView') || 'table'; } catch (e) {}
+            setView(saved);
+        })();
 
         const searchInput = document.getElementById('searchInput');
         let searchTimeout;

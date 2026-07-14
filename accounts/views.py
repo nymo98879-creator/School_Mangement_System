@@ -1120,8 +1120,23 @@ def teacher_class_view(request):
             )
             attendance_rate = attendance_rate_percent(present_today, total_students_count)
         
+        # ===== PAGINATION (unified footer) =====
+        per_page = request.GET.get('per_page', '10')
+        try:
+            per_page = int(per_page)
+        except (TypeError, ValueError):
+            per_page = 10
+        if per_page not in (5, 10, 20):
+            per_page = 10
+
+        classes = list(classes)
+        paginator = Paginator(classes, per_page)
+        page_number = request.GET.get('page')
+        classes_page = paginator.get_page(page_number)
+
         context = {
-            'classes': classes,
+            'classes': classes_page,
+            'per_page': per_page,
             'courses': courses,
             'teacher': teacher,
             'total_students': total_students_count,
@@ -1129,7 +1144,7 @@ def teacher_class_view(request):
             'attendance_rate': f"{attendance_rate}%",
             'current_date': today,
             'current_time': datetime.now(),
-            'total_classes': classes.count(),
+            'total_classes': len(classes),
             'total_courses': courses.count(),
         }
         return render(request, 'Backend/teacher/class/teacher_class_list.html', context)
@@ -1201,9 +1216,23 @@ def teacher_student_view(request):
     
     total_students = students.count()
     active_students = students.filter(is_active=True).count()
-    
+
+    per_page = request.GET.get('per_page', '10')
+    try:
+        per_page = int(per_page)
+    except (TypeError, ValueError):
+        per_page = 10
+    if per_page not in (5, 10, 20):
+        per_page = 10
+
+    paginator = Paginator(students, per_page)
+    page_number = request.GET.get('page')
+    students_page = paginator.get_page(page_number)
+
     context = {
-        'students': students,
+        'students': students_page,
+        'per_page': per_page,
+        'per_page_params': 'per_page=' + str(per_page),
         'classes': classes,
         'courses': courses,
         'classes_count': classes_count,

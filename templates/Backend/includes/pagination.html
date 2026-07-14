@@ -1,24 +1,89 @@
-{% if items.has_other_pages %}
-<nav class="mt-4">
-    <ul class="pagination justify-content-center">
-        {% if items.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
-        <li class="page-item"><a class="page-link" href="?page={{ items.previous_page_number }}">Previous</a></li>
+{% comment %}
+    ==========================================================================
+    UNIFIED TEACHER-ROLE PAGINATION FOOTER
+    --------------------------------------------------------------------------
+    Single, shared navigation footer for every data table / list / grid inside
+    the Teacher dashboard (My Classes, My Students, Attendance Management,
+    Class Courses, Attendance History, ...).
+
+    Context expected:
+      page_obj   : REQUIRED — a django.core.paginator.Page object
+      per_page   : OPTIONAL — current rows-per-page value (5 | 10 | 20).
+                             Falls back to request.GET.per_page, then 10.
+      footer_id  : OPTIONAL — id to put on the .table-footer wrapper.
+      page_kwarg : OPTIONAL — URL page parameter name (default "page").
+
+    The footer is rendered INSIDE a .table-container (or any card) so its top
+    border sits flush beneath the last row. Sticky filters (search, status,
+    date range, ...) are preserved via hidden inputs + the query string.
+    ==========================================================================
+{% endcomment %}
+{% load attendance_filters %}
+{% if page_obj and page_obj.paginator.count > 0 %}
+{% with per_page=per_page|default:10 %}
+{% with page_kwarg=page_kwarg|default:"page" %}
+{% with qs=request.GET|querystring_exclude:"page,per_page" %}
+{% with cur=page_obj.number last=page_obj.paginator.num_pages %}
+<div class="table-footer"{% if footer_id %} id="{{ footer_id }}"{% endif %}>
+    <div class="pagination-info">
+        Showing <strong>{{ page_obj.start_index }}</strong>&ndash;<strong>{{ page_obj.end_index }}</strong>
+        of <strong>{{ page_obj.paginator.count }}</strong> entries
+    </div>
+
+    <form method="get" class="rpp">
+        <span>Show</span>
+        <select name="per_page" class="filter-select rpp-select" onchange="this.form.submit()">
+            <option value="5" {% if per_page == 5 %}selected{% endif %}>5</option>
+            <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+            <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+        </select>
+        <span>entries</span>
+        {% for key, values in request.GET.lists %}
+            {% if key != "page" and key != "per_page" %}
+                {% for val in values %}<input type="hidden" name="{{ key }}" value="{{ val }}">{% endfor %}
+            {% endif %}
+        {% endfor %}
+    </form>
+
+    {% if last > 1 %}
+    <div class="pagination-wrapper">
+        {% if page_obj.has_previous %}
+        <a class="page-btn page-prev" href="?{{ page_kwarg }}={{ page_obj.previous_page_number }}&per_page={{ per_page }}{% if qs %}&{{ qs }}{% endif %}">
+            <i class="fas fa-angle-left"></i> Prev
+        </a>
+        {% else %}
+        <span class="page-btn disabled page-prev"><i class="fas fa-angle-left"></i> Prev</span>
         {% endif %}
 
-        {% for num in items.paginator.page_range %}
-        {% if items.number == num %}
-        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-        {% elif num > items.number|add:'-3' and num < items.number|add:'3' %} <li class="page-item"><a class="page-link"
-                href="?page={{ num }}">{{ num }}</a></li>
-            {% endif %}
-            {% endfor %}
+        {% if cur > 4 %}
+        <a class="page-btn" href="?{{ page_kwarg }}=1&per_page={{ per_page }}{% if qs %}&{{ qs }}{% endif %}">1</a>
+        <span class="page-ellipsis">&hellip;</span>
+        {% endif %}
 
-            {% if items.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{ items.next_page_number }}">Next</a></li>
-            <li class="page-item"><a class="page-link" href="?page={{ items.paginator.num_pages }}">Last &raquo;</a>
-            </li>
+        {% for num in page_obj.paginator.page_range %}
+            {% if num >= cur|add:"-2" and num <= cur|add:"2" %}
+                {% if num == cur %}
+                <span class="page-btn active">{{ num }}</span>
+                {% else %}
+                <a class="page-btn" href="?{{ page_kwarg }}={{ num }}&per_page={{ per_page }}{% if qs %}&{{ qs }}{% endif %}">{{ num }}</a>
+                {% endif %}
             {% endif %}
-    </ul>
-</nav>
+        {% endfor %}
+
+        {% if cur < last|add:"-3" %}
+        <span class="page-ellipsis">&hellip;</span>
+        <a class="page-btn" href="?{{ page_kwarg }}={{ last }}&per_page={{ per_page }}{% if qs %}&{{ qs }}{% endif %}">{{ last }}</a>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+        <a class="page-btn page-next" href="?{{ page_kwarg }}={{ page_obj.next_page_number }}&per_page={{ per_page }}{% if qs %}&{{ qs }}{% endif %}">
+            Next <i class="fas fa-angle-right"></i>
+        </a>
+        {% else %}
+        <span class="page-btn disabled page-next">Next <i class="fas fa-angle-right"></i></span>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endwith %}{% endwith %}{% endwith %}{% endwith %}
 {% endif %}

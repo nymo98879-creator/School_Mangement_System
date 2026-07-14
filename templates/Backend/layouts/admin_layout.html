@@ -610,7 +610,7 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}?v=20260714e">
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -839,6 +839,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/theme.js' %}"></script>
+    <script src="{% static 'js/custom-select.js' %}?v=20260714e" defer></script>
     <script>
         function toggleDropdown(button) {
             const menu = button.nextElementSibling;

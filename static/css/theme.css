@@ -16,6 +16,7 @@
     --bg: #0F172A;            /* main viewport background        */
     --surface: #1E293B;       /* cards, sidebars, tables, forms  */
     --field-bg: #0F172A;      /* form input / select tray        */
+    --field-border: #334155;  /* input outlines / field hairline */
     --border: #334155;        /* hairline dividers / gridlines   */
     --border-soft: #334155;   /* softer dividers                 */
     --text: #F8FAFC;          /* primary typography              */
@@ -948,6 +949,798 @@
 
 .dark .theme-toggle-btn .fa-moon {
     display: none;
+}
+
+/* ============================================================
+   ADMIN FORM VIEWS (Add / Edit) — premium midnight-slate theme
+   ------------------------------------------------------------
+   Shared by every *_form.html (class, student, teacher, course,
+   term, timeslot, building, floor, room, faculty, department,
+   major). Each template defines only LIGHT values inline, so the
+   dark overrides live here to keep all forms perfectly consistent.
+   ============================================================ */
+
+/* ----- 1. Card canvas & structural surfaces ----- */
+.dark .form-card {
+    background: var(--surface);          /* rich midnight slate  */
+    border-color: var(--border);         /* slate hairline       */
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.30);
+}
+
+.dark .form-card .form-header {
+    border-bottom-color: var(--border);  /* soft dark separator  */
+}
+
+.dark .form-card .form-header h3 {
+    color: var(--text);
+}
+
+.dark .form-card .form-header h3 i {
+    color: var(--accent-soft);
+}
+
+.dark .form-card .form-header .helper-text {
+    color: var(--text-muted);
+}
+
+.dark .form-section-title {
+    color: var(--text);
+}
+
+.dark .form-section-title i {
+    color: var(--accent-soft);
+}
+
+/* ----- 3. Field labels & required marker ----- */
+.dark .form-label {
+    color: var(--text);                  /* crisp soft gray      */
+}
+
+.dark .form-label .required {
+    color: #f87171;                      /* vibrant clean red    */
+}
+
+/* ----- 2. Inputs / selects / textareas / time boxes ----- */
+.dark .form-card .form-control,
+.dark .form-card .form-select,
+.dark .form-card textarea {
+    background-color: var(--field-bg);   /* deep matte dark gray */
+    border-color: var(--field-border);   /* thin slate outline   */
+    color: var(--text);                  /* crisp light text     */
+}
+
+.dark .form-card .form-control:focus,
+.dark .form-card .form-select:focus,
+.dark .form-card textarea:focus {
+    background-color: var(--field-bg);
+    border-color: var(--accent);
+    color: var(--text);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+/* Placeholder / unselected prompt text -> soft blue-gray */
+.dark .form-card .form-control::placeholder,
+.dark .form-card textarea::placeholder {
+    color: var(--text-muted);
+}
+
+/* Disabled / sequential (locked) fields -> muted desaturated fill */
+.dark .form-control:disabled,
+.dark .form-select:disabled,
+.dark .form-control[readonly] {
+    background-color: #172033;
+    color: var(--text-muted);
+    border-color: var(--field-border);
+    opacity: 0.55;
+}
+
+/* Helper subtext + validation errors */
+.dark .form-text {
+    color: var(--text-muted);
+}
+
+.dark .errorlist {
+    color: #f87171;
+}
+
+/* Checkbox label uses an inline color -> force override */
+.dark .form-check-label {
+    color: var(--text) !important;
+}
+
+/* Alerts rendered inside the form card (inline border override) */
+.dark .form-card .alert {
+    border-color: var(--border) !important;
+}
+
+/* ----- Action bar & buttons ----- */
+.dark .form-actions {
+    border-top-color: var(--border);
+}
+
+.dark .btn-cancel {
+    color: var(--text-muted);
+}
+
+.dark .btn-cancel:hover {
+    background: var(--hover-bg);
+    color: var(--text);
+}
+
+/* ----- Cascading Building -> Floor -> Room (disabled / locked) ----- */
+.dark .cascade-select:disabled,
+.dark .cascade-select.is-locked,
+.dark .filter-bar .cascade-select:disabled {
+    background-color: #172033;           /* muted desaturated gray */
+    color: var(--text-muted);
+    border-color: var(--field-border);
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* ----- Multi-select dropdowns (time slots / courses) ----- */
+.dark .multi-select-trigger {
+    background: var(--field-bg);
+    border-color: var(--field-border);
+}
+
+.dark .multi-select-trigger:hover {
+    border-color: #475569;
+}
+
+.dark .multi-select.open .multi-select-trigger {
+    background: var(--field-bg);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.dark .multi-select-placeholder {
+    color: var(--text-muted);
+}
+
+.dark .multi-select-arrow {
+    color: var(--text-muted);
+}
+
+.dark .multi-select-chip {
+    background: rgba(59, 130, 246, 0.18);
+    color: #93C5FD;
+    border-color: var(--border);
+}
+
+.dark .multi-select-dropdown {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.dark .multi-select-option {
+    color: #cbd5e1;
+}
+
+.dark .multi-select-option:hover {
+    background: var(--hover-bg);
+    color: var(--accent-soft);
+}
+
+.dark .multi-select-option.selected {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--accent-soft);
+}
+
+.dark .multi-select-option .option-check {
+    border-color: #475569;
+}
+
+.dark .multi-select-option.selected .option-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+/* ----- Info notice boxes (teacher / student forms) ----- */
+.dark .info-box {
+    background: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.35);
+    color: #bfdbfe;
+}
+
+.dark .info-box i {
+    color: var(--accent-soft);
+}
+
+/* ----- Profile picture / file upload zones ----- */
+.dark .profile-picture-preview {
+    border-color: var(--border);
+}
+
+.dark .upload-zone {
+    background: var(--field-bg);
+    border-color: var(--border);
+}
+
+.dark .upload-zone:hover {
+    border-color: var(--accent);
+    background: rgba(59, 130, 246, 0.10);
+}
+
+.dark .upload-zone i {
+    color: var(--text-muted);
+}
+
+.dark .upload-zone .upload-text {
+    color: var(--text);
+}
+
+.dark .upload-zone .upload-hint {
+    color: var(--text-muted);
+}
+
+/* ============================================================
+   DATA TABLE ROW TYPOGRAPHY (dark) — high-contrast hierarchy
+   ------------------------------------------------------------
+   Shared by every *_list.html data table. Fixes washed-out cell
+   text against the midnight background using a clean 3-tier
+   contrast hierarchy (primary / secondary / action utilities).
+   ============================================================ */
+
+/* ----- 1. Primary text: row headers, index (#) & key data ----- */
+.dark .data-table tbody td,
+.dark .row-title,
+.dark .class-name-main,
+.dark .course-name-main,
+.dark .teacher-name-main,
+.dark .student-name-main,
+.dark .cell-id {
+    color: var(--text);                 /* crisp soft gray #F8FAFC */
+}
+
+/* ----- 2. Secondary text: subtext, metadata & inline icons ----- */
+.dark .row-sub,
+.dark .class-meta,
+.dark .course-meta,
+.dark .teacher-meta,
+.dark .student-meta {
+    color: var(--text-muted);           /* legible slate #94A3B8 */
+}
+
+.dark .icon-text {
+    color: #E2E8F0;                     /* readable data value    */
+}
+
+.dark .icon-text i,
+.dark .location-cell i {
+    color: var(--text-muted);          /* muted vector icons     */
+}
+
+/* Preserve the semantic "unassigned" amber accent */
+.dark .icon-text.unassigned,
+.dark .icon-text.unassigned i {
+    color: #d4a373;
+}
+
+/* ----- 3. Action utilities: edit / pause / trash ----- */
+.dark .action-icon {
+    color: #CBD5E1;                     /* bright light gray      */
+    background: transparent;
+}
+
+.dark .action-icon:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text);
+}
+
+.dark .action-icon.edit:hover   { background: rgba(59, 130, 246, 0.18); color: #93C5FD; }
+.dark .action-icon.toggle:hover { background: rgba(16, 185, 129, 0.18); color: #34d399; }
+.dark .action-icon.delete:hover { background: rgba(239, 68, 68, 0.18);  color: #f87171; }
+
+/* ----- Override hardcoded INLINE cell colors (washed out in dark) ----- */
+.dark .data-table tbody td [style*="#0f172a"],
+.dark .data-table tbody td [style*="#0F172A"] {
+    color: var(--text) !important;      /* primary  -> #F8FAFC */
+}
+
+.dark .data-table tbody td [style*="#334155"],
+.dark .data-table tbody td [style*="#1e293b"],
+.dark .data-table tbody td [style*="#1E293B"] {
+    color: #E2E8F0 !important;          /* high-importance data */
+}
+
+.dark .data-table tbody td [style*="#475569"] {
+    color: #CBD5E1 !important;          /* secondary data value */
+}
+
+.dark .data-table tbody td [style*="#64748b"],
+.dark .data-table tbody td [style*="#64748B"] {
+    color: var(--text-muted) !important;/* subtext / icons -> #94A3B8 */
+}
+
+/* ============================================================
+   CUSTOM SELECT COMPONENT (.cselect) — unified SaaS dropdown
+   ------------------------------------------------------------
+   Progressive upgrade of every native <select> (see custom-select.js).
+   Light + dark tokens, 12px radius, single line-art chevron, and a
+   custom floating overlay menu with soft-blue hover rows.
+   ============================================================ */
+
+/* Hide the underlying native select but keep it submittable/functional */
+.cselect-native {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ----- 1. Box geometry & tokens (passive state) ----- */
+.cselect {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    text-align: left;
+}
+
+.cselect--block {
+    display: block;
+    width: 100%;
+}
+
+.cselect--inline {
+    min-width: 160px;
+}
+
+.cselect--sm {
+    min-width: 88px;
+}
+
+.cselect-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 14px;                 /* comfortable interior padding */
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #1E293B;
+    background: #FFFFFF;                /* pure white tray (light)      */
+    border: 1px solid #E2E8F0;         /* thin soft outline (light)    */
+    border-radius: 12px;               /* rounded-xl                   */
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.cselect-trigger:hover {
+    border-color: #CBD5E1;
+}
+
+.cselect.open .cselect-trigger,
+.cselect-trigger:focus-visible {
+    outline: none;
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    background: #FFFFFF;
+}
+
+.cselect.is-invalid .cselect-trigger {
+    border-color: #DC2626;
+}
+
+.cselect.is-disabled .cselect-trigger,
+.cselect-trigger:disabled {
+    cursor: not-allowed;
+    background: #F1F5F9;
+    color: #94A3B8;
+}
+
+/* ----- 2. Visual hierarchy: value text + placeholder + chevron ----- */
+.cselect-value {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cselect.is-placeholder .cselect-value {
+    color: #94A3B8;                     /* low-contrast neutral gray    */
+    font-weight: 400;
+}
+
+.cselect-chevron {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #94A3B8;                     /* subtle slate chevron         */
+    transition: transform 0.2s ease;
+}
+
+.cselect.open .cselect-chevron {
+    transform: rotate(180deg);
+}
+
+/* ----- 3. Custom floating overlay menu ----- */
+.cselect-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    min-width: 100%;
+    padding: 6px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(15, 23, 42, 0.06);
+    z-index: 1050;
+    max-height: 260px;
+    overflow-y: auto;
+    display: none;
+}
+
+.cselect.open .cselect-panel {
+    display: block;
+    animation: cselectIn 0.14s ease;
+}
+
+@keyframes cselectIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Dropup: flip the overlay upward when there isn't room below
+   (e.g. the rows-per-page selector at the bottom of the table). */
+.cselect--up .cselect-panel {
+    top: auto;
+    bottom: calc(100% + 6px);
+}
+
+.cselect--up.open .cselect-panel {
+    animation: cselectInUp 0.14s ease;
+}
+
+@keyframes cselectInUp {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.cselect-panel::-webkit-scrollbar { width: 8px; }
+.cselect-panel::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+
+.cselect-option {
+    padding: 9px 12px;
+    font-size: 14px;
+    color: #334155;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background 0.12s, color 0.12s;
+}
+
+.cselect-option:hover {
+    background: #EFF6FF;                /* soft light-blue accent row   */
+    color: #2563EB;
+}
+
+.cselect-option.is-selected {
+    background: #EFF6FF;
+    color: #2563EB;
+    font-weight: 600;
+}
+
+.cselect-option.is-disabled {
+    color: #94A3B8;
+    cursor: default;
+}
+
+.cselect-option.is-disabled:hover {
+    background: transparent;
+    color: #94A3B8;
+}
+
+/* ===================== DARK THEME ===================== */
+.dark .cselect-trigger {
+    background: var(--field-bg);        /* deep matte gray #0F172A      */
+    border-color: var(--field-border);  /* dark slate outline #334155   */
+    color: var(--text);
+}
+
+.dark .cselect-trigger:hover {
+    border-color: #475569;
+}
+
+.dark .cselect.open .cselect-trigger,
+.dark .cselect-trigger:focus-visible {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    background: var(--field-bg);
+}
+
+.dark .cselect.is-invalid .cselect-trigger {
+    border-color: #f87171;
+}
+
+.dark .cselect.is-disabled .cselect-trigger,
+.dark .cselect-trigger:disabled {
+    background: #172033;
+    color: var(--text-muted);
+    border-color: var(--field-border);
+}
+
+.dark .cselect.is-placeholder .cselect-value {
+    color: var(--text-muted);
+}
+
+.dark .cselect-chevron {
+    color: var(--text-muted);
+}
+
+.dark .cselect-panel {
+    background: var(--surface);         /* midnight slate #1E293B       */
+    border-color: var(--border);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+.dark .cselect-panel::-webkit-scrollbar-thumb { background: #334155; }
+
+.dark .cselect-option {
+    color: #cbd5e1;
+}
+
+.dark .cselect-option:hover {
+    background: rgba(59, 130, 246, 0.15); /* deep dark blue accent row  */
+    color: var(--accent-soft);
+}
+
+.dark .cselect-option.is-selected {
+    background: rgba(59, 130, 246, 0.18);
+    color: var(--accent-soft);
+}
+
+.dark .cselect-option.is-disabled,
+.dark .cselect-option.is-disabled:hover {
+    color: var(--text-muted);
+    background: transparent;
+}
+
+/* ============================================================
+   UNIFIED PAGINATION FOOTER — Teacher Role data tables / lists / grids
+   -----------------------------------------------------------------
+   Single source of truth for the navigation footer shared by every
+   record log inside the Teacher dashboard (My Classes, My Students,
+   Attendance Management, Class Courses, Attendance History, ...).
+   Light theme is the baseline; `.dark` overrides sit at the bottom.
+   ============================================================ */
+:root {
+    --pf-bg: #ffffff;
+    --pf-border: #f1f5f9;
+    --pf-text: #475569;
+    --pf-muted: #94a3b8;
+    --pf-field-bg: #f8fafc;
+    --pf-field-border: #e2e8f0;
+    --pf-accent: #2563eb;
+    --pf-accent-soft: #eff6ff;
+    --pf-radius: 10px;
+    --pf-btn-radius: 8px;
+    --pf-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.table-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 14px 20px;
+    border-top: 1px solid var(--pf-border);
+    background: var(--pf-bg);
+}
+
+/* Left cluster: range info + rows-per-page control */
+.table-footer .pagination-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--pf-text);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.table-footer .pagination-info strong {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.table-footer .rpp {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--pf-text);
+    font-weight: 500;
+}
+
+.table-footer .rpp .rpp-select {
+    width: auto;
+    padding: 7px 30px 7px 12px;
+    border: 1.5px solid var(--pf-field-border);
+    border-radius: var(--pf-btn-radius);
+    background: var(--pf-field-bg)
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")
+        no-repeat right 10px center / 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.table-footer .rpp .rpp-select:focus {
+    outline: none;
+    border-color: var(--pf-accent);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* Right cluster: page navigation */
+.pagination-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.page-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: var(--pf-btn-radius);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--pf-text);
+    background: var(--pf-bg);
+    border: 1px solid var(--pf-field-border);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.18s ease, background-color 0.18s ease,
+        border-color 0.18s ease, box-shadow 0.18s ease;
+    cursor: pointer;
+}
+
+.page-btn:hover {
+    color: var(--pf-accent);
+    background: var(--pf-accent-soft);
+    border-color: var(--pf-accent);
+    text-decoration: none;
+}
+
+.page-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    border-color: var(--pf-accent);
+}
+
+.page-btn.active {
+    background: var(--pf-accent);
+    color: #fff;
+    border-color: var(--pf-accent);
+    cursor: default;
+}
+
+.page-btn.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.page-prev,
+.page-next {
+    font-weight: 600;
+}
+
+.page-ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 36px;
+    color: var(--pf-muted);
+    font-size: 13px;
+    user-select: none;
+}
+
+@media (max-width: 575px) {
+    .table-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        padding: 14px 16px;
+    }
+
+    .table-footer .pagination-info {
+        justify-content: center;
+        order: 2;
+    }
+
+    .table-footer .rpp {
+        justify-content: center;
+        order: 3;
+    }
+
+    .pagination-wrapper {
+        justify-content: center;
+        order: 1;
+    }
+
+    .page-btn {
+        min-width: 34px;
+        height: 34px;
+        font-size: 12.5px;
+    }
+}
+
+/* ===== DARK THEME OVERRIDES ===== */
+.dark {
+    --pf-bg: #1e293b;
+    --pf-border: #334155;
+    --pf-text: #cbd5e1;
+    --pf-muted: #64748b;
+    --pf-field-bg: #0f172a;
+    --pf-field-border: #334155;
+    --pf-accent: #60a5fa;
+    --pf-accent-soft: rgba(59, 130, 246, 0.16);
+}
+
+.dark .table-footer .pagination-info strong {
+    color: #f8fafc;
+}
+
+.dark .table-footer .rpp .rpp-select {
+    color: #e2e8f0;
+    background-color: var(--pf-field-bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+}
+
+.dark .table-footer .rpp .rpp-select:focus {
+    background-color: #172033;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.dark .page-btn:hover {
+    color: #bfdbfe;
+    background: rgba(59, 130, 246, 0.15);
+    border-color: #3b82f6;
+}
+
+.dark .page-btn.active {
+    background: #3b82f6;
+    color: #fff;
+    border-color: #3b82f6;
+}
+
+.dark .page-ellipsis {
+    color: var(--pf-muted);
 }
 
 /* ============================================================
