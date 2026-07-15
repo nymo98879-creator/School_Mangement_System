@@ -196,36 +196,75 @@
 
     .view-toggle {
         display: inline-flex;
-        background: #f8fafc;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-left: auto;
+        align-items: center;
+        gap: 2px;
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 4px;
+        flex-shrink: 0;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
     }
 
     .view-toggle button {
         border: none;
         background: transparent;
         padding: 8px 14px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #64748b;
-        cursor: pointer;
-        transition: all 0.2s;
+        border-radius: 8px;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        justify-content: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1;
+        color: #64748B;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.2s, color 0.2s;
     }
 
     .view-toggle button.active {
-        background: white;
-        color: #2563eb;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        background: #EFF6FF;
+        color: #1D4ED8;
     }
 
     .view-toggle button:hover:not(.active) {
         color: #334155;
-        background: rgba(255, 255, 255, 0.5);
+        background: #F8FAFC;
+    }
+
+    /* ===== STATUS BADGE (Active / Inactive pill) ===== */
+    .status-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 999px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+    }
+
+    .status-badge.active {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .status-badge.inactive {
+        background: rgba(148, 163, 184, 0.12);
+        color: #64748B;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .count-badge {
+        font-size: 0.95rem;
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 999px;
+        background: rgba(37, 99, 235, 0.1);
+        color: #2563eb;
+        border: 1px solid rgba(37, 99, 235, 0.2);
     }
 
     /* ===== DATA TABLE ===== */
@@ -646,6 +685,174 @@
     .hidden {
         display: none !important;
     }
+
+    /* ===== DARK MODE — CONTRAST & LAYOUT HARMONY ===== */
+    .dark .count-badge {
+        background: rgba(59, 130, 246, 0.15);
+        color: #93C5FD;
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .dark .status-badge.active {
+        background: rgba(16, 185, 129, 0.1);   /* emerald-500/10 */
+        color: #34D399;                          /* emerald-400 */
+        border-color: rgba(16, 185, 129, 0.25);
+    }
+
+    .dark .status-badge.inactive {
+        background: rgba(148, 163, 184, 0.12);
+        color: #94A3B8;                          /* slate-400 */
+        border-color: rgba(148, 163, 184, 0.2);
+    }
+
+    /* KPI cards */
+    .dark .kpi-card {
+        background: #1E293B;
+        border-color: #334155;
+    }
+
+    .dark .kpi-card .kpi-number {
+        color: #F8FAFC;
+    }
+
+    .dark .kpi-card .kpi-label {
+        color: #94A3B8;
+    }
+
+    /* Filter bar + inputs */
+    .dark .filter-bar {
+        background: #1E293B;
+        border-color: #334155;
+    }
+
+    .dark .filter-bar .search-input,
+    .dark .filter-bar .filter-select {
+        background: #0F172A;          /* slate-900 */
+        border-color: #334155;        /* slate-700 */
+        color: #F8FAFC;
+    }
+
+    .dark .filter-bar .search-input::placeholder {
+        color: #64748B;
+    }
+
+    .dark .filter-bar .btn-clear {
+        background: #1E293B;
+        border-color: #334155;
+        color: #94A3B8;
+    }
+
+    .dark .filter-bar .btn-clear:hover {
+        background: #334155;
+        color: #F8FAFC;
+    }
+
+    /* View toggle switcher capsule */
+    .dark .view-toggle {
+        background: #1E293B;          /* slate-800 */
+        border-color: #334155;        /* slate-700 */
+        box-shadow: none;
+    }
+
+    .dark .view-toggle button {
+        color: #94A3B8;               /* slate-400 (inactive) */
+    }
+
+    .dark .view-toggle button:hover:not(.active) {
+        color: #E2E8F0;
+        background: #334155;
+    }
+
+    .dark .view-toggle button.active {
+        background: #334155;          /* slate-700 */
+        color: #60A5FA;               /* blue-400 (active selection) */
+    }
+
+    /* Table view */
+    .dark .table-container {
+        background: #1E293B;
+        border-color: #334155;
+    }
+
+    .dark .data-table thead {
+        background: #0F172A;
+    }
+
+    .dark .data-table thead th {
+        color: #94A3B8;
+    }
+
+    .dark .data-table tbody td {
+        color: #F8FAFC;
+        border-bottom-color: #334155;
+    }
+
+    .dark .data-table tbody tr:hover {
+        background: #243244;
+    }
+
+    .dark .status-text {
+        color: #CBD5E1;
+    }
+
+    .dark .status-dot.active {
+        background: #34D399;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    }
+
+    .dark .empty-state h5,
+    .dark .no-results h5 {
+        color: #F8FAFC;
+    }
+
+    .dark .empty-state p,
+    .dark .no-results p {
+        color: #94A3B8;
+    }
+
+    /* Course / Class cards */
+    .dark .class-card {
+        background: #1E293B;
+        border-color: #334155;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .dark .class-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    /* 1. Heading titles -> bright soft gray */
+    .dark .class-card .card-header .class-title {
+        color: #F8FAFC;               /* slate-100 */
+    }
+
+    /* 1. Metadata labels & icons -> medium-contrast slate */
+    .dark .class-card .card-header .class-meta,
+    .dark .class-card .card-meta .meta-tag {
+        color: #94A3B8;
+    }
+
+    .dark .class-card .card-meta .meta-tag i {
+        color: #94A3B8;
+    }
+
+    .dark .class-card .card-body .class-info {
+        color: #94A3B8;
+    }
+
+    .dark .class-card .card-body .class-info i {
+        color: #94A3B8;
+    }
+
+    /* 2. Card footer -> bleed seamlessly with card base (no white strip) */
+    .dark .class-card .card-footer {
+        background: transparent;
+        border-top-color: #334155;
+    }
+
+    .dark .class-card .card-footer .btn-action {
+        border: 1px solid transparent;
+    }
 </style>
 {% endblock %}
 
@@ -654,8 +861,7 @@
 <!-- ===== PAGE HEADER ===== -->
 <div class="page-header">
     <h2>My Classes</h2>
-        <span class="badge-count px-3 py-2 rounded-pill fw-bold"
-            style="font-size: 0.95rem; background: rgba(37, 99, 235, 0.1); color: #2563eb; border: 1px solid rgba(37, 99, 235, 0.2);">
+        <span class="count-badge">
             {{ total_classes }} Class{{ total_classes|pluralize }}
         </span>
 </div>
@@ -706,12 +912,12 @@
     <button class="btn-clear" id="clearFiltersBtn">
         <i class="fas fa-times"></i> Clear Filters
     </button>
-    <div class="view-toggle">
-        <button id="tableViewBtn" class="active" title="Table view">
-            <i class="fas fa-list"></i> Table
+    <div class="view-toggle" role="group" aria-label="View switcher">
+        <button id="tableViewBtn" class="active" type="button" title="Table view" aria-pressed="true">
+            <i class="fas fa-list"></i><span>Table</span>
         </button>
-        <button id="cardViewBtn" title="Card view">
-            <i class="fas fa-th-large"></i> Card
+        <button id="cardViewBtn" type="button" title="Card view" aria-pressed="false">
+            <i class="fas fa-th-large"></i><span>Card</span>
         </button>
     </div>
 </div>
@@ -793,7 +999,7 @@
                         </td>
                         <td>
                             <span style="font-weight: 600; color: #0f172a;">
-                                {{ class.all_student_count|default:class.get_student_count }}/{{ class.capacity|default:30 }}
+                                {{ class.active_students_count }}/{{ class.capacity|default:30 }}
                             </span>
                         </td>
                         <td>
@@ -858,8 +1064,7 @@
                         </span>
                     </div>
                 </div>
-                <span class="badge-count px-3 py-2 rounded-pill fw-bold"
-                    style="font-size: 0.85rem; background: {% if class.is_active %}rgba(22, 163, 74, 0.1){% else %}rgba(148, 163, 184, 0.1){% endif %}; color: {% if class.is_active %}#16a34a{% else %}#94a3b8{% endif %}; border: 1px solid {% if class.is_active %}rgba(22, 163, 74, 0.2){% else %}rgba(148, 163, 184, 0.2){% endif %};">
+                <span class="status-badge {% if class.is_active %}active{% else %}inactive{% endif %}">
                     {% if class.is_active %}Active{% else %}Inactive{% endif %}
                 </span>
             </div>
@@ -893,7 +1098,7 @@
                 <div class="class-info">
                     <i class="fas fa-users"></i>
                     <span>
-                        <strong>{{ class.all_student_count|default:class.get_student_count }}</strong> / {{ class.capacity|default:30 }} students
+                        <strong>{{ class.active_students_count }}</strong> / {{ class.capacity|default:30 }} students
                     </span>
                 </div>
                 <div class="class-info">
@@ -949,17 +1154,13 @@
         const clearFiltersBtn = document.getElementById('clearFiltersBtn');
 
         function setView(mode) {
-            if (mode === 'card') {
-                tableView.classList.add('hidden');
-                cardView.classList.remove('hidden');
-                tableViewBtn.classList.remove('active');
-                cardViewBtn.classList.add('active');
-            } else {
-                cardView.classList.add('hidden');
-                tableView.classList.remove('hidden');
-                cardViewBtn.classList.remove('active');
-                tableViewBtn.classList.add('active');
-            }
+            const isCard = mode === 'card';
+            tableView.classList.toggle('hidden', isCard);
+            cardView.classList.toggle('hidden', !isCard);
+            tableViewBtn.classList.toggle('active', !isCard);
+            cardViewBtn.classList.toggle('active', isCard);
+            tableViewBtn.setAttribute('aria-pressed', String(!isCard));
+            cardViewBtn.setAttribute('aria-pressed', String(isCard));
             localStorage.setItem('teacherClassesViewMode', mode);
             filterClasses();
         }

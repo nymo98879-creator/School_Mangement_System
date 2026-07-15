@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Count
 from datetime import date
 from django.http import JsonResponse
 import json
@@ -916,7 +916,13 @@ def teacher_class_list(request):
     """Teacher's view of their classes - ONLY classes assigned to this teacher"""
     try:
         teacher = Teacher.objects.get(user=request.user)
-        classes_qs = Class.objects.filter(teacher=teacher, is_active=True)
+        classes_qs = Class.objects.filter(
+            teacher=teacher, is_active=True
+        ).annotate(
+            active_students_count=Count(
+                'enrolled_students', filter=Q(enrolled_students__is_active=True)
+            )
+        )
 
         # ===== PAGINATION (unified footer) =====
         per_page = request.GET.get('per_page', '10')
@@ -931,11 +937,19 @@ def teacher_class_list(request):
         page_number = request.GET.get('page')
         classes_page = paginator.get_page(page_number)
 
+        # Total active students across all of this teacher's classes (per-class sum)
+        total_students = Class.objects.filter(
+            teacher=teacher, is_active=True
+        ).aggregate(
+            total=Count('enrolled_students', filter=Q(enrolled_students__is_active=True))
+        )['total'] or 0
+
         context = {
             'classes': classes_page,
             'per_page': per_page,
             'teacher': teacher,
             'total_classes': classes_qs.count(),
+            'total_students': total_students,
         }
         return render(request, 'Backend/teacher/class/teacher_class_list.html', context)
     except Teacher.DoesNotExist:
@@ -955,44 +969,42 @@ def class_courses_view(request, class_id):
             messages.error(request, 'You do not have permission to view this class.')
             return redirect('classes:teacher_class_list')
         
-        # IMPORTANT: Get courses ONLY for THIS SPECIFIC class
-        # Using class_obj.courses gets only courses assigned to this class
-        courses = class_obj.courses.filter(is_active=True)
-        
-        # Students enrolled in THIS class + students assigned to these courses
+        # IMPORTANT: Get courses ONLY for THIS SPECIFIC class.
+        # Annotate each course with the exact number of ACTIVE students
+        # enrolled in that course (per-course count).
+        courses = class_obj.courses.filter(is_active=True).annotate(
+            active_students_count=Count('students', filter=Q(students__is_active=True))
+        )
+
+        # Active students enrolled in THIS class (per-class total + attendance scope)
         students = class_obj.enrolled_students.filter(is_active=True)
-        course_student_ids = []
-        for course in courses:
-            course_students = Student.objects.filter(courses=course, is_active=True)
-            course_student_ids.extend(course_students.values_list('id', flat=True))
-        all_student_ids = set(students.values_list('id', flat=True)) | set(course_student_ids)
-        all_students = Student.objects.filter(id__in=all_student_ids, is_active=True).distinct()
-        student_count_all = all_students.count()
-        student_ids = list(all_students.values_list('id', flat=True))
-        
-        # Per-course stats scoped to ALL students in this class/courses
+        student_ids = list(students.values_list('id', flat=True))
+
+        # Per-course stats
         today = date.today()
         course_data = []
-        
+
         for course in courses:
+            course_student_count = course.active_students_count
+
             course_attendance_taken = Attendance.objects.filter(
                 course=course,
                 date=today,
                 student_id__in=student_ids,
             ).exists()
-            
+
             present_today_count = Attendance.objects.filter(
                 course=course,
                 date=today,
                 status='present',
                 student_id__in=student_ids,
             ).values('student_id').distinct().count()
-            
+
             course_data.append({
                 'course': course,
-                'student_count': student_count_all,
+                'student_count': course_student_count,
                 'attendance_taken': course_attendance_taken,
-                'present_today': min(present_today_count, student_count_all),
+                'present_today': min(present_today_count, course_student_count),
             })
         
         # ===== PAGINATION (unified footer) =====
@@ -1012,8 +1024,8 @@ def class_courses_view(request, class_id):
             'class': class_obj,
             'courses': courses_page,  # ← ONLY courses for THIS class
             'per_page': per_page,
-            'students': all_students,
-            'total_students': student_count_all,
+            'students': students,
+            'total_students': students.count(),
             'today': today,
             'teacher': teacher,
         }

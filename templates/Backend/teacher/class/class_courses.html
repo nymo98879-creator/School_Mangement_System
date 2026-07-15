@@ -303,36 +303,42 @@
 
     .view-toggle {
         display: inline-flex;
-        background: #f8fafc;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-left: auto;
+        align-items: center;
+        gap: 2px;
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 4px;
+        flex-shrink: 0;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
     }
 
     .view-toggle button {
         border: none;
         background: transparent;
         padding: 8px 14px;
-        font-size: 13px;
-        font-weight: 600;
-        color: #64748b;
-        cursor: pointer;
-        transition: all 0.2s;
+        border-radius: 8px;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        justify-content: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1;
+        color: #64748B;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.2s, color 0.2s;
     }
 
     .view-toggle button.active {
-        background: white;
-        color: #2563eb;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        background: #EFF6FF;
+        color: #1D4ED8;
     }
 
     .view-toggle button:hover:not(.active) {
         color: #334155;
-        background: rgba(255, 255, 255, 0.5);
+        background: #F8FAFC;
     }
 
     /* ===== DATA TABLE ===== */
@@ -520,113 +526,244 @@
         color: #64748b;
     }
 
-    /* ===== CARD VIEW ===== */
+    /* ===== CARD VIEW (Adaptive Grid) ===== */
     .card-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 20px;
     }
 
+    @media (max-width: 1400px) {
+        .card-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 992px) {
+        .card-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .card-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
     .course-card {
-        background: white;
-        border-radius: 14px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        background: #FFFFFF;
+        border-radius: 16px;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.05);
         overflow: hidden;
-        transition: all 0.2s;
+        transition: box-shadow 0.2s, transform 0.2s;
         display: flex;
         flex-direction: column;
     }
 
     .course-card:hover {
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
         transform: translateY(-2px);
     }
 
+    /* ----- Card Header ----- */
     .course-card .card-header {
-        padding: 18px 20px;
-        border-bottom: 1px solid #f1f5f9;
+        padding: 18px 20px 14px;
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        gap: 10px;
+        gap: 12px;
     }
 
     .course-card .card-header .course-title {
         font-weight: 700;
-        color: #0f172a;
-        font-size: 15px;
+        color: #0F172A;
+        font-size: 18px;
+        line-height: 1.3;
         margin-bottom: 4px;
     }
 
-    .course-card .card-header .course-meta {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
+    .course-card .card-header .course-term {
+        font-size: 12.5px;
+        color: #64748B;
+        font-weight: 500;
     }
 
-    .course-card .card-body {
-        padding: 18px 20px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .course-card .card-body .course-info {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 13.5px;
-        color: #475569;
-    }
-
-    .course-card .card-body .course-info i {
-        width: 16px;
-        color: #64748b;
-        font-size: 13px;
-        text-align: center;
+    .course-card .card-header .card-status {
         flex-shrink: 0;
-    }
-
-    .course-card .card-footer {
-        padding: 14px 20px;
-        background: #f8fafc;
-        border-top: 1px solid #f1f5f9;
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .course-card .card-footer .btn-action {
-        padding: 8px 14px;
-        border-radius: 10px;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 999px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .course-card .card-header .card-status.active {
+        background: rgba(22, 163, 74, 0.1);
+        color: #16a34a;
+    }
+
+    .course-card .card-header .card-status.inactive {
+        background: rgba(148, 163, 184, 0.12);
+        color: #94a3b8;
+    }
+
+    /* ----- Card Metadata Block (2-column grid) ----- */
+    .course-card .card-meta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 16px;
+        padding: 4px 20px 16px;
+    }
+
+    .course-card .meta-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .course-card .meta-item .meta-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: #F8FAFC;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        flex: 1;
+        color: #64748B;
+        font-size: 13px;
+        flex-shrink: 0;
+    }
+
+    .course-card .meta-item .meta-text {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .course-card .meta-item .meta-label {
+        font-size: 10.5px;
+        color: #94A3B8;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        line-height: 1.2;
+    }
+
+    .course-card .meta-item .meta-value {
+        font-size: 13px;
+        color: #334155;
+        font-weight: 600;
+        line-height: 1.3;
+        word-break: break-word;
+    }
+
+    /* ----- Card Progress / Indicator ----- */
+    .course-card .card-progress {
+        padding: 0 20px 16px;
+    }
+
+    .course-card .card-progress .progress-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        color: #64748B;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .course-card .card-progress .progress-head .progress-count {
+        color: #475569;
+    }
+
+    .course-card .progress-track {
+        height: 8px;
+        border-radius: 999px;
+        background: #F1F5F9;
+        overflow: hidden;
+    }
+
+    .course-card .progress-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #3B82F6, #1D4ED8);
+        transition: width 0.4s ease;
+    }
+
+    .course-card .progress-fill.near-full {
+        background: linear-gradient(90deg, #F59E0B, #D97706);
+    }
+
+    .course-card .progress-fill.full {
+        background: linear-gradient(90deg, #EF4444, #DC2626);
+    }
+
+    /* ----- Card Footer Actions ----- */
+    .course-card .card-footer {
+        margin-top: auto;
+        padding: 14px 20px;
+        border-top: 1px solid #F1F5F9;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .course-card .card-footer .view-details-btn {
+        display: inline-flex;
+        align-items: center;
         gap: 6px;
-        min-width: 75px;
-        transition: all 0.2s;
-        border: none;
+        padding: 8px 16px;
+        border-radius: 10px;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        font-size: 13px;
+        font-weight: 700;
         text-decoration: none;
+        transition: all 0.2s;
+        white-space: nowrap;
     }
 
-    .course-card .card-footer .btn-action:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        color: white;
+    .course-card .card-footer .view-details-btn:hover {
+        background: #DBEAFE;
+        color: #1D4ED8;
     }
 
-    .course-card .card-footer .btn-action.btn-primary {
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    .course-card .card-footer .footer-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
     }
 
-    .course-card .card-footer .btn-action.btn-success {
-        background: linear-gradient(135deg, #16a34a, #059669);
+    .course-card .card-footer .mini-action {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid #E2E8F0;
+        background: #FFFFFF;
+        color: #64748B;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .course-card .card-footer .mini-action:hover {
+        background: #F8FAFC;
+        color: #0F172A;
+        border-color: #CBD5E1;
+    }
+
+    .course-card .card-footer .mini-action.info:hover {
+        background: #DBEAFE;
+        color: #2563EB;
+        border-color: #BFDBFE;
     }
 
     /* ===== RESPONSIVE ===== */
@@ -694,6 +831,171 @@
     .hidden {
         display: none !important;
     }
+
+    /* ===== DARK MODE (Theme Adaptability) ===== */
+    .dark .view-toggle {
+        background: #1E293B;
+        border-color: #334155;
+        box-shadow: none;
+    }
+
+    .dark .view-toggle button {
+        color: #94A3B8;
+    }
+
+    .dark .view-toggle button:hover:not(.active) {
+        color: #E2E8F0;
+        background: #334155;
+    }
+
+    .dark .view-toggle button.active {
+        background: #1E3A5F;
+        color: #93C5FD;
+    }
+
+    .dark .class-info-card {
+        background: #1E293B;
+        border-color: #334155;
+    }
+
+    .dark .class-info-card .class-title {
+        color: #F8FAFC;
+    }
+
+    .dark .class-info-card .meta-item {
+        color: #94A3B8;
+    }
+
+    .dark .filter-bar {
+        background: #1E293B;
+        border-color: #334155;
+    }
+
+    .dark .filter-bar .search-input,
+    .dark .filter-bar .filter-select {
+        background: #0F172A;
+        border-color: #334155;
+        color: #F8FAFC;
+    }
+
+    .dark .filter-bar .search-input::placeholder {
+        color: #64748B;
+    }
+
+    .dark .filter-bar .btn-clear {
+        background: #1E293B;
+        border-color: #334155;
+        color: #94A3B8;
+    }
+
+    .dark .filter-bar .btn-clear:hover {
+        background: #334155;
+        color: #F8FAFC;
+    }
+
+    .dark .table-container {
+        background: #1E293B;
+        border-color: #334155;
+    }
+
+    .dark .data-table thead {
+        background: #0F172A;
+    }
+
+    .dark .data-table tbody td {
+        color: #F8FAFC;
+        border-bottom-color: #334155;
+    }
+
+    .dark .data-table tbody tr:hover {
+        background: #243244;
+    }
+
+    .dark .empty-state h5,
+    .dark .no-results h5 {
+        color: #F8FAFC;
+    }
+
+    .dark .empty-state p,
+    .dark .no-results p {
+        color: #94A3B8;
+    }
+
+    /* Course cards invert to deep midnight slate */
+    .dark .course-card {
+        background: #1E293B;
+        border-color: #334155;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .dark .course-card:hover {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .dark .course-card .card-header .course-title {
+        color: #F8FAFC;
+    }
+
+    .dark .course-card .card-header .course-term {
+        color: #94A3B8;
+    }
+
+    .dark .course-card .meta-item .meta-icon {
+        background: #334155;
+        color: #94A3B8;
+    }
+
+    .dark .course-card .meta-item .meta-value {
+        color: #F8FAFC;
+    }
+
+    .dark .course-card .meta-item .meta-label {
+        color: #64748B;
+    }
+
+    .dark .course-card .card-progress .progress-head {
+        color: #94A3B8;
+    }
+
+    .dark .course-card .card-progress .progress-head .progress-count {
+        color: #CBD5E1;
+    }
+
+    .dark .course-card .progress-track {
+        background: #334155;
+    }
+
+    .dark .course-card .card-footer {
+        border-top-color: #334155;
+    }
+
+    .dark .course-card .card-footer .view-details-btn {
+        background: #1E3A5F;
+        color: #93C5FD;
+    }
+
+    .dark .course-card .card-footer .view-details-btn:hover {
+        background: #1D4ED8;
+        color: #FFFFFF;
+    }
+
+    .dark .course-card .card-footer .mini-action {
+        background: #1E293B;
+        border-color: #334155;
+        color: #94A3B8;
+    }
+
+    .dark .course-card .card-footer .mini-action:hover {
+        background: #334155;
+        color: #F8FAFC;
+        border-color: #475569;
+    }
+
+    .dark .course-card .card-footer .mini-action.info:hover {
+        background: #1E3A5F;
+        color: #93C5FD;
+        border-color: #1D4ED8;
+    }
 </style>
 {% endblock %}
 
@@ -732,12 +1034,124 @@
                     <i class="fas fa-clock"></i>
                     {{ class.get_schedule_display }}
                 </span>
+            </div>
         </div>
     </div>
-
-    <!-- ===== UNIFIED PAGINATION FOOTER ===== -->
-    {% include "Backend/includes/pagination.html" with page_obj=courses per_page=per_page footer_id="pagination" %}
 </div>
+
+<!-- ===== FILTER BAR ===== -->
+<div class="filter-bar">
+    <div class="search-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search...">
+    </div>
+    <div class="view-toggle" role="group" aria-label="View switcher">
+        <button id="tableViewBtn" class="active" type="button" title="Table view" aria-pressed="true">
+            <i class="fas fa-table"></i><span>Table</span>
+        </button>
+        <button id="cardViewBtn" type="button" title="Card grid view" aria-pressed="false">
+            <i class="fas fa-border-all"></i><span>Card</span>
+        </button>
+    </div>
+    <select class="filter-select" id="statusFilter">
+        <option value="">Status</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+    </select>
+    <button class="btn-clear" id="clearFiltersBtn" style="margin-left: auto;">
+        <i class="fas fa-times"></i> Clear Filters
+    </button>
+</div>
+
+<!-- ===== TABLE VIEW ===== -->
+<div id="tableView">
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Course Name</th>
+                        <th>Code</th>
+                        <th>Teacher</th>
+                        <th>Level</th>
+                        <th>Students</th>
+                        <th>Attendance</th>
+                        <th>Status</th>
+                        <th style="width: 160px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    {% for course_data in courses %}
+                    <tr class="course-row"
+                        data-name="{{ course_data.course.name|lower|default:'' }}"
+                        data-code="{{ course_data.course.code|lower|default:'' }}"
+                        data-status="{% if course_data.course.is_active %}active{% else %}inactive{% endif %}">
+                        <td>{{ courses.start_index|add:forloop.counter0 }}</td>
+                        <td>
+                            <div class="course-name-main">{{ course_data.course.name }}</div>
+                            <div class="course-meta">
+                                <span class="meta-tag">
+                                    <i class="fas fa-tag"></i>
+                                    {{ course_data.course.code|default:"No Code" }}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="meta-tag">
+                                <i class="fas fa-hashtag"></i>
+                                {{ course_data.course.code|default:"-" }}
+                            </span>
+                        </td>
+                        <td>{{ course_data.course.teacher.get_full_name|default:"Unassigned" }}</td>
+                        <td>{{ course_data.course.level|default:"N/A" }}</td>
+                        <td>
+                            <strong>{{ course_data.student_count|default:0 }}</strong>
+                        </td>
+                        <td>
+                            {% if course_data.attendance_taken %}
+                            <span class="status-text">
+                                <span class="status-dot active"></span>Taken
+                            </span>
+                            {% else %}
+                            <span class="status-text">
+                                <span class="status-dot inactive"></span>Pending
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="status-text">
+                                <span class="status-dot {% if course_data.course.is_active %}active{% else %}inactive{% endif %}"></span>
+                                {% if course_data.course.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-icons">
+                                <a href="{% url 'classes:teacher_course_attendance_detail' course_data.course.id %}"
+                                    class="action-icon attendance"
+                                    title="{% if course_data.attendance_taken %}Update{% else %}Take{% endif %} Attendance"
+                                    data-bs-toggle="tooltip">
+                                    <i class="fas fa-clipboard-check"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <i class="fas fa-book-open"></i>
+                                <h5>No Courses Assigned to This Class</h5>
+                                <p>This class doesn't have any courses assigned to it yet.</p>
+                                <p class="text-muted small">Contact the administrator to assign courses to this class.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <!-- No Results Message -->
     <div class="no-results" id="tableNoResults">
@@ -755,56 +1169,74 @@
             data-name="{{ course_data.course.name|lower|default:'' }}"
             data-code="{{ course_data.course.code|lower|default:'' }}"
             data-status="{% if course_data.course.is_active %}active{% else %}inactive{% endif %}">
+            <!-- Header Section -->
             <div class="card-header">
-                <div>
+                <div class="card-head-main">
                     <div class="course-title">{{ course_data.course.name }}</div>
-                    <div class="course-meta">
-                        <span class="meta-tag">
-                            <i class="fas fa-tag"></i>
-                            {{ course_data.course.code|default:"No Code" }}
-                        </span>
-                    </div>
+                    <div class="course-term">{{ course_data.course.code|default:"No Code" }}</div>
                 </div>
-                <span class="meta-badge {% if course_data.course.is_active %}active{% else %}inactive{% endif %}"
-                    style="font-size: 11px;">
+                <span class="card-status {% if course_data.course.is_active %}active{% else %}inactive{% endif %}">
                     {% if course_data.course.is_active %}Active{% else %}Inactive{% endif %}
                 </span>
             </div>
-            <div class="card-body">
-                <div class="course-info">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <span>{{ course_data.course.teacher.get_full_name|default:"Unassigned" }}</span>
+            <!-- Metadata Block -->
+            <div class="card-meta-grid">
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fas fa-chalkboard-teacher"></i></span>
+                    <span class="meta-text">
+                        <span class="meta-label">Teacher</span>
+                        <span class="meta-value">{{ course_data.course.teacher.get_full_name|default:"Unassigned" }}</span>
+                    </span>
                 </div>
-                <div class="course-info">
-                    <i class="fas fa-layer-group"></i>
-                    <span>{{ course_data.course.level|default:"N/A" }}</span>
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fas fa-layer-group"></i></span>
+                    <span class="meta-text">
+                        <span class="meta-label">Level</span>
+                        <span class="meta-value">{{ course_data.course.level|default:"N/A" }}</span>
+                    </span>
                 </div>
-                <div class="course-info">
-                    <i class="fas fa-star"></i>
-                    <span>{{ course_data.course.credits|default:"-" }} Credits</span>
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fas fa-star"></i></span>
+                    <span class="meta-text">
+                        <span class="meta-label">Credits</span>
+                        <span class="meta-value">{{ course_data.course.credits|default:"-" }}</span>
+                    </span>
                 </div>
-                <div class="course-info">
-                    <i class="fas fa-users"></i>
-                    <span>{{ course_data.student_count|default:0 }} Students</span>
-                </div>
-                <div class="course-info">
-                    <i class="fas fa-clock"></i>
-                    <span>
-                        {% if course_data.attendance_taken %}
-                        <span style="color: #16a34a; font-weight: 600;">Taken</span>
-                        {% else %}
-                        <span style="color: #d97706; font-weight: 600;">Pending</span>
-                        {% endif %}
+                <div class="meta-item">
+                    <span class="meta-icon"><i class="fas fa-users"></i></span>
+                    <span class="meta-text">
+                        <span class="meta-label">Students</span>
+                        <span class="meta-value">{{ course_data.student_count|default:0 }}</span>
                     </span>
                 </div>
             </div>
+            <!-- Progress / Indicator -->
+            <div class="card-progress">
+                <div class="progress-head">
+                    <span>Attendance Today</span>
+                    <span class="progress-count">
+                        {% if course_data.attendance_taken %}Taken{% else %}Pending{% endif %}
+                    </span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill {% if course_data.attendance_taken %}full{% else %}near-full{% endif %}"
+                         style="width: {% if course_data.attendance_taken %}100{% else %}0{% endif %}%;"></div>
+                </div>
+            </div>
+            <!-- Footer Actions -->
             <div class="card-footer">
                 <a href="{% url 'classes:teacher_course_attendance_detail' course_data.course.id %}"
-                    class="btn-action btn-primary"
+                    class="view-details-btn"
                     title="{% if course_data.attendance_taken %}Update{% else %}Take{% endif %} Attendance">
                     <i class="fas fa-clipboard-check"></i>
                     {% if course_data.attendance_taken %}Update{% else %}Take{% endif %} Attendance
                 </a>
+                <div class="footer-actions">
+                    <a href="{% url 'classes:teacher_course_attendance_detail' course_data.course.id %}"
+                        class="mini-action info" title="Details" data-bs-toggle="tooltip">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                </div>
             </div>
         </div>
         {% empty %}
@@ -825,6 +1257,9 @@
     </div>
 </div>
 
+<!-- ===== UNIFIED PAGINATION FOOTER ===== -->
+{% include "Backend/includes/pagination.html" with page_obj=courses per_page=per_page footer_id="pagination" %}
+
 {% endblock %}
 
 {% block extra_js %}
@@ -839,17 +1274,13 @@
         const clearFiltersBtn = document.getElementById('clearFiltersBtn');
 
         function setView(mode) {
-            if (mode === 'card') {
-                tableView.classList.add('hidden');
-                cardView.classList.remove('hidden');
-                tableViewBtn.classList.remove('active');
-                cardViewBtn.classList.add('active');
-            } else {
-                cardView.classList.add('hidden');
-                tableView.classList.remove('hidden');
-                cardViewBtn.classList.remove('active');
-                tableViewBtn.classList.add('active');
-            }
+            const isCard = mode === 'card';
+            tableView.classList.toggle('hidden', isCard);
+            cardView.classList.toggle('hidden', !isCard);
+            tableViewBtn.classList.toggle('active', !isCard);
+            cardViewBtn.classList.toggle('active', isCard);
+            tableViewBtn.setAttribute('aria-pressed', String(!isCard));
+            cardViewBtn.setAttribute('aria-pressed', String(isCard));
             localStorage.setItem('teacherCoursesViewMode', mode);
             filterCourses();
         }

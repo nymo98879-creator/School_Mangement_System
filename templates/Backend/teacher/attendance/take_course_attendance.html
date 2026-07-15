@@ -444,6 +444,17 @@
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
     }
 
+    .btn-submit.btn-saved {
+        background: #10B981;
+    }
+
+    .btn-submit.btn-saved:hover {
+        background: #0D9488;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
     .btn-cancel {
         padding: 10px 24px;
         font-weight: 600;
@@ -684,10 +695,27 @@
                                 <input type="hidden" name="student_{{ student.id }}" id="status-{{ student.id }}" value="{{ student.attendance_status|default:'' }}">
                             </td>
                             <td>
-                                <span class="status-pill not-marked" id="label-{{ student.id }}">
-                                    <span class="status-dot"></span>
-                                    Not Marked
+                                {% if student.attendance_status == 'present' %}
+                                <span class="status-pill present" id="label-{{ student.id }}">
+                                    <span class="status-dot"></span> Present
                                 </span>
+                                {% elif student.attendance_status == 'late' %}
+                                <span class="status-pill late" id="label-{{ student.id }}">
+                                    <span class="status-dot"></span> Late
+                                </span>
+                                {% elif student.attendance_status == 'absent' %}
+                                <span class="status-pill absent" id="label-{{ student.id }}">
+                                    <span class="status-dot"></span> Absent
+                                </span>
+                                {% elif student.attendance_status == 'excused' %}
+                                <span class="status-pill excused" id="label-{{ student.id }}">
+                                    <span class="status-dot"></span> Excused
+                                </span>
+                                {% else %}
+                                <span class="status-pill not-marked" id="label-{{ student.id }}">
+                                    <span class="status-dot"></span> Not Marked
+                                </span>
+                                {% endif %}
                             </td>
                             <td>
                                 <div class="remarks-input-wrapper">
@@ -706,9 +734,15 @@
             <a href="{% url 'classes:teacher_course_attendance' %}" class="btn-cancel">
                 <i class="fas fa-times"></i> Cancel
             </a>
+            {% if attendance_taken %}
+            <button type="submit" class="btn-submit btn-saved" title="Records for today are already saved — saving will update them">
+                <i class="fas fa-lock"></i> Attendance Already Saved
+            </button>
+            {% else %}
             <button type="submit" class="btn-submit">
                 <i class="fas fa-save"></i> Save Attendance
             </button>
+            {% endif %}
         </div>
         {% else %}
         <div class="empty-state">
@@ -722,11 +756,11 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Restore existing attendance statuses on page load
+        // Restore existing attendance statuses on page load (silent: don't toggle off)
         {% for student in students %}
         const existingStatus{{ student.id }} = "{{ student.attendance_status|default:'' }}";
         if (existingStatus{{ student.id }}) {
-            setAttendance({{ student.id }}, existingStatus{{ student.id }});
+            setAttendance({{ student.id }}, existingStatus{{ student.id }}, true);
         }
         {% endfor %}
 
@@ -735,14 +769,14 @@
     });
 
     // ===== SET ATTENDANCE =====
-    function setAttendance(studentId, status) {
+    function setAttendance(studentId, status, silent = false) {
         const buttons = document.querySelectorAll(`.attendance-icon-btn[data-student="${studentId}"]`);
         const hiddenInput = document.getElementById(`status-${studentId}`);
         const statusLabel = document.getElementById(`label-${studentId}`);
         const remarksInput = document.getElementById(`remarks-${studentId}`);
 
-        // Toggle off if same status clicked
-        if (hiddenInput && hiddenInput.value === status) {
+        // Toggle off if same status clicked (skipped when restoring saved state)
+        if (!silent && hiddenInput && hiddenInput.value === status) {
             hiddenInput.value = '';
             buttons.forEach(btn => btn.classList.remove('active-present', 'active-late', 'active-absent', 'active-excused'));
 
