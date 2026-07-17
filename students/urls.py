@@ -42,4 +42,7 @@ urlpatterns = [
     # Public Registration
     path('register/', views.student_self_register_form, name='student_self_register_form'),
     path('register-success/', views.student_register_success, name='student_register_success'),
+
+    # Student-facing portal pages
+    path('university-info/', views.university_info, name='university_info'),
 ]

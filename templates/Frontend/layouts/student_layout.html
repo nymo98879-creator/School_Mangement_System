@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Portal{% endblock %}</title>
+
+    <!-- Apply saved/system theme before first paint (no flash) -->
+    <script>
+        (function () {
+            try {
+                var stored = localStorage.getItem('theme');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var dark = stored ? stored === 'dark' : prefersDark;
+                var root = document.documentElement;
+                if (dark) {
+                    root.classList.add('dark');
+                    root.setAttribute('data-bs-theme', 'dark');
+                } else {
+                    root.setAttribute('data-bs-theme', 'light');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
+    <!-- Tailwind CSS (utility tokens + dark: variants via class strategy) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Inter font + Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+        /* Smooth theme transition */
+        .theme-transition * { transition: background-color .3s ease, border-color .3s ease, color .3s ease; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-slate-50 dark:bg-[#0f172a] text-slate-800 dark:text-slate-200 antialiased">
+
+    <div class="flex min-h-screen">
+        {% include 'Frontend/partials/student_sidebar.html' %}
+
+        <div class="flex-1 flex flex-col min-w-0">
+            {% include 'Frontend/partials/student_topnav.html' %}
+
+            <main class="flex-1">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Theme toggle script (matches project convention: toggle .dark on <html>) -->
+    <script>
+        (function () {
+            'use strict';
+            var root = document.documentElement;
+            var STORAGE_KEY = 'theme';
+            function applyTheme(isDark) {
+                root.classList.toggle('dark', isDark);
+                root.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            }
+            function currentIsDark() {
+                var s = null;
+                try { s = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+                if (s === 'dark') return true;
+                if (s === 'light') return false;
+                return window.matchMedia('(prefers-color-scheme: dark)').matches;
+            }
+            var toggle = document.getElementById('themeToggle');
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    var next = root.classList.contains('dark') ? 'light' : 'dark';
+                    try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+                    applyTheme(next === 'dark');
+                });
+            }
+            function enableTransition() {
+                requestAnimationFrame(function () { root.classList.add('theme-transition'); });
+            }
+            if (document.readyState === 'complete') enableTransition();
+            else window.addEventListener('load', enableTransition);
+        })();
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.conf import settings
 from django.urls import reverse  # ADD THIS IMPORT
-from accounts.decorators import admin_required
+from accounts.decorators import admin_required, student_required
 from .models import Student
 from .forms import StudentForm, StudentSearchForm, StudentBulkUploadForm, StudentSelfRegistrationForm
 from classes.models import Class
@@ -549,6 +549,72 @@ def student_register_success(request):
         'student': student,
     }
     return render(request, 'Frontend/student/register_success.html', context)
+
+
+@login_required
+@student_required
+def university_info(request):
+    """Public university information dashboard for authenticated students."""
+    university = {
+        'name': 'Phnom Penh International University',
+        'tagline': 'Empowering the next generation of innovators, leaders, and scholars.',
+        'accreditation': 'MOEYS Accredited',
+        'founded_year': '2008',
+        'institution_id': 'PPIU-2008-KH',
+        'mission': (
+            'Phnom Penh International University is a forward-thinking institution '
+            'committed to academic excellence, inclusive education, and real-world impact. '
+            'We cultivate a vibrant learning community where students from every background '
+            'can pursue rigorous programs in science, engineering, business, and the arts — '
+            'supported by world-class faculty, modern facilities, and a global outlook.'
+        ),
+    }
+
+    divisions = [
+        {'name': 'College of Computer Science', 'code': 'CCS', 'dean': 'Dr. Sarik Sorphea', 'credits': 132},
+        {'name': 'College of Engineering', 'code': 'COE', 'dean': 'Dr. Chea Sokhim', 'credits': 140},
+        {'name': 'Faculty of Mathematics', 'code': 'FOM', 'dean': 'Dr. Lim Heng', 'credits': 120},
+        {'name': 'School of Business', 'code': 'SOB', 'dean': 'Dr. Mey Linna', 'credits': 118},
+    ]
+
+    contacts = [
+        {
+            'department': 'Student Affairs Office',
+            'icon': 'fas fa-users',
+            'email': 'student.affairs@ppiu.edu.kh',
+            'phone': '+855 23 999 100',
+            'link': 'mailto:student.affairs@ppiu.edu.kh',
+        },
+        {
+            'department': 'IT Support & Helpdesk',
+            'icon': 'fas fa-headset',
+            'email': 'itsupport@ppiu.edu.kh',
+            'phone': '+855 23 999 200',
+            'link': 'mailto:itsupport@ppiu.edu.kh',
+        },
+        {
+            'department': 'Academic Registrar',
+            'icon': 'fas fa-scroll',
+            'email': 'registrar@ppiu.edu.kh',
+            'phone': '+855 23 999 300',
+            'link': 'mailto:registrar@ppiu.edu.kh',
+        },
+    ]
+
+    facilities = [
+        {'name': 'Central Library', 'hours': 'Mon–Fri 07:00–22:00', 'status': 'Open'},
+        {'name': 'Science Labs', 'hours': 'Mon–Sat 08:00–18:00', 'status': 'Open'},
+        {'name': 'Main Building D Offices', 'hours': 'Mon–Fri 08:00–17:00', 'status': 'Open'},
+        {'name': 'Sports Complex', 'hours': 'Daily 06:00–21:00', 'status': 'Open'},
+    ]
+
+    context = {
+        'university': university,
+        'divisions': divisions,
+        'contacts': contacts,
+        'facilities': facilities,
+    }
+    return render(request, 'Frontend/student/university_info.html', context)
 
 # ============ VERIFY STUDENT QR ============
 

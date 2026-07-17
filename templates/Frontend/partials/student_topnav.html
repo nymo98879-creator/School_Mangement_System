@@ -1,0 +1,25 @@
+{% load static %}
+<header class="sticky top-0 z-20 flex items-center justify-between gap-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-b border-slate-100 dark:border-slate-800 px-4 md:px-8 py-3">
+    <div class="flex items-center gap-3 min-w-0">
+        <div class="md:hidden w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="min-w-0">
+            <h1 class="text-base md:text-lg font-bold text-slate-900 dark:text-white truncate">University Information</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Campus overview &amp; vital contacts</p>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+        <button id="themeToggle" type="button" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="Toggle dark / light theme" aria-label="Toggle theme">
+            <i class="fas fa-moon"></i>
+            <i class="fas fa-sun hidden"></i>
+        </button>
+        <div class="flex items-center gap-2 pl-2">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-sm font-semibold">
+                {{ request.user.username|first|upper }}
+            </div>
+            <span class="text-sm font-medium text-slate-700 dark:text-slate-200 hidden sm:inline">{{ request.user.get_username|default:"Student" }}</span>
+        </div>
+    </div>
+</header>

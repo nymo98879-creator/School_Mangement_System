@@ -23,10 +23,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import redirect
 from django.views.generic import RedirectView  # Correct import
+from core.views import public_home
 
 urlpatterns = [
-    # Redirect root to login
-    path('', lambda request: redirect('accounts:login')),
+    path('', public_home, name='public_home'),
     
     # Django admin panel
     path('admin/', admin.site.urls),
