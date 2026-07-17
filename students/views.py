@@ -270,7 +270,7 @@ def student_detail(request, pk):
     # Check permission
     if request.user.role != 'admin' and request.user != student.user:
         messages.error(request, 'You do not have permission to view this student.')
-        return redirect('dashboard')
+        return redirect('accounts:dashboard')
     
     if not student.qr_code:
         student.generate_qr_code()
