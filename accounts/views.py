@@ -592,7 +592,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Prefetch
 from datetime import datetime, date, timedelta
 
 from .forms import UserRegistrationForm, UserLoginForm
@@ -1166,7 +1166,12 @@ def teacher_student_view(request):
     course_filter = request.GET.get('course_filter', '')
     
     if request.user.role == 'admin':
-        students = Student.objects.filter(is_active=True)
+        # Admin sees every class/course, but we still use the isolated
+        # prefetch attributes so the template has a single code path.
+        students = Student.objects.filter(is_active=True).prefetch_related(
+            Prefetch('courses', queryset=Course.objects.all(), to_attr='my_teacher_courses'),
+            Prefetch('classes_enrolled', queryset=Class.objects.all(), to_attr='my_teacher_classes'),
+        )
         classes = Class.objects.filter(is_active=True)
         courses = Course.objects.filter(is_active=True)
         classes_count = Class.objects.count()
@@ -1174,7 +1179,7 @@ def teacher_student_view(request):
         try:
             teacher = Teacher.objects.get(user=request.user)
             classes = Class.objects.filter(teacher=teacher, is_active=True).distinct()
-            
+
             class_course_ids = list(
                 Course.objects.filter(class_offerings__in=classes, is_active=True)
                 .values_list('id', flat=True)
@@ -1187,11 +1192,25 @@ def teacher_student_view(request):
             )
             course_ids = list(set(class_course_ids) | set(direct_course_ids))
             courses = Course.objects.filter(id__in=course_ids, is_active=True).distinct()
-            
+
+            # ===== STRICT TEACHER-SCOPED PREFETCH (privacy isolation) =====
+            # Only attach the course/class records that belong to THIS teacher,
+            # so a student row never leaks other teachers' courses/classes.
+            teacher_courses_prefetch = Prefetch(
+                'courses',
+                queryset=Course.objects.filter(teacher=teacher, is_active=True),
+                to_attr='my_teacher_courses'
+            )
+            teacher_classes_prefetch = Prefetch(
+                'classes_enrolled',
+                queryset=Class.objects.filter(teacher=teacher, is_active=True),
+                to_attr='my_teacher_classes'
+            )
+
             students = Student.objects.filter(
                 Q(classes_enrolled__in=classes) | Q(courses__in=courses),
                 is_active=True
-            ).distinct()
+            ).distinct().prefetch_related(teacher_courses_prefetch, teacher_classes_prefetch)
             classes_count = classes.count()
         except Teacher.DoesNotExist:
             students = Student.objects.none()

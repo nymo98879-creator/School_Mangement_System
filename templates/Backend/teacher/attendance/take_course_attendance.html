@@ -299,9 +299,21 @@
         color: #16A34A;
     }
 
+    .dark .attendance-icon-btn.active-present,
+    .attendance-icon-btn.active-present.dark\:bg-indigo-600 {
+        background: #4F46E5;
+        color: #FFFFFF;
+    }
+
     .attendance-icon-btn.active-late {
         background: #FEF3C7;
         color: #D97706;
+    }
+
+    .dark .attendance-icon-btn.active-late,
+    .attendance-icon-btn.active-late.dark\:bg-indigo-600 {
+        background: #4F46E5;
+        color: #FFFFFF;
     }
 
     .attendance-icon-btn.active-absent {
@@ -309,9 +321,21 @@
         color: #DC2626;
     }
 
+    .dark .attendance-icon-btn.active-absent,
+    .attendance-icon-btn.active-absent.dark\:bg-indigo-600 {
+        background: #4F46E5;
+        color: #FFFFFF;
+    }
+
     .attendance-icon-btn.active-excused {
         background: #DBEAFE;
         color: #2563EB;
+    }
+
+    .dark .attendance-icon-btn.active-excused,
+    .attendance-icon-btn.active-excused.dark\:bg-indigo-600 {
+        background: #4F46E5;
+        color: #FFFFFF;
     }
 
     /* ===== STATUS PILL ===== */
@@ -566,6 +590,176 @@
             font-size: 11px;
         }
     }
+
+    /* ===== DARK MODE OVERRIDES =====
+       Triggered by BOTH `.dark` class AND Bootstrap's `data-bs-theme="dark"`
+       (the same mechanism that already darkens the table on this page). */
+    :is(.dark, [data-bs-theme="dark"]) body {
+        background: #0F172A;
+        color: #E2E8F0;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .attendance-card {
+        background: #0F172A;
+        border-color: #1E293B;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .attendance-card .card-header {
+        border-bottom-color: #1E293B;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .attendance-card .card-header h3 {
+        color: #E2E8F0;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .attendance-card .card-header .helper-text {
+        color: #94A3B8;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .meta-label {
+        color: #94A3B8;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .meta-value {
+        color: #E2E8F0;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .filter-bar .search-input,
+    :is(.dark, [data-bs-theme="dark"]) .filter-bar .filter-select {
+        background: #020617;
+        border-color: #1E293B;
+        color: #E2E8F0;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .filter-bar .search-input::placeholder,
+    :is(.dark, [data-bs-theme="dark"]) .filter-bar .search-input:placeholder-shown {
+        color: #64748B;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .metrics-strip {
+        background: rgba(30, 41, 59, 0.5);
+        border-color: #334155;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .metric-item.total .metric-number {
+        color: #F1F5F9;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .table-container {
+        background: #0F172A;
+        border-color: #1E293B;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .data-table thead {
+        background: #1E293B;
+        border-bottom-color: #334155;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .data-table thead th {
+        color: #94A3B8;
+        border-bottom-color: #334155;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .data-table tbody td {
+        border-bottom-color: #1E293B;
+        color: #CBD5E1;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .data-table tbody tr {
+        background: #0F172A;
+        border-color: #1E293B;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .data-table tbody tr:hover {
+        background: #1E293B;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .student-name-main {
+        color: #F1F5F9;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .student-email {
+        color: #94A3B8;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .student-id-badge {
+        background: #1E293B;
+        color: #CBD5E1;
+        border-color: #334155;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .status-pill.not-marked {
+        background: #1E293B;
+        color: #CBD5E1;
+        border-color: #334155;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .status-pill.not-marked .status-dot {
+        background: #94A3B8;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .remarks-input {
+        background: #020617;
+        border-color: #1E293B;
+        color: #F1F5F9;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .remarks-input::placeholder {
+        color: #64748B;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .remarks-input:focus {
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .attendance-icon-btn:hover {
+        background: #1E293B;
+        color: #E2E8F0;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .alert-banner.info {
+        background: #172554;
+        color: #BFDBFE;
+        border-color: #1E3A8A;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .alert-banner.warning {
+        background: #422006;
+        color: #FDE68A;
+        border-color: #854D0E;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .empty-state i {
+        color: #475569;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .empty-state h5 {
+        color: #F1F5F9;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .empty-state p {
+        color: #94A3B8;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .btn-cancel:hover {
+        background: #1E293B;
+        color: #E2E8F0;
+    }
+
+    :is(.dark, [data-bs-theme="dark"]) .form-actions {
+        border-top-color: #1E293B;
+    }
+
+    /* Active attendance icon buttons invert to indigo accent in dark mode */
+    :is(.dark, [data-bs-theme="dark"]) .attendance-icon-btn.active-present,
+    :is(.dark, [data-bs-theme="dark"]) .attendance-icon-btn.active-late,
+    :is(.dark, [data-bs-theme="dark"]) .attendance-icon-btn.active-absent,
+    :is(.dark, [data-bs-theme="dark"]) .attendance-icon-btn.active-excused {
+        background: #4F46E5;
+        color: #FFFFFF;
+        box-shadow: 0 3px 15px rgba(79, 70, 229, 0.4);
+    }
 </style>
 {% endblock %}
 
@@ -574,7 +768,7 @@
     {% csrf_token %}
     <input type="hidden" name="course_id" value="{{ course.id }}">
 
-    <div class="attendance-card">
+    <div class="attendance-card bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
         <!-- Header -->
         <div class="card-header">
             <h3><i class="fas fa-calendar-check"></i> Take Attendance</h3>
@@ -584,20 +778,20 @@
         <!-- Metadata Grid -->
         <div class="meta-grid">
             <div class="meta-item">
-                <span class="meta-label">Date</span>
-                <span class="meta-value">{{ today|date:"F d, Y" }}</span>
+                <span class="meta-label dark:text-slate-400">Date</span>
+                <span class="meta-value dark:text-slate-200">{{ today|date:"F d, Y" }}</span>
             </div>
             <div class="meta-item">
-                <span class="meta-label">Course</span>
-                <span class="meta-value">{{ course.name }} ({{ course.code }})</span>
+                <span class="meta-label dark:text-slate-400">Course</span>
+                <span class="meta-value dark:text-slate-200">{{ course.name }} ({{ course.code }})</span>
             </div>
             <div class="meta-item">
-                <span class="meta-label">Teacher</span>
-                <span class="meta-value">{{ course.teacher.get_full_name|default:"-" }}</span>
+                <span class="meta-label dark:text-slate-400">Teacher</span>
+                <span class="meta-value dark:text-slate-200">{{ course.teacher.get_full_name|default:"-" }}</span>
             </div>
             <div class="meta-item">
-                <span class="meta-label">Total Students</span>
-                <span class="meta-value">{{ total_students }}</span>
+                <span class="meta-label dark:text-slate-400">Total Students</span>
+                <span class="meta-value dark:text-slate-200">{{ total_students }}</span>
             </div>
         </div>
 
@@ -628,7 +822,7 @@
         {% endif %}
 
         <!-- Metrics Strip -->
-        <div class="metrics-strip">
+        <div class="metrics-strip bg-white dark:bg-slate-800/50 border dark:border-slate-700 rounded-xl">
             <div class="metric-item present">
                 <div class="metric-number" id="presentCount">0</div>
                 <div class="metric-label">Present</div>
@@ -646,7 +840,7 @@
                 <div class="metric-label">Excused</div>
             </div>
             <div class="metric-item total">
-                <div class="metric-number" id="totalCount">{{ students|length }}</div>
+                <div class="metric-number dark:text-slate-100" id="totalCount">{{ students|length }}</div>
                 <div class="metric-label">Total</div>
             </div>
         </div>
@@ -668,11 +862,11 @@
                     </thead>
                     <tbody>
                         {% for student in students %}
-                        <tr class="student-row" id="row-{{ student.id }}" data-status="{{ student.attendance_status|default:'not-marked' }}">
+                        <tr class="student-row dark:bg-slate-900 dark:border-slate-800" id="row-{{ student.id }}" data-status="{{ student.attendance_status|default:'not-marked' }}">
                             <td>{{ forloop.counter }}</td>
                             <td>
-                                <div class="student-name-main">{{ student.get_full_name }}</div>
-                                <div class="student-email">{{ student.email }}</div>
+                                <div class="student-name-main dark:text-slate-200">{{ student.get_full_name }}</div>
+                                <div class="student-email dark:text-slate-400">{{ student.email }}</div>
                             </td>
                             <td>
                                 <span class="student-id-badge">{{ student.student_id }}</span>
@@ -712,14 +906,14 @@
                                     <span class="status-dot"></span> Excused
                                 </span>
                                 {% else %}
-                                <span class="status-pill not-marked" id="label-{{ student.id }}">
+                                <span class="status-pill not-marked dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700" id="label-{{ student.id }}">
                                     <span class="status-dot"></span> Not Marked
                                 </span>
                                 {% endif %}
                             </td>
                             <td>
                                 <div class="remarks-input-wrapper">
-                                    <input type="text" class="remarks-input" id="remarks-{{ student.id }}" name="remarks_{{ student.id }}" placeholder="Add remarks..." maxlength="200" value="{{ student.attendance_remarks|default:'' }}">
+                                    <input type="text" class="remarks-input bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500/20" id="remarks-{{ student.id }}" name="remarks_{{ student.id }}" placeholder="Add remarks..." maxlength="200" value="{{ student.attendance_remarks|default:'' }}">
                                 </div>
                             </td>
                         </tr>

@@ -366,8 +366,8 @@
             </div>
 
             {% for field in form %}
-            {% if field.name == 'building' or field.name == 'floor' or field.name == 'room' %}
-                {# cascading location selectors are rendered above #}
+            {% if field.name == 'building' or field.name == 'floor' or field.name == 'room' or field.name == 'room_number' or field.name == 'start_time' or field.name == 'end_time' or field.name == 'days' or field.name == 'term_type' %}
+                {# cascading location selectors and removed legacy fields are handled above / excluded #}
             {% elif field.name == 'time_slots' or field.name == 'courses' %}
             <div class="col-md-4">
                 <label class="form-label" for="{{ field.id_for_label }}">
@@ -396,8 +396,8 @@
                 <div class="errorlist">{{ field.errors }}</div>
                 {% endif %}
             </div>
-            {% elif field.name != 'is_active' and field.name != 'password' and field.name != 'password_confirm' and field.name != 'days' and field.name != 'prerequisites' and field.name != 'students' and field.name != 'teachers' and field.name != 'class_obj' and field.name != 'building' and field.name != 'floor' and field.name != 'room' and field.name != 'parent' and field.name != 'head' and field.name != 'dean' %}
-            <div class="col-md-4">
+            {% elif field.name != 'is_active' and field.name != 'password' and field.name != 'password_confirm' and field.name != 'days' and field.name != 'room_number' and field.name != 'start_time' and field.name != 'end_time' and field.name != 'term_type' and field.name != 'prerequisites' and field.name != 'students' and field.name != 'teachers' and field.name != 'class_obj' and field.name != 'building' and field.name != 'floor' and field.name != 'room' and field.name != 'parent' and field.name != 'head' and field.name != 'dean' %}
+            <div class="col-md-4{% if field.name == 'term' or field.name == 'academic_year' %} col-6 equal-split{% endif %}">
                 <label class="form-label" for="{{ field.id_for_label }}">
                     {{ field.label }}
                     {% if field.field.required %}<span class="required">*</span>{% endif %}

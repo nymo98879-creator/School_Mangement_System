@@ -120,16 +120,15 @@ class Course(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.course_id:
-            last_course = Course.objects.order_by('id').last()
-            if last_course and last_course.course_id:
-                try:
-                    last_num = int(last_course.course_id[2:])
-                    new_num = last_num + 1
-                except (ValueError, IndexError):
-                    new_num = 1
-            else:
-                new_num = 1
-            self.course_id = f"CS{new_num:03d}"
+            import re
+            max_num = 0
+            for cid in Course.objects.values_list('course_id', flat=True):
+                match = re.match(r'^CS(\d+)$', cid or '')
+                if match:
+                    num = int(match.group(1))
+                    if num > max_num:
+                        max_num = num
+            self.course_id = f"CS{max_num + 1:03d}"
         
         super().save(*args, **kwargs)
     

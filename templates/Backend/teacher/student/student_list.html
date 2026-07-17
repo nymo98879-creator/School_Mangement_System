@@ -556,6 +556,7 @@
                     <th>Student</th>
                     <th>Student ID</th>
                     <th>Class</th>
+                    <th>Course</th>
                     <th>Gender</th>
                     <th>Guardian</th>
                     <th>Status</th>
@@ -568,7 +569,8 @@
                     data-name="{{ student.get_full_name|lower }}"
                     data-email="{{ student.email|lower }}"
                     data-id="{{ student.student_id|lower }}"
-                    data-classes="{{ student.classes_enrolled.all|join:' '|lower }}"
+                    data-classes="{% for c in student.my_teacher_classes %}{{ c.id }} {% endfor %}"
+                    data-courses="{% for c in student.my_teacher_courses %}{{ c.id }} {% endfor %}"
                     data-gender="{{ student.gender|default:'' }}"
                     data-status="{% if student.is_active %}active{% else %}inactive{% endif %}">
                     <td>{{ students.start_index|add:forloop.counter0 }}</td>
@@ -580,15 +582,18 @@
                     </td>
                     <td><span style="font-weight: 600; color: #475569;">{{ student.student_id }}</span></td>
                     <td>
-                        {% if student.classes_enrolled.exists %}
-                        <span style="font-weight: 500; color: #334155;">
-                            {% for cls in student.classes_enrolled.all %}
-                            {{ cls.name }}{% if not forloop.last %}, {% endif %}
-                            {% endfor %}
-                        </span>
-                        {% else %}
-                        <span style="color: #94a3b8; font-style: italic;">Not Assigned</span>
-                        {% endif %}
+                        {% for cls in student.my_teacher_classes %}
+                        <span style="font-weight: 500; color: #334155;">{{ cls.name }}</span>{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                        <span style="color: #94a3b8; font-style: italic;">Not Assigned (This Teacher)</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for course in student.my_teacher_courses %}
+                        <span style="font-weight: 500; color: #334155;">{{ course.code }} - {{ course.name }}</span>{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                        <span style="color: #94a3b8; font-style: italic;">No courses with you</span>
+                        {% endfor %}
                     </td>
                     <td>
                         <span style="color: #475569;">{{ student.get_gender_display|default:"-" }}</span>
@@ -630,13 +635,14 @@
 <!-- ===== CARD GRID VIEW ===== -->
 <div class="card-grid" id="cardView">
     {% for student in students %}
-    <div class="student-card"
-        data-name="{{ student.get_full_name|lower }}"
-        data-email="{{ student.email|lower }}"
-        data-id="{{ student.student_id|lower }}"
-        data-classes="{{ student.classes_enrolled.all|join:' '|lower }}"
-        data-gender="{{ student.gender|default:'' }}"
-        data-status="{% if student.is_active %}active{% else %}inactive{% endif %}">
+        <div class="student-card"
+            data-name="{{ student.get_full_name|lower }}"
+            data-email="{{ student.email|lower }}"
+            data-id="{{ student.student_id|lower }}"
+            data-classes="{% for c in student.my_teacher_classes %}{{ c.id }} {% endfor %}"
+            data-courses="{% for c in student.my_teacher_courses %}{{ c.id }} {% endfor %}"
+            data-gender="{{ student.gender|default:'' }}"
+            data-status="{% if student.is_active %}active{% else %}inactive{% endif %}">
         <div class="sc-header">
             <div class="sc-icon"><i class="fas fa-user-graduate"></i></div>
             <div class="sc-heading">
@@ -648,7 +654,13 @@
             <div class="sc-meta-item">
                 <i class="fas fa-chalkboard"></i>
                 <span class="sc-meta-text">
-                    {% if student.classes_enrolled.exists %}{% for cls in student.classes_enrolled.all %}{{ cls.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}Not Assigned{% endif %}
+                    {% for cls in student.my_teacher_classes %}{{ cls.name }}{% if not forloop.last %}, {% endif %}{% empty %}Not Assigned (This Teacher){% endfor %}
+                </span>
+            </div>
+            <div class="sc-meta-item">
+                <i class="fas fa-book"></i>
+                <span class="sc-meta-text">
+                    {% for course in student.my_teacher_courses %}{{ course.code }} - {{ course.name }}{% if not forloop.last %}, {% endif %}{% empty %}No courses with you{% endfor %}
                 </span>
             </div>
             <div class="sc-meta-item">
@@ -703,14 +715,17 @@
             const name = data.name || '';
             const email = data.email || '';
             const id = data.id || '';
-            const classes = data.classes || '';
-            const course = data.course || '';
+            // data-classes / data-courses hold space-separated relationship IDs.
+            // Split into an array so we match by exact ID (not a substring) and
+            // safely handle students with no class/course assigned (empty -> []).
+            const classIds = (data.classes || '').trim().split(/\s+/).filter(Boolean);
+            const courseIds = (data.courses || '').trim().split(/\s+/).filter(Boolean);
 
             if (searchTerm) {
-                if (!(name.includes(searchTerm) || email.includes(searchTerm) || id.includes(searchTerm) || classes.includes(searchTerm))) return false;
+                if (!(name.includes(searchTerm) || email.includes(searchTerm) || id.includes(searchTerm))) return false;
             }
-            if (classFilter && !classes.includes(classFilter)) return false;
-            if (courseFilter && !course.includes(courseFilter)) return false;
+            if (classFilter && !classIds.includes(classFilter)) return false;
+            if (courseFilter && !courseIds.includes(courseFilter)) return false;
             return true;
         }
 

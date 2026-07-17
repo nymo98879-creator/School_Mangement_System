@@ -20,10 +20,20 @@
         border-left: 4px solid #4263eb;
     }
 
+    .dark .class-info-card {
+        background: #0F172A;
+        border: 1px solid #1E293B;
+        box-shadow: none;
+    }
+
     .class-info-card .class-name {
         font-size: 22px;
         font-weight: 700;
         color: #2c3e50;
+    }
+
+    .dark .class-info-card .class-name {
+        color: #F1F5F9;
     }
 
     .class-info-card .class-meta {
@@ -33,6 +43,10 @@
         margin-top: 10px;
         color: #7f8c8d;
         font-size: 14px;
+    }
+
+    .dark .class-info-card .class-meta {
+        color: #94A3B8;
     }
 
     .class-info-card .class-meta .meta-item {
@@ -53,6 +67,12 @@
         overflow: hidden;
     }
 
+    .dark .course-selection-card {
+        background: #0F172A;
+        border: 1px solid #1E293B;
+        box-shadow: none;
+    }
+
     .course-selection-card .card-header {
         padding: 18px 25px;
         border-bottom: 1px solid #ecf0f1;
@@ -64,10 +84,19 @@
         gap: 10px;
     }
 
+    .dark .course-selection-card .card-header {
+        border-bottom-color: #1E293B;
+        background: #1E293B;
+    }
+
     .course-selection-card .card-header h5 {
         margin: 0;
         font-weight: 600;
         color: #2c3e50;
+    }
+
+    .dark .course-selection-card .card-header h5 {
+        color: #F1F5F9;
     }
 
     .course-selection-card .card-header .header-actions {
@@ -78,6 +107,10 @@
 
     .course-selection-card .card-body {
         padding: 25px;
+    }
+
+    .dark .course-selection-card .card-body {
+        background: #0F172A;
     }
 
     .course-selection-card .card-footer {
@@ -91,6 +124,11 @@
         gap: 15px;
     }
 
+    .dark .course-selection-card .card-footer {
+        border-top-color: #1E293B;
+        background: #1E293B;
+    }
+
     .search-box {
         margin-bottom: 20px;
     }
@@ -102,12 +140,29 @@
         font-size: 14px;
         width: 100%;
         transition: all 0.3s;
+        background: white;
+        color: #1e293b;
+    }
+
+    .dark .search-box input {
+        background: #020617;
+        border-color: #1E293B;
+        color: #F1F5F9;
+    }
+
+    .dark .search-box input::placeholder {
+        color: #64748B;
     }
 
     .search-box input:focus {
         outline: none;
         border-color: #4263eb;
         box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.1);
+    }
+
+    .dark .search-box input:focus {
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
 
     .selected-count {
@@ -119,6 +174,11 @@
         font-size: 14px;
     }
 
+    .dark .selected-count {
+        background: rgba(59, 130, 246, 0.12);
+        color: #60A5FA;
+    }
+
     .course-row {
         transition: all 0.3s;
     }
@@ -127,12 +187,21 @@
         background: #f8fafb;
     }
 
+    .dark .course-row:hover {
+        background: #1E293B;
+    }
+
     .course-row.table-success {
         background: #f0faf5;
     }
 
     .course-row.table-success:hover {
         background: #e8f5ee;
+    }
+
+    .dark .course-row.table-success,
+    .dark .course-row.table-success:hover {
+        background: rgba(16, 185, 129, 0.10);
     }
 
     .course-checkbox {
@@ -157,6 +226,17 @@
         color: white;
     }
 
+    .dark .btn-save {
+        background: #10B981;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .dark .btn-save:hover {
+        background: #34D399;
+        box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+        color: white;
+    }
+
     .btn-back {
         padding: 10px 30px;
         border-radius: 8px;
@@ -168,6 +248,17 @@
 
     .btn-back:hover {
         background: #cbd5e1;
+    }
+
+    .dark .btn-back {
+        background: #1E293B;
+        border: 1px solid #334155;
+        color: #CBD5E1;
+    }
+
+    .dark .btn-back:hover {
+        background: #334155;
+        color: #F1F5F9;
     }
 
     .select-all-btn {
@@ -183,11 +274,55 @@
         text-decoration: underline;
     }
 
+    .dark .select-all-btn {
+        color: #60A5FA;
+    }
+
     .badge-course {
         padding: 4px 12px;
         border-radius: 12px;
         font-weight: 600;
         font-size: 12px;
+    }
+
+    /* ===== DARK MODE OVERRIDES (mirrors Tailwind dark: tokens) ===== */
+    .dark .table {
+        color: #CBD5E1;
+    }
+
+    .dark .table thead th {
+        color: #94A3B8;
+        border-bottom-color: #1E293B;
+    }
+
+    .dark .table td {
+        border-bottom-color: #1E293B;
+        color: #CBD5E1;
+    }
+
+    .dark .badge.bg-secondary {
+        background: #1E293B !important;
+        color: #CBD5E1 !important;
+    }
+
+    .dark .badge.bg-info {
+        background: rgba(59, 130, 246, 0.15) !important;
+        color: #60A5FA !important;
+    }
+
+    .dark .badge.bg-success {
+        background: rgba(16, 185, 129, 0.15) !important;
+        color: #6EE7B7 !important;
+    }
+
+    .dark .badge.bg-danger {
+        background: rgba(220, 38, 38, 0.15) !important;
+        color: #FCA5A5 !important;
+    }
+
+    .dark .badge.bg-warning {
+        background: rgba(217, 119, 6, 0.15) !important;
+        color: #FCD34D !important;
     }
 
     @media (max-width: 768px) {
@@ -225,8 +360,8 @@
     {% endif %}
 
     <!-- Class Info -->
-    <div class="class-info-card">
-        <div class="class-name">
+    <div class="class-info-card bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm">
+        <div class="class-name text-slate-900 dark:text-slate-100 font-bold">
             <i class="fas fa-chalkboard me-2" style="color: #4263eb;"></i>{{ class.name }}
         </div>
         <div class="class-meta">
@@ -259,11 +394,11 @@
     <!-- Course Selection -->
     <form method="POST">
         {% csrf_token %}
-        <div class="course-selection-card">
+        <div class="course-selection-card bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl shadow-sm">
             <div class="card-header">
-                <h5><i class="fas fa-book me-2"></i>Select Courses to Assign</h5>
+                <h5 class="text-slate-900 dark:text-slate-100 font-bold"><i class="fas fa-book me-2"></i>Select Courses to Assign</h5>
                 <div class="header-actions">
-                    <span class="selected-count" id="selectedCount">0 selected</span>
+                    <span class="selected-count bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium px-3 py-1 rounded-full text-xs" id="selectedCount">0 selected</span>
                     <button type="button" class="select-all-btn" onclick="toggleAllCourses()">
                         <i class="fas fa-check-double me-1"></i>Select All
                     </button>
@@ -273,6 +408,7 @@
                 <!-- Search Box -->
                 <div class="search-box">
                     <input type="text" id="searchCourses" placeholder="Search courses by name or code..."
+                        class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 rounded-xl px-4 py-2.5 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-blue-500/20"
                         onkeyup="filterCourses()">
                 </div>
 
@@ -281,30 +417,29 @@
                     <table class="table table-hover mb-0">
                         <thead>
                             <tr>
-                                <th width="50">Select</th>
-                                <th>Code</th>
-                                <th>Course Name</th>
-                                <th>Teacher</th>
-                                <th>Credits</th>
-                                <th>Level</th>
-                                <th>Status</th>
+                                <th width="50" class="text-slate-500 dark:text-slate-400 font-semibold text-sm">Select</th>
+                                <th class="text-slate-500 dark:text-slate-400 font-semibold text-sm">Code</th>
+                                <th class="text-slate-500 dark:text-slate-400 font-semibold text-sm">Course Name</th>
+                                <th class="text-slate-500 dark:text-slate-400 font-semibold text-sm">Teacher</th>
+                                <th class="text-slate-500 dark:text-slate-400 font-semibold text-sm">Credits</th>
+                                <th class="text-slate-500 dark:text-slate-400 font-semibold text-sm">Level</th>
+                                <th class="text-slate-500 dark:text-slate-400 font-semibold text-sm">Status</th>
                             </tr>
                         </thead>
                         <tbody id="courseList">
                             {% for course in all_courses %}
-                            <tr class="course-row {% if course.id in assigned_ids %}table-success{% endif %}"
+                            <tr class="course-row bg-green-50/50 dark:bg-emerald-500/10 transition-colors {% if course.id in assigned_ids %}table-success{% endif %}"
                                 data-course-id="{{ course.id }}" data-name="{{ course.name|lower }}"
                                 data-code="{{ course.code|lower }}">
                                 <td>
                                     <input type="checkbox" name="courses" value="{{ course.id }}"
-                                        id="course-{{ course.id }}" class="course-checkbox" {% if course.id in
-                                        assigned_ids %}checked{% endif %} onchange="updateSelectedCount()">
+                                        id="course-{{ course.id }}" class="course-checkbox" {% if course.id in assigned_ids %}checked{% endif %} onchange="updateSelectedCount()">
                                 </td>
-                                <td><span class="badge bg-secondary">{{ course.code }}</span></td>
+                                <td><span class="badge bg-secondary bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono">{{ course.code }}</span></td>
                                 <td>{{ course.name }}</td>
                                 <td>
                                     {% if course.teacher %}
-                                    <span class="badge bg-info">{{ course.teacher.get_full_name }}</span>
+                                    <span class="badge bg-info bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">{{ course.teacher.get_full_name }}</span>
                                     {% else %}
                                     <span class="badge bg-warning">Not Assigned</span>
                                     {% endif %}
@@ -313,7 +448,7 @@
                                 <td>{{ course.level|default:"N/A" }}</td>
                                 <td>
                                     <span
-                                        class="badge {% if course.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                                        class="badge {% if course.is_active %}bg-success bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400{% else %}bg-danger{% endif %}">
                                         {{ course.is_active|yesno:"Active,Inactive" }}
                                     </span>
                                 </td>
@@ -336,10 +471,10 @@
                 </div>
             </div>
             <div class="card-footer">
-                <a href="{% url 'classes:class_detail' class.id %}" class="btn-back">
+                <a href="{% url 'classes:class_detail' class.id %}" class="btn-back bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border dark:border-slate-700 font-medium px-4 py-2 rounded-xl transition-colors">
                     <i class="fas fa-arrow-left me-2"></i>Back to Class
                 </a>
-                <button type="submit" class="btn-save">
+                <button type="submit" class="btn-save bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white font-medium px-5 py-2.5 rounded-xl shadow-lg shadow-emerald-600/10 transition-all flex items-center gap-2 cursor-pointer">
                     <i class="fas fa-save me-2"></i>Save Assignments
                 </button>
             </div>

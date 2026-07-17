@@ -400,11 +400,247 @@
             font-size: 18px;
         }
     }
+
+    /* ===== DARK MODE OVERRIDES (mirrors Tailwind dark: variants) ===== */
+    .dark body {
+        background: #0F172A;
+        color: #E2E8F0;
+    }
+
+    /* Main attendance card shell */
+    .dark .attendance-form {
+        background: #0F172A;
+        border: 1px solid #1E293B;
+    }
+
+    /* Form header banner keeps its green gradient, just soften text */
+    .dark .attendance-header small {
+        opacity: 0.85;
+    }
+
+    /* Date / Class inputs */
+    .dark .form-control {
+        background: #020617;
+        border-color: #1E293B;
+        color: #E2E8F0;
+    }
+
+    .dark .form-control:disabled {
+        background: #1E293B;
+        color: #CBD5E1;
+        opacity: 1;
+    }
+
+    .dark .form-label {
+        color: #CBD5E1;
+    }
+
+    /* Legend */
+    .dark .legend-item {
+        color: #CBD5E1;
+    }
+
+    .dark .legend .text-muted {
+        color: #94A3B8 !important;
+    }
+
+    /* Info alert */
+    .dark .alert-info {
+        background: #172554;
+        color: #BFDBFE;
+        border-color: #1E3A8A;
+    }
+
+    /* Summary stats strip */
+    .dark .summary-stats {
+        background: #1E293B;
+        background-color: rgba(30, 41, 59, 0.4);
+        border: 1px solid #334155;
+    }
+
+    .dark .summary-stats .stat-label {
+        color: #94A3B8;
+    }
+
+    .dark .summary-stats .stat-item .stat-number {
+        color: #F1F5F9;
+    }
+
+    /* Table */
+    .dark .table {
+        color: #CBD5E1;
+    }
+
+    .dark .table-light,
+    .dark .table-light > th,
+    .dark .table thead.table-light th {
+        background: #1E293B;
+        color: #94A3B8;
+        border-bottom-color: #334155;
+    }
+
+    .dark .table td,
+    .dark .table th {
+        border-color: #1E293B;
+    }
+
+    /* Student rows */
+    .dark .student-row {
+        background: #0F172A;
+        border-color: #1E293B;
+    }
+
+    .dark .student-row:hover {
+        background: #1E293B;
+    }
+
+    .dark .student-row .fw-bold {
+        color: #F1F5F9;
+    }
+
+    .dark .student-row .text-muted {
+        color: #94A3B8 !important;
+    }
+
+    /* Attendance toggle buttons (inactive default) */
+    .dark .attendance-btn {
+        background: #1E293B;
+        border-color: #334155;
+        color: #94A3B8;
+    }
+
+    .dark .attendance-btn:hover {
+        border-color: #475569;
+        color: #E2E8F0;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .dark .attendance-btn.inactive {
+        background: #1E293B;
+        border-color: #334155;
+        color: #64748B;
+    }
+
+    /* Active states invert to indigo accent */
+    .dark .attendance-btn.active-present {
+        background: #4F46E5;
+        border-color: #4F46E5;
+        color: #FFFFFF;
+        box-shadow: 0 3px 15px rgba(79, 70, 229, 0.4);
+    }
+
+    .dark .attendance-btn.active-late {
+        background: #4F46E5;
+        border-color: #4F46E5;
+        color: #FFFFFF;
+        box-shadow: 0 3px 15px rgba(79, 70, 229, 0.4);
+    }
+
+    .dark .attendance-btn.active-absent {
+        background: #4F46E5;
+        border-color: #4F46E5;
+        color: #FFFFFF;
+        box-shadow: 0 3px 15px rgba(79, 70, 229, 0.4);
+    }
+
+    .dark .attendance-btn.active-excused {
+        background: #4F46E5;
+        border-color: #4F46E5;
+        color: #FFFFFF;
+        box-shadow: 0 3px 15px rgba(79, 70, 229, 0.4);
+    }
+
+    /* Status pills */
+    .dark .student-row .status-label.not-marked {
+        background: #1E293B;
+        color: #CBD5E1;
+    }
+
+    .dark .student-row .status-label.present {
+        background: #14532D;
+        color: #86EFAC;
+    }
+
+    .dark .student-row .status-label.absent {
+        background: #7F1D1D;
+        color: #FCA5A5;
+    }
+
+    .dark .student-row .status-label.late {
+        background: #78350F;
+        color: #FCD34D;
+    }
+
+    .dark .student-row .status-label.excused {
+        background: #1E3A8A;
+        color: #BFDBFE;
+    }
+
+    .dark .student-row .status-label.excused-with-remark {
+        background: #1E40AF;
+        color: #DBEAFE;
+    }
+
+    /* Remarks input */
+    .dark .remarks-container .remarks-input {
+        background: #020617;
+        border-color: #1E293B;
+        color: #F1F5F9;
+    }
+
+    .dark .remarks-container .remarks-input:focus {
+        outline: none;
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+        background: #0F172A;
+    }
+
+    .dark .remarks-container .remarks-input::placeholder {
+        color: #64748B;
+    }
+
+    .dark .remarks-container .remarks-label {
+        color: #93C5FD;
+    }
+
+    /* Row highlight when excused remark present */
+    .dark .student-row.has-remark {
+        border-left: 3px solid #6366F1;
+    }
+
+    /* Form action border + buttons */
+    .dark .border-top {
+        border-top-color: #1E293B !important;
+    }
+
+    .dark .btn-secondary {
+        background: #334155;
+        border-color: #334155;
+        color: #E2E8F0;
+    }
+
+    .dark .btn-secondary:hover {
+        background: #475569;
+        color: #FFFFFF;
+    }
+
+    /* Empty state */
+    .dark .empty-state i {
+        color: #475569;
+    }
+
+    .dark .empty-state h5 {
+        color: #F1F5F9;
+    }
+
+    .dark .empty-state .text-muted {
+        color: #94A3B8 !important;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="attendance-form">
+<div class="attendance-form bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
     <div class="attendance-header">
         <h4><i class="fas fa-calendar-check me-2"></i>Take Attendance</h4>
         <small>{{ class.name }} - {{ class.get_schedule_display }}</small>
@@ -471,7 +707,7 @@
                 </thead>
                 <tbody>
                     {% for student in students %}
-                    <tr class="student-row" id="row-{{ student.id }}">
+                    <tr class="student-row dark:bg-slate-900 dark:border-slate-800" id="row-{{ student.id }}">
                         <td>{{ forloop.counter }}</td>
                         <td>
                             <div class="d-flex align-items-center gap-2">
@@ -479,8 +715,8 @@
                                     {{ student.first_name|first|upper }}
                                 </div>
                                 <div>
-                                    <div class="fw-bold">{{ student.get_full_name }}</div>
-                                    <small class="text-muted">{{ student.email }}</small>
+                                    <div class="fw-bold dark:text-slate-200">{{ student.get_full_name }}</div>
+                                    <small class="text-muted dark:text-slate-400">{{ student.email }}</small>
                                 </div>
                             </div>
                         </td>
@@ -516,7 +752,7 @@
                             <input type="hidden" name="student_{{ student.id }}" id="status-{{ student.id }}" value="">
                         </td>
                         <td>
-                            <span class="status-label not-marked" id="label-{{ student.id }}">
+                            <span class="status-label not-marked dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700" id="label-{{ student.id }}">
                                 ❓ Not Marked
                             </span>
                         </td>
@@ -525,7 +761,7 @@
                                 <label class="remarks-label">
                                     <i class="fas fa-pen"></i> Reason for Excuse:
                                 </label>
-                                <input type="text" class="remarks-input" id="remarks-{{ student.id }}"
+                                <input type="text" class="remarks-input bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-blue-500/20" id="remarks-{{ student.id }}"
                                     name="remarks_{{ student.id }}"
                                     placeholder="e.g., Medical appointment, Family emergency..." maxlength="200">
                             </div>
@@ -539,7 +775,7 @@
         </div>
 
         <!-- Summary Stats -->
-        <div class="summary-stats mt-3">
+        <div class="summary-stats mt-3 bg-white dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700 rounded-xl">
             <div class="stat-item present">
                 <div class="stat-number" id="presentCount">0</div>
                 <div class="stat-label"> Present</div>
@@ -557,7 +793,7 @@
                 <div class="stat-label"> Excused</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number" id="totalCount">{{ students|length }}</div>
+                <div class="stat-number dark:text-slate-100" id="totalCount">{{ students|length }}</div>
                 <div class="stat-label">Total</div>
             </div>
         </div>
