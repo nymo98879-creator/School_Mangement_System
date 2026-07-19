@@ -1755,3 +1755,574 @@
                 color 0.3s ease, box-shadow 0.3s ease, fill 0.3s ease !important;
     transition-delay: 0s !important;
 }
+
+/* ============================================================
+   ADMIN ROLE — COMPREHENSIVE DARK MODE ADDITIONS
+   ============================================================
+   All class names defined in per-template inline <style> blocks.
+   The ".dark" prefix ensures these rules only fire when the
+   <html> root carries the dark class set by theme.js.
+   ============================================================ */
+
+/* ----- Global body/page background override ----- */
+.dark body {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+}
+
+/* ----- Bootstrap dropdown menus in dark mode ----- */
+.dark .dropdown-menu {
+    background-color: var(--surface) !important;
+    border-color: var(--border) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .dropdown-menu .dropdown-item {
+    color: var(--text) !important;
+}
+
+.dark .dropdown-menu .dropdown-item:hover,
+.dark .dropdown-menu .dropdown-item:focus {
+    background-color: var(--hover-bg) !important;
+    color: var(--accent-soft) !important;
+}
+
+.dark .dropdown-menu .dropdown-item.text-danger {
+    color: #f87171 !important;
+}
+
+.dark .dropdown-menu .dropdown-item.text-danger:hover {
+    background-color: rgba(239, 68, 68, 0.12) !important;
+    color: #f87171 !important;
+}
+
+.dark .dropdown-menu hr.dropdown-divider {
+    border-color: var(--border) !important;
+}
+
+/* ----- Top-nav user chevron + chevron icon ----- */
+.dark .top-nav .right-section .user-dropdown .user-info-display i[class*="fa-chevron"] {
+    color: var(--text-muted) !important;
+}
+
+/* ============================================================
+   WELCOME BANNER (admin_dashboard.html)
+   ============================================================ */
+/* The gradient banner keeps its colours — it's designed to work
+   on both themes. Only the body backdrop needs the dark swap. */
+.dark .welcome-banner {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* ============================================================
+   BENTO / MINI / MODULE CARDS — HOVER GLOW IN DARK
+   ============================================================ */
+.dark .bento-card:hover {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+    border-color: rgba(59, 130, 246, 0.25);
+}
+
+.dark .mini-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.dark .module-card:hover {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+    border-color: rgba(59, 130, 246, 0.25);
+}
+
+.dark .module-card .module-menu a {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+
+/* ============================================================
+   ATTENDANCE PAGES — top-header dark bar
+   (attendance_list.html, class_attendance.html, etc.)
+   ============================================================ */
+.dark .top-header {
+    background: #060d1a;
+    border-bottom: 1px solid var(--border);
+}
+
+.dark .top-header .notification-bell .badge {
+    border-color: #060d1a;
+}
+
+/* ----- Page header title (attendance + student pages) ----- */
+.dark .page-header h2 {
+    color: var(--text);
+}
+
+/* ----- Add / primary action button (btn-add-class) ----- */
+/* These already use solid blue — fine on dark. Just keep glow. */
+.dark .btn-add-class {
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+}
+
+/* ============================================================
+   KPI CARDS — deeper palette in dark (attendance & dashboard)
+   ============================================================ */
+.dark .kpi-card {
+    background: var(--surface) !important;
+    border-color: var(--border) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.dark .kpi-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.dark .kpi-card .kpi-number {
+    color: var(--text) !important;
+}
+
+.dark .kpi-card .kpi-label {
+    color: var(--text-muted);
+}
+
+/* KPI badge colour patches — desaturated for dark */
+.dark .kpi-card .kpi-badge.blue   { background: rgba(59, 130, 246, 0.16);  color: #60a5fa; }
+.dark .kpi-card .kpi-badge.green  { background: rgba(22, 163, 74, 0.16);  color: #4ade80; }
+.dark .kpi-card .kpi-badge.red    { background: rgba(220, 38, 38, 0.16);  color: #f87171; }
+.dark .kpi-card .kpi-badge.orange { background: rgba(217, 119, 6, 0.16);  color: #fbbf24; }
+.dark .kpi-card .kpi-badge.purple { background: rgba(147, 51, 234, 0.16); color: #c084fc; }
+
+/* ============================================================
+   FILTER BAR — DARK INPUTS  (attendance, student, etc.)
+   ============================================================ */
+.dark .filter-bar {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark .filter-bar .search-wrapper i {
+    color: var(--text-muted);
+}
+
+.dark .filter-bar .search-input,
+.dark .filter-bar .filter-select {
+    background: var(--field-bg);
+    border-color: var(--field-border);
+    color: var(--text);
+}
+
+.dark .filter-bar .search-input:focus,
+.dark .filter-bar .filter-select:focus {
+    background: var(--field-bg);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.dark .filter-bar .search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.dark .filter-bar .btn-clear {
+    background: var(--field-bg);
+    border-color: var(--field-border);
+    color: var(--text-muted);
+}
+
+.dark .filter-bar .btn-clear:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: #475569;
+    color: var(--text);
+}
+
+/* ============================================================
+   TABLE CONTAINER + DATA TABLE (attendance, student, etc.)
+   ============================================================ */
+.dark .table-container {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark .data-table thead {
+    background: #273348;
+}
+
+.dark .data-table thead th {
+    background: transparent;
+    color: var(--text-muted);
+    border-bottom-color: var(--border);
+}
+
+.dark .data-table tbody td {
+    color: var(--text);
+    border-bottom-color: var(--border);
+}
+
+.dark .data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* ============================================================
+   ATTENDANCE STATUS DOTS + TEXT
+   ============================================================ */
+.dark .status-dot.present  { background: #4ade80; box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.18); }
+.dark .status-dot.absent   { background: #f87171; box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.18); }
+.dark .status-dot.late     { background: #fbbf24; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.18); }
+.dark .status-dot.excused  { background: #60a5fa; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.18); }
+
+.dark .status-text { color: #cbd5e1; }
+
+/* ============================================================
+   ICON TEXT CELLS (row data values)
+   ============================================================ */
+.dark .icon-text         { color: #e2e8f0; }
+.dark .icon-text i       { color: var(--text-muted); }
+.dark .row-title         { color: var(--text); }
+.dark .row-sub           { color: var(--text-muted); }
+
+/* ============================================================
+   ACTION ICON BUTTONS (attendance + other list pages)
+   ============================================================ */
+.dark .action-icon             { color: #cbd5e1; background: transparent; }
+.dark .action-icon:hover       { background: rgba(255, 255, 255, 0.06); color: var(--text); }
+.dark .action-icon.edit:hover  { background: rgba(59, 130, 246, 0.18); color: #93c5fd; }
+.dark .action-icon.view:hover  { background: rgba(59, 130, 246, 0.18); color: #60a5fa; }
+.dark .action-icon.delete:hover{ background: rgba(239, 68, 68, 0.18);  color: #f87171; }
+
+/* ============================================================
+   PAGINATION (attendance pages — custom page-btn)
+   ============================================================ */
+.dark .pagination-wrapper .page-btn {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+
+.dark .pagination-wrapper .page-btn:hover {
+    border-color: var(--accent);
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.12);
+}
+
+.dark .pagination-wrapper .page-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.dark .pagination-wrapper .page-btn.disabled { opacity: 0.4; }
+
+/* ============================================================
+   EMPTY / NO-RESULTS STATE
+   ============================================================ */
+.dark .empty-state i  { color: #334155; }
+.dark .empty-state h5 { color: var(--text); }
+.dark .empty-state p  { color: var(--text-muted); }
+.dark .no-results i   { color: #334155; }
+.dark .no-results h5  { color: var(--text); }
+.dark .no-results p   { color: var(--text-muted); }
+
+/* ============================================================
+   TAKE ATTENDANCE PAGE — specific components
+   ============================================================ */
+.dark .attendance-header     { background: var(--surface); border-color: var(--border); }
+.dark .class-info-card       { background: var(--surface); border-color: var(--border); }
+.dark .class-info-card h5    { color: var(--text); }
+.dark .class-info-card p     { color: var(--text-muted); }
+.dark .student-row           { background: var(--surface); border-color: var(--border); }
+.dark .student-row:hover     { background: rgba(255,255,255,0.03); }
+.dark .student-name          { color: var(--text); }
+.dark .student-id            { color: var(--text-muted); }
+
+/* Attendance radio pill buttons */
+.dark .attend-btn {
+    background: var(--field-bg);
+    border-color: var(--border);
+    color: var(--text-muted);
+}
+.dark .attend-btn.present.selected  { background: rgba(22,163,74,0.2); border-color: #16a34a; color: #4ade80; }
+.dark .attend-btn.absent.selected   { background: rgba(220,38,38,0.2); border-color: #dc2626; color: #f87171; }
+.dark .attend-btn.late.selected     { background: rgba(217,119,6,0.2); border-color: #d97706; color: #fbbf24; }
+.dark .attend-btn.excused.selected  { background: rgba(37,99,235,0.2); border-color: #2563eb; color: #60a5fa; }
+
+/* ============================================================
+   SETTINGS PAGE — team member role badges (dark overrides)
+   ============================================================ */
+.dark .member-role.director  { background: rgba(37,99,235,0.15);   color: #93c5fd; border-color: rgba(59,130,246,0.3); }
+.dark .member-role.pm        { background: rgba(13,148,136,0.15);  color: #2dd4bf; border-color: rgba(13,148,136,0.3); }
+.dark .member-role.developer { background: rgba(2,132,199,0.15);   color: #38bdf8; border-color: rgba(2,132,199,0.3); }
+.dark .member-role.database  { background: rgba(217,119,6,0.15);   color: #fbbf24; border-color: rgba(217,119,6,0.3); }
+.dark .member-role.qa        { background: rgba(124,58,237,0.15);  color: #c084fc; border-color: rgba(124,58,237,0.3); }
+
+/* ============================================================
+   GENERIC CARD / SECTION BACKGROUND FIX
+   Catches any page that sets body { background: #f8fafc } inline.
+   ============================================================ */
+.dark .content-area,
+.dark .main-content .content-area {
+    background: var(--bg);
+}
+
+/* ----- Generic page-card override (detail pages) ----- */
+.dark .page-card {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ----- Generic form-card override (forms) ----- */
+.dark .form-card {
+    background: var(--surface);
+    border-color: var(--border);
+}
+
+/* ============================================================
+   STUDENT DETAIL / TEACHER DETAIL PAGE — dark mode polish
+   ============================================================ */
+.dark .detail-card          { background: var(--surface); border-color: var(--border); }
+.dark .detail-card .label   { color: var(--text-muted); }
+.dark .detail-card .value   { color: var(--text); }
+.dark .detail-section h5    { color: var(--text); }
+.dark .detail-section h5 i  { color: var(--accent-soft); }
+
+/* ============================================================
+   BULK UPLOAD / GENERATE QR PAGES
+   ============================================================ */
+.dark .upload-card          { background: var(--surface); border-color: var(--border); }
+.dark .upload-card h5       { color: var(--text); }
+.dark .upload-card p        { color: var(--text-muted); }
+.dark .drop-zone            { background: var(--field-bg); border-color: var(--border); }
+.dark .drop-zone:hover      { border-color: var(--accent); background: rgba(59,130,246,0.08); }
+.dark .drop-zone i          { color: var(--text-muted); }
+.dark .drop-zone .drop-text { color: var(--text); }
+
+/* ============================================================
+   DELETE CONFIRM PAGE
+   ============================================================ */
+.dark .delete-card             { background: var(--surface); border-color: var(--border); }
+.dark .delete-card h4          { color: var(--text); }
+.dark .delete-card p           { color: var(--text-muted); }
+
+/* ============================================================
+   ATTENDANCE REPORT PAGE
+   ============================================================ */
+.dark .report-card             { background: var(--surface); border-color: var(--border); }
+.dark .report-card h5          { color: var(--text); }
+.dark .report-row              { border-bottom-color: var(--border); }
+.dark .report-row:hover        { background: rgba(255,255,255,0.03); }
+.dark .report-label            { color: var(--text-muted); }
+.dark .report-value            { color: var(--text); }
+
+/* ============================================================
+   INLINE COLOR OVERRIDES FOR HARDCODED INLINE STYLES
+   These selectors catch elements that have inline style="color:X"
+   on attendance + detail pages in dark mode.
+   ============================================================ */
+.dark [style*="color: #0f172a"],
+.dark [style*="color:#0f172a"],
+.dark [style*="color: #0F172A"],
+.dark [style*="color:#0F172A"] { color: var(--text) !important; }
+
+.dark [style*="color: #1e293b"],
+.dark [style*="color:#1e293b"],
+.dark [style*="color: #1E293B"],
+.dark [style*="color:#1E293B"] { color: #e2e8f0 !important; }
+
+.dark [style*="color: #334155"],
+.dark [style*="color:#334155"] { color: #e2e8f0 !important; }
+
+.dark [style*="color: #475569"],
+.dark [style*="color:#475569"] { color: #cbd5e1 !important; }
+
+.dark [style*="color: #64748b"],
+.dark [style*="color:#64748b"],
+.dark [style*="color: #64748B"],
+.dark [style*="color:#64748B"] { color: var(--text-muted) !important; }
+
+.dark [style*="color: #94a3b8"],
+.dark [style*="color:#94a3b8"],
+.dark [style*="color: #94A3B8"],
+.dark [style*="color:#94A3B8"] { color: #94a3b8 !important; }
+
+/* Background overrides for hardcoded white/light backgrounds */
+.dark [style*="background: white"],
+.dark [style*="background:white"],
+.dark [style*="background: #fff"],
+.dark [style*="background:#fff"],
+.dark [style*="background: #ffffff"],
+.dark [style*="background:#ffffff"],
+.dark [style*="background-color: white"],
+.dark [style*="background-color:#fff"],
+.dark [style*="background-color: #fff"],
+.dark [style*="background-color: #ffffff"],
+.dark [style*="background-color:#ffffff"] {
+    background-color: var(--surface) !important;
+}
+
+.dark [style*="background: #f8fafc"],
+.dark [style*="background:#f8fafc"],
+.dark [style*="background-color: #f8fafc"],
+.dark [style*="background-color:#f8fafc"] {
+    background-color: var(--field-bg) !important;
+}
+
+/* Border colour for hardcoded light borders */
+.dark [style*="border-color: #e2e8f0"],
+.dark [style*="border-color:#e2e8f0"] { border-color: var(--border) !important; }
+
+/* ============================================================
+   HIGH-SPECIFICITY GUARANTEE BLOCK — html.dark
+   ============================================================
+   Using "html.dark" (specificity 0,1,1) ensures these rules
+   always beat any ".dark .foo" (specificity 0,2,0 or 0,1,0)
+   rules defined inside per-template <style> blocks, even if
+   those styles are loaded after theme.css.
+
+   This block covers every class that appears as "background:white"
+   inside inline <style> blocks across all admin-role templates.
+   ============================================================ */
+
+/* --- Universal surface cards --- */
+html.dark .kpi-card,
+html.dark .bento-card,
+html.dark .mini-card,
+html.dark .module-card,
+html.dark .custom-card,
+html.dark .page-card,
+html.dark .form-card,
+html.dark .panel,
+html.dark .detail-header,
+html.dark .filter-bar,
+html.dark .search-filters,
+html.dark .table-container,
+html.dark .card-header-clean,
+html.dark .data-card,
+html.dark .info-card,
+html.dark .report-card,
+html.dark .upload-card,
+html.dark .delete-card,
+html.dark .attendance-header,
+html.dark .class-info-card,
+html.dark .student-row {
+    background: var(--surface) !important;
+    border-color: var(--border) !important;
+}
+
+/* --- Panel / table header rows --- */
+html.dark .panel-head {
+    color: var(--text) !important;
+    border-bottom-color: var(--border) !important;
+    background: transparent !important;
+}
+
+/* --- Info rows inside panels --- */
+html.dark .info-row {
+    border-bottom-color: var(--border) !important;
+}
+
+html.dark .info-row .info-label { color: var(--text-muted) !important; }
+html.dark .info-row .info-value { color: var(--text) !important; }
+
+/* --- KPI numbers and labels --- */
+html.dark .kpi-number,
+html.dark .bento-number,
+html.dark .mini-value { color: var(--text) !important; }
+
+html.dark .kpi-label,
+html.dark .bento-label,
+html.dark .mini-label  { color: var(--text-muted) !important; }
+
+/* --- KPI icon badges (desaturated) --- */
+html.dark .kpi-badge.blue,
+html.dark .kpi-card .kpi-badge.blue   { background: rgba(59, 130, 246, 0.16) !important; color: #60a5fa !important; }
+html.dark .kpi-badge.green,
+html.dark .kpi-card .kpi-badge.green  { background: rgba(22, 163, 74, 0.16)  !important; color: #4ade80 !important; }
+html.dark .kpi-badge.red,
+html.dark .kpi-card .kpi-badge.red    { background: rgba(220, 38, 38, 0.16)  !important; color: #f87171 !important; }
+html.dark .kpi-badge.orange,
+html.dark .kpi-card .kpi-badge.orange { background: rgba(217, 119, 6, 0.16)  !important; color: #fbbf24 !important; }
+html.dark .kpi-badge.purple,
+html.dark .kpi-card .kpi-badge.purple { background: rgba(147, 51, 234, 0.16) !important; color: #c084fc !important; }
+
+/* --- Data table rows --- */
+html.dark .data-table thead {
+    background: #1e2d45 !important;
+}
+
+html.dark .data-table thead th {
+    color: var(--text-muted) !important;
+    border-bottom-color: var(--border) !important;
+    background: transparent !important;
+}
+
+html.dark .data-table tbody td {
+    color: var(--text) !important;
+    border-bottom-color: var(--border) !important;
+}
+
+html.dark .data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* --- Status badges --- */
+html.dark .status-badge.active   { background: rgba(22, 163, 74, 0.18) !important; color: #86efac !important; }
+html.dark .status-badge.inactive { background: rgba(220, 38, 38, 0.18) !important; color: #fca5a5 !important; }
+html.dark .status-badge.pending  { background: rgba(217, 119, 6, 0.18) !important; color: #fcd34d !important; }
+
+/* --- Tags / chips --- */
+html.dark .tag { background: var(--field-bg) !important; color: #cbd5e1 !important; border-color: var(--border) !important; }
+
+/* --- Button: secondary variant --- */
+html.dark .btn-secondary { background: var(--field-bg) !important; color: var(--text-muted) !important; border-color: var(--border) !important; }
+html.dark .btn-secondary:hover { background: #273348 !important; color: var(--text) !important; }
+
+/* --- Text typography colors --- */
+html.dark .class-title,
+html.dark .class-sub,
+html.dark .page-header h2,
+html.dark .row-title,
+html.dark .student-name,
+html.dark .teacher-name-main,
+html.dark .course-name-main,
+html.dark .class-name-main { color: var(--text) !important; }
+
+html.dark .row-sub,
+html.dark .student-email,
+html.dark .student-meta,
+html.dark .teacher-meta,
+html.dark .course-meta { color: var(--text-muted) !important; }
+
+/* --- Search/filter inputs --- */
+html.dark .search-input,
+html.dark .filter-select {
+    background: var(--field-bg) !important;
+    border-color: var(--field-border) !important;
+    color: var(--text) !important;
+}
+
+html.dark .search-input::placeholder { color: var(--text-muted) !important; }
+
+/* --- Action buttons --- */
+html.dark .action-icon { color: #cbd5e1 !important; background: transparent !important; }
+html.dark .action-icon:hover { background: rgba(255,255,255,0.06) !important; }
+html.dark .action-icon.edit:hover   { background: rgba(59, 130, 246, 0.18) !important; color: #93c5fd !important; }
+html.dark .action-icon.delete:hover { background: rgba(239, 68, 68, 0.18)  !important; color: #f87171 !important; }
+
+/* --- Empty states --- */
+html.dark .empty-state { color: var(--text-muted) !important; }
+html.dark .empty-state i { color: #334155 !important; }
+
+/* --- Attendance status dots --- */
+html.dark .status-dot.present { background: #4ade80 !important; }
+html.dark .status-dot.absent  { background: #f87171 !important; }
+html.dark .status-dot.late    { background: #fbbf24 !important; }
+html.dark .status-dot.excused { background: #60a5fa !important; }
+html.dark .status-dot.none    { background: #64748b !important; }
+html.dark .status-text { color: #cbd5e1 !important; }
+
+/* --- Top header bar (attendance pages) --- */
+html.dark .top-header { background: #060d1a !important; }
+
+/* --- Page-level background --- */
+html.dark body { background: var(--bg) !important; color: var(--text) !important; }
+

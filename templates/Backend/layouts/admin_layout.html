@@ -609,9 +609,29 @@
                 display: none;
             }
         }
+
+        /* ===== DARK-AWARE ICON HELPERS ===== */
+        .nav-accent-icon {
+            color: #4263eb;
+            transition: color 0.3s ease;
+        }
+
+        .nav-chevron-icon {
+            font-size: 12px;
+            color: #7f8c8d;
+            transition: color 0.3s ease;
+        }
+
+        .dark .nav-accent-icon {
+            color: #60a5fa;
+        }
+
+        .dark .nav-chevron-icon {
+            color: #64748b;
+        }
     </style>
-    <link rel="stylesheet" href="{% static 'css/theme.css' %}?v=20260714e">
     {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}?v=20260719b">
 </head>
 
 <body>
@@ -782,7 +802,7 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <h4 class="page-title">
-                    <i class="fas fa-shield-alt me-2" style="color: #4263eb;"></i>
+                    <i class="fas fa-shield-alt me-2 nav-accent-icon"></i>
                     {% block page_title %}Admin Dashboard{% endblock %}
                 </h4>
             </div>
@@ -804,7 +824,7 @@
                             {{ user.username }}
                             <small>(Admin)</small>
                         </div>
-                        <i class="fas fa-chevron-down ms-1" style="font-size: 12px; color: #7f8c8d;"></i>
+                        <i class="fas fa-chevron-down ms-1 nav-chevron-icon"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0"
                         style="border-radius: 12px; padding: 8px 0; min-width: 200px;">
